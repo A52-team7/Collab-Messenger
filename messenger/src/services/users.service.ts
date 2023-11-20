@@ -1,12 +1,17 @@
-import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 
-export const getUserByHandle = (handle) => {
-
+export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
   return get(ref(db, `users/${handle}`));
 };
 
-export const createUserHandle = (handle, uid, email, firstName, lastName, phoneNumber) => {
+export const createUserHandle = (
+  handle: string, 
+  uid: string, 
+  email: string, 
+  firstName: string, 
+  lastName: string, 
+  phoneNumber: string): Promise<void> => {
 
   return set(ref(db, `users/${handle}`), {
     handle,
@@ -14,43 +19,27 @@ export const createUserHandle = (handle, uid, email, firstName, lastName, phoneN
     email,
     firstName,
     lastName,
-    isBlocked: false,
-    isAdmin: false,
     phoneNumber,
-    likedPosts: {},
+    teams: '',
+    profilePhoto: '',
+    channels: {}
   })
 };
 
-export const getUserData = (uid) => {
-
+export const getUserData = (uid: string): Promise<DataSnapshot> => {
   return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
 };
 
-export const updateUserData = (handle, key, value) => {
+export const updateUserData = (handle: string, key: string, value: string): Promise<void> => {
   return update(ref(db), { [`users/${handle}/${key}`]: `${value}` });
 }
 
-export const userPost = (id, handle) => {
-  const updateUserPosts = {};
-  updateUserPosts[`/users/${handle}/myPosts/${id}`] = true;
-
-  return update(ref(db), updateUserPosts);
-}
-
-export const userReply = (id, handle) => {
-  const updateUserReply = {};
-  updateUserReply[`/users/${handle}/myReplies/${id}`] = true;
-
-  return update(ref(db), updateUserReply);
-}
-
-export const getAllUsers = () => {
+export const getAllUsers = (): Promise<string[]> => {
   return get(ref(db, 'users'))
     .then((snapshot) => {
       if (!snapshot.exists()) {
         return [];
       }
-
       return Object.keys(snapshot.val())
     });
 };
