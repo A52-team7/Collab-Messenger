@@ -22,7 +22,7 @@ import {
   FiChevronDown,
 } from 'react-icons/fi';
 import { HamburgerIcon } from '@chakra-ui/icons'
-// import Search from '../../Search/Search';
+import Search from '../Search/Search';
 
 interface LinksUserOptionsType {
   name: string,
@@ -89,7 +89,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
 
       <Box m={'auto'} w={{ base: '100%', md: '100%', lg: '80%' }}>
         <Box ml={{ base: 0, md: 10, lg: 5 }}>
-          {/* <Search /> */}
+          <Search />
         </Box>
       </Box>
 
