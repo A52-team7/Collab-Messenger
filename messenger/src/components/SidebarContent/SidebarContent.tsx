@@ -11,18 +11,10 @@ import {
 } from '@chakra-ui/react';
 import {
   FiHome,
-  FiTrendingUp,
-  FiStar,
-  FiArchive,
-  FiHeart,
 } from 'react-icons/fi';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
-  { name: 'New Post', icon: FiTrendingUp, path: '/new-post' },
-  { name: 'My post pages', icon: FiArchive, path: '/my-post-pages' },
-  { name: 'My liked posts', icon: FiHeart, path: '/my-liked-posts' },
-  { name: 'Admin Panel', icon: FiStar, path: '/admin-panel' },
 ];
 
 interface SidebarContentProps {
@@ -52,9 +44,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
-      {userData && <NavItem key={LinkItems[1].name} icon={LinkItems[1].icon} name={LinkItems[1].name} path={LinkItems[1].path} />}
-      {userData && <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} />}
-      {userData && <NavItem key={LinkItems[3].name} icon={LinkItems[3].icon} name={LinkItems[3].name} path={LinkItems[3].path} />}
     </Box >
   );
 }
