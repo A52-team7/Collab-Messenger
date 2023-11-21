@@ -16,7 +16,6 @@ import {
   FiArchive,
   FiHeart,
 } from 'react-icons/fi';
-import imgFile from '../../../assets/logo.png'
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -44,7 +43,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       h='full'
       {...rest}>
       <Flex alignItems='center' justify="center">
-        <Image src={imgFile} alt='logo' w={"150px"} alignItems='center' />
+        <Image alt='logo' w={"150px"} alignItems='center' />
       </Flex>
       <Flex h='20' alignItems='center' mx='4' justifyContent='space-between'>
         <Text fontSize='23' fontFamily='monospace' fontWeight='bold' color={'grey'}>
