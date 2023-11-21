@@ -1,13 +1,13 @@
 import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
-import SidebarContent from '../SidebarContent/SidebarContent';
-import MobileNav from '../MobileNav/MobileNav';
+import SidebarContent from '../../components/SidebarContent/SidebarContent';
+import MobileNav from '../../components/MobileNav/MobileNav';
 import { ReactNode } from 'react';
 
-interface BodyProps{
-    children: ReactNode
-  }
+interface BodyProps {
+  children: ReactNode
+}
 
-const Body = ({ children } : BodyProps) : JSX.Element  => {
+const Body = ({ children }: BodyProps): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
