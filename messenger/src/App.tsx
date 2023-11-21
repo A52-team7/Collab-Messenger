@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppContext, {UserState} from './context/AppContext';
-import Body from './components/Body/Body';
+import Body from './hoc/Body/Body';
 // import CreateAccount from './view/CreateAccount/CreateAccount';
 // import Login from './view/Login/Login';
 //import AuthenticatedRoute from './hoc/AuthenticatedRoute';

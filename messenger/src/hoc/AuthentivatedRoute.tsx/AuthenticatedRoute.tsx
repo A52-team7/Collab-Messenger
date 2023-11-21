@@ -1,5 +1,5 @@
 import { useContext, ReactNode } from 'react';
-import AppContext, {UserState} from '../context/AppContext';
+import AppContext, {UserState} from '../../context/AppContext';
 import { Navigate, useLocation  } from 'react-router-dom';
 import PropTypes from "prop-types";
 
