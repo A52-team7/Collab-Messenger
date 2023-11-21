@@ -6,11 +6,11 @@ export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
 };
 
 export const createUserHandle = (
-  handle: string, 
-  uid: string, 
-  email: string, 
-  firstName: string, 
-  lastName: string, 
+  handle: string,
+  uid: string,
+  email: string | null,
+  firstName: string,
+  lastName: string,
   phoneNumber: string): Promise<void> => {
 
   return set(ref(db, `users/${handle}`), {

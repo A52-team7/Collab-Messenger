@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
-// import CreateAccount from './view/CreateAccount/CreateAccount';
-// import Login from './view/Login/Login';
-//import AuthenticatedRoute from './hoc/AuthenticatedRoute';
 import Home from './views/Home/Home';
+import Register from './components/Register/Register';
+import Login from './components/Login/Login';
+// import CreateAccount from './view/CreateAccount/CreateAccount';
+//import AuthenticatedRoute from './hoc/AuthenticatedRoute';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
@@ -55,9 +56,9 @@ function App(): JSX.Element {
       <Body>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/register' element={!appState.user && <Register />} />
+          <Route path='/login' element={!appState.user && <Login />} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
-          {/* <Route path='/register' element={!appState.user && <CreateAccount />} /> */}
-          {/* <Route path='/login' element={!appState.user && <Login />} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           {/* <Route path='*' element={<NoPageFound />} /> */}
         </Routes>

@@ -14,7 +14,8 @@ const colors = {
   blue: '#415A77',
   darkBlue: '#1B263B',
   megaDarkBlue: '#0D1B2A',
-  baseBlue: '#3585C2'
+  baseBlue: '#3585C2',
+  focusBorder: '#0059cb'
 }
 
 const components = {
@@ -28,10 +29,20 @@ const components = {
         }
       },
     },
-  }
+  },
+  Input: {
+    defaultProps: {
+      size: 'sm',
+    },
+  },
+  NumberInput: {
+    defaultProps: {
+      size: 'sm'
+    }
+  },
 }
 
-const theme = extendTheme({ colors, components })
+const theme = extendTheme({ colors }, { components });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
