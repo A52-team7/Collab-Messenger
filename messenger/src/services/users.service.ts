@@ -21,7 +21,7 @@ export const createUserHandle = (
     lastName,
     phoneNumber,
     teams: '',
-    profilePhoto: '',
+    profilePhoto: 'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png',
     channels: {}
   })
 };

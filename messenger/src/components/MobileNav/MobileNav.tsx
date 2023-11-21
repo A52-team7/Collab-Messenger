@@ -102,9 +102,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                   <Avatar
                     bg={'white'}
                     size={'lg'}
-                    src={
-                      'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png'
-                    } />
+                    src={userData.profilePhoto} />
                   <VStack
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='flex-start'

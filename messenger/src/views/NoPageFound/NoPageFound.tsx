@@ -1,8 +1,9 @@
-import { Alert, AlertTitle, AlertDescription } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { Alert, AlertTitle, AlertDescription, Link } from "@chakra-ui/react";
 import { AlertIcon } from "@chakra-ui/react";
 
 const NoPageFound = (): JSX.Element => {
-
+  const navigate = useNavigate();
   return (
     <Alert
       m={'auto'}
@@ -21,10 +22,10 @@ const NoPageFound = (): JSX.Element => {
         404 page not found
       </AlertTitle>
       <AlertDescription maxWidth='sm'>
-        Uh-oh! We&apos;re not shure what you are looking for...
+        Uh-oh! We&apos;re not sure what you are looking for...
       </AlertDescription>
       <AlertDescription maxWidth='sm'>
-        {`Return to Home page? `}
+        `Return to <Link fontWeight={'bold'} color={'blue'} onClick={() => navigate('/')}>Home Page</Link>?
       </AlertDescription>
     </Alert>
   )

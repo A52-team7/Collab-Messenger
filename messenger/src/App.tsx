@@ -5,13 +5,12 @@ import Body from './hoc/Body/Body';
 import Home from './views/Home/Home';
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
-// import CreateAccount from './view/CreateAccount/CreateAccount';
+import NoPageFound from './views/NoPageFound/NoPageFound';
 //import AuthenticatedRoute from './hoc/AuthenticatedRoute';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
 // import UserDetails from './view/UserDetails/UserDetails';
-// import NoPageFound from './view/NoPageFound/NoPageFound';
 
 function App(): JSX.Element {
   // loading, error
@@ -60,7 +59,7 @@ function App(): JSX.Element {
           <Route path='/login' element={!appState.user && <Login />} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
-          {/* <Route path='*' element={<NoPageFound />} /> */}
+          <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>
     </AppContext.Provider>
