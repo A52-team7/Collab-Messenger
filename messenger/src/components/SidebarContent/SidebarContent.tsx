@@ -47,7 +47,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       </Flex>
       <Flex h='20' alignItems='center' mx='4' justifyContent='space-between'>
         <Text fontSize='23' fontFamily='monospace' fontWeight='bold' color={'grey'}>
-          &nbsp;&nbsp;&nbsp;Bookworm&apos;s &nbsp;&nbsp; &nbsp;&nbsp; Sanctuary
+          COLLAB-MESSANGER
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
