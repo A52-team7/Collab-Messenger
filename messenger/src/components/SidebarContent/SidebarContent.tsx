@@ -28,6 +28,7 @@ const LinkItems = [
 
 interface SidebarContentProps {
   onClose: () => void
+  display?: object
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
@@ -56,7 +57,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       {userData && <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} />}
       {userData && <NavItem key={LinkItems[3].name} icon={LinkItems[3].icon} name={LinkItems[3].name} path={LinkItems[3].path} />}
     </Box >
-  )
+  );
 }
 
 export default SidebarContent;
