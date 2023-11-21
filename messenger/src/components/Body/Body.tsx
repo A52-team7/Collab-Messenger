@@ -1,6 +1,6 @@
 import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
-import SidebarContent from '../Navbar/SidebarContent/SidebarContent';
-import MobileNav from '../Navbar/MobileNav/MobileNav';
+import SidebarContent from '../SidebarContent/SidebarContent';
+import MobileNav from '../MobileNav/MobileNav';
 import { ReactNode } from 'react';
 
 interface BodyProps{
