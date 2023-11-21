@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword,
   UserCredential 
 } from 'firebase/auth';
 import { auth } from '../config/firebaseConfig';
+import { User } from 'firebase/auth';
 
 export const registerUser = (email: string, password: string): Promise<UserCredential> => {
   return createUserWithEmailAndPassword(auth, email, password)
