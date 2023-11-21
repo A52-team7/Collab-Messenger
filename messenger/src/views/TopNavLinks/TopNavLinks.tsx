@@ -1,4 +1,4 @@
-import NavLink from '../NavLink/NavLink';
+import NavLink from '../../components/NavLink/NavLink';
 import {
   Box,
   Flex,

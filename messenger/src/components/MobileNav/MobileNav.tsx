@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../../services/auth.service';
-import AppContext from '../../../context/AppContext';
-import TopNavLinks from '../TopNavLinks/TopNavLinks';
+import AppContext from '../../context/AppContext';
+import TopNavLinks from '../../views/TopNavLinks/TopNavLinks';
 import {
   Box,
   HStack,
@@ -44,10 +44,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
   const onLogout = () => {
     logoutUser()
       .then(() => {
-        setContext({
+        setContext(prevState => ({
+          ...prevState,
           user: null,
           userData: null,
-        });
+        }));
       })
       .catch((e: Error) => {
         console.error(e.message);
@@ -110,7 +111,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                     spacing='1px'>
                     <Text fontSize='sm' color={'grey'}>{userData.handle}</Text>
                     <Text fontSize='xs' color={'grey'}>
-                      {userData.isAdmin ? 'Admin' : 'User'}
                     </Text>
                   </VStack>
                   <Box display={{ base: 'none', md: 'flex' }}>

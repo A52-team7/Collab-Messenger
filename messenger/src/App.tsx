@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AppContext, {UserState} from './context/AppContext';
+import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
 // import CreateAccount from './view/CreateAccount/CreateAccount';
 // import Login from './view/Login/Login';
@@ -21,7 +21,7 @@ function App(): JSX.Element {
   const [appState, setAppState] = useState<UserState>({
     user: null,
     userData: null,
-    setContext: ()=> {},
+    setContext: () => { },
   });
 
   // update the user in the app state to match the one retrieved from the hook above
