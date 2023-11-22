@@ -25,7 +25,7 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
-  console.log('I AM RERENDERING!!!');
+  //console.log('I AM RERENDERING!!!');
 
   // update the user in the app state to match the one retrieved from the hook above
   if (appState.user !== userAuth) {
@@ -63,6 +63,8 @@ function App(): JSX.Element {
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/edit-team-information' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/add-remove-members' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>

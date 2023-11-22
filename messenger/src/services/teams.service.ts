@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot,push, remove } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot,push, remove, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 
 export const createTeam = (name: string, handle: string, members: object, description: string) => {
@@ -13,12 +13,13 @@ export const createTeam = (name: string, handle: string, members: object, descri
         },
     )
         .then(result => {
+            if(result.key === null) return;
 
             return getTeamById(result.key);
         });
 };
 
-export const getTeamById = (id: string | null) => {
+export const getTeamById = (id: string) => {
     return get(ref(db, `teams/${id}`))
         .then(result => {
             if (!result.exists()) {
@@ -27,7 +28,7 @@ export const getTeamById = (id: string | null) => {
             const team = result.val();
             team.id = id;
             team.createdOn = new Date(team.createdOn);
-            
+            console.log(team, "Team Id")
             return team;
         });
 };
@@ -35,5 +36,4 @@ export const getTeamById = (id: string | null) => {
 export const getTeamByName = (name: string | null) => {
     return get(query(ref(db, 'teams'), orderByChild('name'), equalTo(name)))
 };
-
 

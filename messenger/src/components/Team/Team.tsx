@@ -19,7 +19,7 @@ import {getTeamByName, createTeam } from '../../services/teams.service'
 import {getAllUsers, updateUserTeams} from '../../services/users.service'
 
 export interface Team {
-  uid?: string,
+  id: string,
   name: string,
   owner: string,
   members: { [handle: string]: boolean },
@@ -31,6 +31,7 @@ export interface Team {
 const Team = () => {
   const { userData } = useContext<UserState>(AppContext); 
   const [teamForm, setTeamForm] = useState<Team>({
+    id: '',
     name: '',
     owner: '',
     members: {},
