@@ -15,6 +15,7 @@ import {
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
+  { name: 'Team', icon: FiHome, path: '/new-team' },
 ];
 
 interface SidebarContentProps {
@@ -44,6 +45,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
+      <NavItem key={LinkItems[1].name} icon={LinkItems[1].icon} name={LinkItems[1].name} path={LinkItems[1].path} />
     </Box >
   );
 }

@@ -20,9 +20,9 @@ export const createUserHandle = (
     firstName,
     lastName,
     phoneNumber,
-    teams: '',
+    myTeams: '',
     profilePhoto: 'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png',
-    channels: {}
+    myChannels: {}
   })
 };
 
@@ -43,3 +43,7 @@ export const getAllUsers = (): Promise<string[]> => {
       return Object.keys(snapshot.val())
     });
 };
+
+export const updateUserTeams = (handle: string, idTeam: string): Promise<void> =>{
+return update(ref(db), {[`users/${handle}/myTeams/${idTeam}`]: true} )
+}

@@ -8,10 +8,10 @@ interface RouteProps{
 }
 
 const AuthenticatedRoute = ({ children } : RouteProps) => {
-  const { user } = useContext<UserState>(AppContext);
+  const { user, userData } = useContext<UserState>(AppContext);
   const location = useLocation();
 
-  if (user === null) {
+  if (user === null || userData === null) {
     return <Navigate to='/login' state={location.pathname} />;
   } 
 

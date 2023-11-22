@@ -4,10 +4,11 @@ import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
 import Home from './views/Home/Home';
 import Register from './components/Register/Register';
+import Team from './components/Team/Team';
 import Login from './components/Login/Login';
 import NoPageFound from './views/NoPageFound/NoPageFound';
-//import AuthenticatedRoute from './hoc/AuthenticatedRoute';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
+import { useAuthState} from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
 // import UserDetails from './view/UserDetails/UserDetails';
@@ -59,6 +60,7 @@ function App(): JSX.Element {
           <Route path='/login' element={!appState.user && <Login />} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
+          <Route path='/new-team' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>
