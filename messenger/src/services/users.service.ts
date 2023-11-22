@@ -43,3 +43,17 @@ export const getAllUsers = (): Promise<string[]> => {
       return Object.keys(snapshot.val())
     });
 };
+
+export const userMessage = (id: string, handle: string): Promise<void> => {
+  const updateUserMessage: {[key: string]: boolean} = {};
+  updateUserMessage[`/users/${handle}/myMessages/${id}`] = true;
+
+  return update(ref(db), updateUserMessage);
+}
+
+export const userChannel = (id: string, handle: string): Promise<void> => {
+  const updateUserChannel: {[key: string]: boolean} = {};
+  updateUserChannel[`/users/${handle}/myChannels/${id}`] = true;
+
+  return update(ref(db), updateUserChannel);
+}
