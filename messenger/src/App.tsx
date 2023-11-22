@@ -4,10 +4,11 @@ import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
 import Home from './views/Home/Home';
 import Register from './components/Register/Register';
+import Team from './components/Team/Team';
 import Login from './components/Login/Login';
 import NoPageFound from './views/NoPageFound/NoPageFound';
-//import AuthenticatedRoute from './hoc/AuthenticatedRoute';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
+import { useAuthState} from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
 import AuthenticatedRoute from './hoc/AuthentivatedRoute.tsx/AuthenticatedRoute';
@@ -27,7 +28,7 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
-  console.log('I AM RERENDERING!!!');
+  //console.log('I AM RERENDERING!!!');
 
   // update the user in the app state to match the one retrieved from the hook above
   if (appState.user !== userAuth) {
@@ -66,6 +67,9 @@ function App(): JSX.Element {
           <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
+          <Route path='/new-team' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/edit-team-information' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/add-remove-members' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>

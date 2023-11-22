@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 
 export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
@@ -20,9 +20,9 @@ export const createUserHandle = (
     firstName,
     lastName,
     phoneNumber,
-    teams: '',
+    myTeams: '',
     profilePhoto: 'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png',
-    channels: {}
+    myChannels: {}
   })
 };
 
@@ -43,6 +43,25 @@ export const getAllUsers = (): Promise<string[]> => {
       return Object.keys(snapshot.val())
     });
 };
+
+export const updateUserTeams = (handle: string, idTeam: string): Promise<void> =>{
+return update(ref(db), {[`users/${handle}/myTeams/${idTeam}`]: true} )
+}
+
+export interface TeamsListener{(teams: string[]): void}
+
+export const getUserTeamsLive = (handle: string, listener: TeamsListener)=>{
+
+  return onValue(ref(db ,`users/${handle}/myTeams`), (snapshot) => {
+    if(!snapshot.exists()) return[];
+    const teams= Object.keys(snapshot.val());
+    return listener(teams)
+  })
+}
+
+export const getAllUserTeams = (handle: string)=>{
+  return get(ref(db ,`users/${handle}/myTeams`))
+}
 
 export const userMessage = (id: string, handle: string): Promise<void> => {
   const updateUserMessage: {[key: string]: boolean} = {};
