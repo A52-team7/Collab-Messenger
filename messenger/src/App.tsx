@@ -15,7 +15,7 @@ import { getUserData } from './services/users.service';
 
 function App(): JSX.Element {
   // loading, error
-  const [user] = useAuthState(auth);
+  const [userAuth] = useAuthState(auth);
   // this hook will check storage for user credentials (eventually stored during user login with firebase functions) and retrieve the actual authentication state (user will either be null or the user object from the last persisted login)
   // the loading status will be true while the hooks retrieves the status of the user and will be set to false when the user has been retrieved (object or null)
   // the error will be set only when specific problem with the auth state is detected
@@ -25,19 +25,21 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
+  console.log('I AM RERENDERING!!!');
+
   // update the user in the app state to match the one retrieved from the hook above
-  if (appState.user !== user) {
+  if (appState.user !== userAuth) {
     setAppState((prevState: UserState) => ({
       ...prevState,
-      user: user || null,
+      user: userAuth || null,
     }));
   }
 
   // finally retrieve user data if the user is logged (this is also broken and will be fixed in a bit)
   useEffect(() => {
-    if (user === null || user === undefined) return;
+    if (userAuth === null || userAuth === undefined) return;
 
-    getUserData(user.uid)
+    getUserData(userAuth.uid)
       .then(snapshot => {
         if (!snapshot.exists()) {
           throw new Error('Something went wrong!');
@@ -49,7 +51,7 @@ function App(): JSX.Element {
         });
       })
       .catch(e => alert(e.message));
-  }, [appState, user]);
+  }, [userAuth]);
 
   return (
     <AppContext.Provider value={{ ...appState, setContext: setAppState }}>

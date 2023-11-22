@@ -66,8 +66,8 @@ const Login = () => {
       justify={'center'}
       bg={'lightBlue'}>
       <Stack spacing={8} mx={'auto'} minW={'28vw'} maxW={'lg'} backgroundColor={'gray.300'} rounded={'lg'}>
-        <Box justifyContent={'center'} textAlign={'center'}>
-          <Heading fontSize={'4xl'}>Login</Heading>
+        <Box justifyContent={'center'} textAlign={'center'} mt={5} p={0}>
+          <Heading m={0} p={0} fontSize={'4xl'}>Login</Heading>
         </Box>
         <Box
           rounded={'lg'}
