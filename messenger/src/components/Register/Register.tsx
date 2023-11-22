@@ -121,12 +121,12 @@ const Register = () => {
       maxH={'fit-content'}
       justify={'center'}
       bg={'lightBlue'}>
-      <Stack spacing={8} mx={'auto'} maxW={'lg'} backgroundColor={'gray.300'}>
-        <Stack align={'center'}>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} backgroundColor={'gray.300'} rounded={'lg'}>
+        <Box align={'center'} mt={5}>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Register
           </Heading>
-        </Stack>
+        </Box>
         <Box
           rounded={'lg'}
           bg={'grey'}

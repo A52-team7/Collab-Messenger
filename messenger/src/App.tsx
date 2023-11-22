@@ -28,7 +28,8 @@ function App(): JSX.Element {
   if (appState.user !== user) {
     setAppState((prevState: UserState) => ({
       ...prevState,
-      user: user || null,
+      userData: null,
+      user: null,
     }));
   }
 
