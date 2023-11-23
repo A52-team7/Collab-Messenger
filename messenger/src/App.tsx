@@ -4,12 +4,16 @@ import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
 import Home from './views/Home/Home';
 import Register from './components/Register/Register';
+import Team from './components/Team/Team';
 import Login from './components/Login/Login';
 import NoPageFound from './views/NoPageFound/NoPageFound';
-//import AuthenticatedRoute from './hoc/AuthenticatedRoute';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
+import { useAuthState} from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
+import AuthenticatedRoute from './hoc/AuthentivatedRoute.tsx/AuthenticatedRoute';
+import CreateNewChat from './components/CreateNewChat/CreateNewChat';
+import Chat from './components/Chat/Chat';
 // import UserDetails from './view/UserDetails/UserDetails';
 
 function App(): JSX.Element {
@@ -59,8 +63,13 @@ function App(): JSX.Element {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={!appState.user && <Register />} />
           <Route path='/login' element={!appState.user && <Login />} />
+          <Route path='/create-new-chat' element={<AuthenticatedRoute><CreateNewChat /></AuthenticatedRoute>} />
+          <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
+          <Route path='/new-team' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/edit-team-information' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/add-remove-members' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>

@@ -14,9 +14,9 @@ export interface UserData {
   lastName: string,
   email: string,
   phoneNumber: string,
-  teams?: object | null,
+  myTeams?: object | null,
   profilePhoto: string,
-  channels?: { [key: string]: string } | null,
+  myChannels?: { [key: string]: string } | null,
 }
 
 const AppContext = createContext<UserState>({

@@ -19,21 +19,6 @@ export const MSG_NAMES_LENGTH = 'Must be 4 to 32 characters';
 export const MSG_EMAIL_INVALID = 'Invalid email format';
 export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 
-//post validations
-export const POST_TITLE_LENGTH_MIN = 16;
-export const POST_TITLE_LENGTH_MAX = 64;
-export const POST_CONTENT_LENGTH_MIN = 32;
-export const POST_CONTENT_LENGTH_MAX = 8192;
-
-//constants for latest and more comment
-export const LATEST_COUNT = 9;
-export const MOST_COMMENT_COUNT = 9;
-
-//sort by
-export const ASCENDING = 'ascending';
-export const DESCENDING = 'descending';
-export const THE_LATEST = 'latest';
-export const THE_MOST_COMMENT = 'mostComment';
-export const THE_MOST_LIKED = 'theMostLiked';
-export const TITLE_SORT_BY_A_Z = 'titleAZ';
-export const TITLE_SORT_BY_Z_A = 'titleZA';
+//team validations
+export const TEAM_NAME_LENGTH_MIN: number = 3;
+export const TEAM_NAME_LENGTH_MAX: number = 40;
