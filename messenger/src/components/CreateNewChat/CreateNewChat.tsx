@@ -12,6 +12,7 @@ const CreateNewChat = () => {
     const navigate = useNavigate();
 
     const onCreate = () => {
+        if(userData === null) return;
         addChannel(userData.handle)
         .then(result => {
             navigate('/chat', { state: { channelId: result.id } });

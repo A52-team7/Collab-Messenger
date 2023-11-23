@@ -22,3 +22,6 @@ export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 //team validations
 export const TEAM_NAME_LENGTH_MIN: number = 3;
 export const TEAM_NAME_LENGTH_MAX: number = 40;
+
+//type of message
+export const USER_MESSAGE = 'user message';

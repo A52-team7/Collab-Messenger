@@ -1,4 +1,4 @@
-import { ref, push, get, query, equalTo, orderByChild, update, DataSnapshot } from 'firebase/database';
+import { ref, push, get, query, equalTo, orderByChild, update, DataSnapshot, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 
 
@@ -25,24 +25,24 @@ export const fromChannelsDocument = (snapshot: DataSnapshot): Channel[] => {
     });
 }
 
-export const addChannel = (handle: string, teamId?: string): Promise<any> => {
+export const addChannel = (handle: string, teamId: string | null = null) => {
 
     return push(
         ref(db, 'channels'),
         {
             creator: handle,
-            // toTeam: teamId,
+            toTeam: teamId,
             createdOn: Date.now(),
         },
     )
         .then(result => {
-
+            if(result.key === null) return;
             return getChannelById(result.key);
         })
         .catch(e => console.log(e));
 };
 
-export const getChannelById = (id: string): Promise<any> => {
+export const getChannelById = (id: string) => {
 
     return get(ref(db, `channels/${id}`))
         .then((result: DataSnapshot) => {
@@ -107,4 +107,25 @@ export const addMemberToChannel = (channelId: string, memberId: string) => {
     return update(ref(db), updateChannelMembers);
 }
 
+export const addTitleToChannel = (channelId: string, title: string) => {
+    const updateChannelTitle: {[key: string]: string} = {};
+    updateChannelTitle[`/channels/${channelId}/title`] = title;
+
+    return update(ref(db), updateChannelTitle);
+}
+
+
+export interface MessagesListener{(messages: string[]): void}
+
+export const getChannelMessagesLive = (channelId: string, listener: MessagesListener)=>{
+
+  return onValue(ref(db ,`channels/${channelId}/messages`), (snapshot) => {
+    if(!snapshot.exists()) return[];
+    console.log(snapshot);
+    
+    const messages= Object.keys(snapshot.val());
+    
+    return listener(messages);
+  })
+}
 
