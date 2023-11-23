@@ -49,7 +49,7 @@ const UsersNavSearch = (): JSX.Element => {
       <Input
         pr={10}
         bg={'grey'}
-        placeholder="Search for username / names / email"
+        placeholder="Search by username / names / email"
         value={searchValue}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
@@ -62,7 +62,8 @@ const UsersNavSearch = (): JSX.Element => {
           maxH={'200px'}
           w={'inherit'}
           overflowY={'scroll'}
-          bg={'white'}
+          bg={'gray.100'}
+          zIndex={99}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
