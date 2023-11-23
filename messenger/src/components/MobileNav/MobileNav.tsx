@@ -22,7 +22,7 @@ import {
   FiChevronDown,
 } from 'react-icons/fi';
 import { HamburgerIcon } from '@chakra-ui/icons'
-import Search from '../Search/Search';
+import UsersNavSearch from '../UsersNavSearch/UsersNavSearch';
 
 interface LinksUserOptionsType {
   name: string,
@@ -60,7 +60,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
     <Flex
       ml={{ base: 0, md: 60 }}
       px={{ base: 4, md: 0 }}
-      height='20'
+      height={'14'}
       alignItems='center'
       bg={'darkBlue'}
       borderBottomWidth='1px'
@@ -68,6 +68,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
       justifyContent={{ base: 'space-between', md: 'space-between', lg: 'space-between' }}
       {...rest}>
       <IconButton
+        mr={1}
         color={'white'}
         _hover={{ color: 'black', backgroundColor: 'gray.300' }}
         display={{ base: 'flex', md: 'none' }}
@@ -77,19 +78,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
         icon={<HamburgerIcon />}
       />
 
-      <Text
-        display={{ base: 'flex', md: 'none' }}
-        mx={3}
-        color={'grey'}
-        fontSize='2xl'
-        fontFamily='monospace'
-        fontWeight='bold'>
-        Bookworm&apos;s Sanctuary
-      </Text>
-
       <Box m={'auto'} w={{ base: '100%', md: '100%', lg: '80%' }}>
         <Box ml={{ base: 0, md: 10, lg: 5 }}>
-          <Search />
+          <UsersNavSearch />
         </Box>
       </Box>
 

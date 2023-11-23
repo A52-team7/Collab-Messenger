@@ -34,6 +34,10 @@ export const updateUserData = (handle: string, key: string, value: string): Prom
   return update(ref(db), { [`users/${handle}/${key}`]: `${value}` });
 }
 
+export const getAllUsersData = (): Promise<DataSnapshot> => {
+  return get(query(ref(db, 'users')));
+};
+
 export const getAllUsers = (): Promise<string[]> => {
   return get(ref(db, 'users'))
     .then((snapshot) => {
