@@ -64,6 +64,7 @@ const UsersNavSearch = (): JSX.Element => {
           overflowY={'scroll'}
           bg={'gray.100'}
           zIndex={99}
+          cursor={'pointer'}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
