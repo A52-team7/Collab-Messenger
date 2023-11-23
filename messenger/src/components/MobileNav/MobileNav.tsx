@@ -92,7 +92,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                 <HStack>
                   <Avatar
                     bg={'white'}
-                    size={'lg'}
+                    size={'md'}
                     src={userData.profilePhoto} />
                   <VStack
                     display={{ base: 'none', md: 'flex' }}
