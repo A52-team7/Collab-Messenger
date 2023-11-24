@@ -17,6 +17,7 @@ import { RiTeamFill } from "react-icons/ri";
 
 
 import UserTeams from '../UserTeams/UserTeams'
+import CreateNewChat from '../CreateNewChat/CreateNewChat';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -53,8 +54,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       </Flex>
       <Box minW={'210px'}>
         <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
-        <UserTeams />
-        <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} />
+        <UserTeams/>
+        {/* <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} /> */}
+        <CreateNewChat/>
       </Box>
     </Box >
   );
