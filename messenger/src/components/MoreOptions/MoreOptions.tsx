@@ -8,22 +8,21 @@ import {
   Button,
   Stack,
   Flex,
-} from '@chakra-ui/react'
-
-import { BsThreeDotsVertical, BsChatSquareQuote } from 'react-icons/bs'
-import { RiRestartLine, RiFileShredLine } from 'react-icons/ri'
+} from '@chakra-ui/react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect,useState } from 'react';
-import AppContext, {UserState} from '../../context/AppContext'
-import {Team} from '../Team/Team'
-import {getTeamById} from '../../services/teams.service'
+import AppContext, {UserState} from '../../context/AppContext';
+import {Team} from '../CreateTeam/CreateTeam';
+import {getTeamById} from '../../services/teams.service';
 import { FiEdit3, FiUsers, FiXOctagon   } from "react-icons/fi";
+import {TEAM_MORE_OPTIONS} from '../../common/constants'
 
-interface IdTeam{
+export interface IdTeam{
   id:string
 }
 
-const TeamMoreOptions = ({id}: IdTeam) => {
+const MoreOptions = ({id}: IdTeam) => {
 
   const [team, setTeam] = useState<Team>({
     id: '',
@@ -43,13 +42,22 @@ const TeamMoreOptions = ({id}: IdTeam) => {
   const { userData } = useContext<UserState>(AppContext);
   if(userData === null) return;
 
+
+  const addChannel = () =>{
+
+
+  }
+
+
   const addOrRemoveNewMember =() => {
     if(userData.handle === team.owner){
-    return navigate('/add-remove-members')
-    }else{
+    return navigate('/add-remove-members', { state: id })
+    }else{ 
       return alert(`Only the team's owner should be able to add to or remove other users from the team`)
     }
   }
+
+
 
   const removeTeam = () =>{
 // soon
@@ -70,6 +78,17 @@ const TeamMoreOptions = ({id}: IdTeam) => {
           <PopoverArrow />
           <PopoverBody>
             <Stack>
+              {}
+            <Button
+                w="194px"
+                variant="ghost"
+                rightIcon={<FiUsers  />}
+                justifyContent="space-between"
+                fontWeight="normal"
+                fontSize="sm"
+                onClick={addChannel}>
+                Add channel
+              </Button>
               <Button
                 w="194px"
                 variant="ghost"
@@ -109,4 +128,4 @@ const TeamMoreOptions = ({id}: IdTeam) => {
   )
 }
 
-export default TeamMoreOptions;
+export default MoreOptions;

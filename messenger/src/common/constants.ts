@@ -25,3 +25,12 @@ export const TEAM_NAME_LENGTH_MAX: number = 40;
 
 //type of message
 export const USER_MESSAGE = 'user message';
+
+//more option menu
+export const TEAM_MORE_OPTIONS = [
+    {title: 'Add channel', function:'addChannel', icon: 'FiUsers'},
+    {title:'Add/Remove members', function: 'addOrRemoveNewMember', icon: 'FiUsers'},
+    {title: 'Edit team information', function: 'editTeamInformation', icon: 'FiEdit3'},
+    {title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon'}
+]
+export const CHAT_MESSAGE_MORE_OPTIONS=[];

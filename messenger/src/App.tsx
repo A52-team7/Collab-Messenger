@@ -4,7 +4,7 @@ import AppContext, { UserState } from './context/AppContext';
 import Body from './hoc/Body/Body';
 import Home from './views/Home/Home';
 import Register from './components/Register/Register';
-import Team from './components/Team/Team';
+import CreateTeam from './components/CreateTeam/CreateTeam';
 import Login from './components/Login/Login';
 import NoPageFound from './views/NoPageFound/NoPageFound';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -66,9 +66,9 @@ function App(): JSX.Element {
           <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
-          <Route path='/new-team' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
-          <Route path='/edit-team-information' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
-          <Route path='/add-remove-members' element={<AuthenticatedRoute><Team /></AuthenticatedRoute>} />
+          <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
+          <Route path='/edit-team-information' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
+          <Route path='/add-remove-members' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>
