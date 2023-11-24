@@ -40,6 +40,18 @@ const components = {
       size: 'sm'
     }
   },
+  Drawer: {
+    parts: ["dialog"],
+    baseStyle: {
+      dialog: {
+        transition: {
+          when: "beforeChildren",
+          staggerChildren: 0.1,
+          ease: "easeInOut", // Customize the transition easing here
+        },
+      },
+    },
+  },
 }
 
 const theme = extendTheme({ colors }, { components });

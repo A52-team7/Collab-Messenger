@@ -4,21 +4,25 @@ import NavItem from '../NavItem/NavItem';
 import {
   Box,
   Flex,
-  Text,
+  Button,
   CloseButton,
   useColorModeValue,
-  Image,
+  Heading
 } from '@chakra-ui/react';
 import {
   FiHome,
 } from 'react-icons/fi';
+import { BsChatTextFill } from "react-icons/bs";
+import { RiTeamFill } from "react-icons/ri";
+
+
 import UserTeams from '../UserTeams/UserTeams'
 import CreateNewChat from '../CreateNewChat/CreateNewChat';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Team', icon: FiHome, path: '/new-team' },
-  {name:'Create new chat', icon: FiHome, path: '/create-new-chat'},
+  { name: 'Create new chat', icon: FiHome, path: '/create-new-chat' },
 ];
 
 interface SidebarContentProps {
@@ -30,27 +34,30 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
   const { userData } = useContext(AppContext);
   return (
     <Box
-      transition='3s ease'
+      transition={'3s ease'}
       bg={'blue'}
-      borderRight='1px'
+      borderRight={'1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
-      pos='fixed'
-      h='full'
+      w={{ base: 'fit-content', md: 60 }}
+      pos={'fixed'}
+      h={'full'}
       {...rest}>
-      <Flex alignItems='center' justify="center">
-        <Image alt='logo' w={"150px"} alignItems='center' />
+      <Box position={'absolute'} right={0}>
+        <CloseButton display={{ md: 'none' }} onClick={onClose} />
+      </Box>
+      <Flex alignItems={'center'} justifyContent={'flex-end'}>
+        <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading>
       </Flex>
-      <Flex h='20' alignItems='center' mx='4' justifyContent='space-between'>
-        <Text fontSize='23' fontFamily='monospace' fontWeight='bold' color={'grey'}>
-          COLLAB-MESSANGER
-        </Text>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+      <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
+        <Button borderRadius={'50%'} px={3} py={6}><BsChatTextFill size={30} /></Button>
+        <Button rounded={'xl'} px={3} py={6}><RiTeamFill size={30} /></Button>
       </Flex>
-      <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
-      <UserTeams/>
-      {/* <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} /> */}
-      <CreateNewChat/>
+      <Box minW={'210px'}>
+        <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
+        <UserTeams/>
+        {/* <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} /> */}
+        <CreateNewChat/>
+      </Box>
     </Box >
   );
 }
