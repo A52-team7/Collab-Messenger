@@ -15,7 +15,7 @@ import {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, {UserState} from '../../context/AppContext'; 
 import {TEAM_NAME_LENGTH_MIN, TEAM_NAME_LENGTH_MAX} from '../../common/constants';
-import {getTeamByName, createTeam } from '../../services/teams.service'
+import {getTeamByName, createTeam, updateTeamChannel } from '../../services/teams.service'
 import {updateUserTeams, userChannel} from '../../services/users.service';
 import {addChannel} from '../../services/channels.service';
 import AddUsersSearch from '../AddUsersSearch/AddUsersSearch';
@@ -109,8 +109,9 @@ const saveNewTeam = () =>{
     })
     updateUserTeams(userData.handle, team.id)
     addChannel(userData.handle, team.id, 'General')
-    .then(channelId =>{
-      Object.keys(team.members).forEach((member: string) => userChannel(channelId.id, member))
+    .then(channel =>{
+      Object.keys(team.members).forEach((member: string) => userChannel(channel.id, member))
+      updateTeamChannel(team.id, channel.id)
     })
   }).catch(e => console.log(e))
 }

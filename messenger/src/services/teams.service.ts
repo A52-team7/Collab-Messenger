@@ -16,7 +16,8 @@ export const createTeam = (name: string, handle: string, members: object, descri
             if(result.key === null) return;
 
             return getTeamById(result.key);
-        });
+        })
+        .catch(e => console.log(e))
 };
 
 export const getTeamById = (id: string) => {
@@ -32,7 +33,21 @@ export const getTeamById = (id: string) => {
         });
 };
 
-export const getTeamByName = (name: string | null) => {
+export const getTeamByName = (name: string) => {
     return get(query(ref(db, 'teams'), orderByChild('name'), equalTo(name)))
 };
 
+export const updateTeamChannel = (idTeam: string, idChannel: string) => {
+    return update(ref(db), {[`teams/${idTeam}/channels/${idChannel}`]: true} )
+}
+
+export interface ChannelsListener{(channels: string[]): void}
+
+export const getTeamChannelsLive = (id: string, listener: ChannelsListener)=>{
+
+    return onValue(ref(db ,`teams/${id}/channels`), (snapshot) => {
+      if(!snapshot.exists()) return[];
+      const channels= Object.keys(snapshot.val());
+      return listener(channels)
+    })
+  }

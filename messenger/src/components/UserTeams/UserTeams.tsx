@@ -12,7 +12,7 @@ import {
   Container,
   Heading,
 } from '@chakra-ui/react';
-import TeamMoreOptions from '../MoreOptions/MoreOptions'
+import MoreOptions from '../MoreOptions/MoreOptions'
 import AppContext, {UserState} from '../../context/AppContext'
 import {getUserTeamsLive} from '../../services/users.service'
 import {getTeamById} from '../../services/teams.service'
@@ -20,6 +20,7 @@ import {Team} from '../CreateTeam/CreateTeam'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { FiPlusSquare } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
+import TeamChannels from '../TeamChannels/TeamChannels'
 
 const UserTeams = () => {
   const { userData } = useContext<UserState>(AppContext);
@@ -27,22 +28,19 @@ const UserTeams = () => {
   const [myTeam, setMyTeam] = useState<Team[]>([])
 
   useEffect(() => {
-    if(userData === null) return;
-   
+    if(userData === null) return; 
+    
     getUserTeamsLive(userData.handle, (data: string[]) => {
-    console.log(data, "data")
     setMyTeam([])
      data.forEach((id: string) => {
       getTeamById(id)
-      .then((el: Team) => {
-        console.log(el)
-        setMyTeam((prevMyTeam) => [...prevMyTeam, el])
+      .then((elTeam: Team) => {
+        setMyTeam((prevMyTeam) => [...prevMyTeam, elTeam])
+        })
     })
-     })
-    }
-    )
-    },[userData])
-
+  })
+},[userData])
+    
     return (
         <Flex
           justify={'center'}
@@ -50,11 +48,11 @@ const UserTeams = () => {
           <Container>
             <HStack>
             <Heading as='h2' size='lg'>My Teams</Heading>
-            <Button variant='ghost' onClick={() => navigate('/new-team', state)}><FiPlusSquare /></Button>
+            <Button variant='ghost' onClick={() => navigate('/new-team')}><FiPlusSquare /></Button>
             </HStack>
             <Accordion allowMultiple width="100%" maxW="lg" rounded="lg">
-            {myTeam.map((team: Team) =>
-                <AccordionItem key={team.id}>
+            {myTeam.length > 0 ? myTeam.map((team: Team) =>{
+                return (<AccordionItem key={team.id}>
                 <HStack>    
                 <AccordionButton
                   display="flex"
@@ -65,16 +63,14 @@ const UserTeams = () => {
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>
                 <Tooltip hasArrow label='More options' bg='gray.300' color='black'>
-                  <TeamMoreOptions id={team.id} />
+                  <MoreOptions id={team.id} />
                 </Tooltip>
                  </HStack>
                 <AccordionPanel pb={4}>
-                  <Text color="black">
-                    Channels
-                  </Text>
+                  <TeamChannels id={team.id} />
                 </AccordionPanel>
               </AccordionItem>
-            )}
+              )}) : <Text>No Teams</Text>}
             </Accordion>
             </Container>
             </Flex>
