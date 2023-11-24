@@ -1,19 +1,25 @@
-import { UnorderedList } from "@chakra-ui/react";
+import { Box, UnorderedList } from "@chakra-ui/react";
 import OneMessage from "../OneMessage/OneMessage";
 
-interface Message {
+export interface Message {
     id: string;
     content: string;
     author: string;
     createdOn: Date;
 }
 
-const MessagesList = (messages: Message[]) => {
+interface MessagesListProps{
+    messages: Message[];
+}
+
+const MessagesList = ({messages}: MessagesListProps): JSX.Element => {    
     return (
         <>
-            <UnorderedList styleType = 'none'>
-            {messages.map((message) => (
-                <OneMessage key={message.id} message={message.content}/>
+            <UnorderedList styleType = 'none' w={'70vw'}>
+            {messages.map((message: Message) => (
+                <Box key={message.id}>
+                    <OneMessage {...message}/>
+                </Box>
             ))}
             </UnorderedList>
         </>

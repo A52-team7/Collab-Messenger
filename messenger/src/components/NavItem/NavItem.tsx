@@ -19,8 +19,10 @@ const NavItem = ({ icon, name, path }: NavItemProps) => {
       <Flex
         align='center'
         color={'grey'}
-        p='4'
-        mx='4'
+        mt={3}
+        py={3}
+        pl={3}
+        mx={4}
         borderRadius='lg'
         role='group'
         cursor='pointer'

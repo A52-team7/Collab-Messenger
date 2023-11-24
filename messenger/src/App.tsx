@@ -7,12 +7,13 @@ import Register from './components/Register/Register';
 import CreateTeam from './components/CreateTeam/CreateTeam';
 import Login from './components/Login/Login';
 import NoPageFound from './views/NoPageFound/NoPageFound';
-import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
-import { useAuthState} from 'react-firebase-hooks/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
+import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
 import CreateNewChat from './components/CreateNewChat/CreateNewChat';
 import Chat from './components/Chat/Chat';
+import NewChat from './components/NewChat/NewChat';
 // import UserDetails from './view/UserDetails/UserDetails';
 
 function App(): JSX.Element {
@@ -27,7 +28,7 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
-  //console.log('I AM RERENDERING!!!');
+  console.log('THIS IS APP.TSX AND I HAVE RERENDERED!!!');
 
   // update the user in the app state to match the one retrieved from the hook above
   if (appState.user !== userAuth) {
@@ -62,7 +63,7 @@ function App(): JSX.Element {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={!appState.user && <Register />} />
           <Route path='/login' element={!appState.user && <Login />} />
-          <Route path='/create-new-chat' element={<AuthenticatedRoute><CreateNewChat /></AuthenticatedRoute>} />
+          <Route path='/new-chat' element={<AuthenticatedRoute><NewChat /></AuthenticatedRoute>} />
           <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}

@@ -1,24 +1,26 @@
 import {
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
-    Stack,
-    useColorModeValue,
-    Tag,
-    TagLabel,
-    TagCloseButton,
-    HStack,
-  } from '@chakra-ui/react'
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  useColorModeValue,
+  Tag,
+  TagLabel,
+  TagCloseButton,
+} from '@chakra-ui/react'
+import { useState, useContext } from 'react';
 import {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, {UserState} from '../../context/AppContext'; 
 import {TEAM_NAME_LENGTH_MIN, TEAM_NAME_LENGTH_MAX} from '../../common/constants';
 import {getTeamByName, createTeam } from '../../services/teams.service'
-import {getAllUsers, updateUserTeams, userChannel} from '../../services/users.service';
+import {updateUserTeams, userChannel} from '../../services/users.service';
 import {addChannel} from '../../services/channels.service';
+import { updateUserTeams } from '../../services/users.service';
+import AddUsersSearch from '../AddUsersSearch/AddUsersSearch';
 
 export interface Team {
   id: string,
@@ -39,7 +41,7 @@ const CreateTeam = () => {
     members: {},
     description: '',
   }) 
-  const [searchValue, setSearchValue] = useState<string>('')
+  
   const navigate = useNavigate();
 
 const updateNewTeam =(field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>{
@@ -58,29 +60,14 @@ const updateNewTeam =(field: string) => (e: React.ChangeEvent<HTMLInputElement>)
   }
 }
 
-const updateNewMember = (event: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-  if ((event as React.KeyboardEvent).key === 'Enter' || event.type === 'click') {
-    const searchItem = searchValue.trim();
-    if(userData === null) return alert('Please login') ;
-    if(userData.handle === searchItem){
-      return alert('You try to add your user')
-    }
-
-    getAllUsers()
-    .then(allUsersName => {
-    if(allUsersName.includes(searchItem)){
-      const newMembers = {...teamForm.members};
-      newMembers[searchItem] = true;
-    setTeamForm({
-      ...teamForm,
-      members: newMembers
-    })
-    setSearchValue('')
-    }else{
-      return alert(`Not found this user ${searchItem}`)
-    }
-    })
-}}
+const updateNewMember = (user: string) => {
+  const newMembers = { ...teamForm.members };
+  newMembers[user] = true;
+  setTeamForm({
+    ...teamForm,
+    members: newMembers
+  })
+}
 
 const removeTeamMembers = (member: string) =>{
   const updateMembers = {...teamForm.members}
@@ -160,23 +147,8 @@ const saveNewTeam = () =>{
             </FormControl>
             <FormControl id="addMembers" isRequired>
               <FormLabel>Add members</FormLabel>
-              <HStack>
-               <Input
-                placeholder="Find members"
-                _placeholder={{ color: 'gray.500' }}
-                value = {searchValue}
-                onChange={(e)=>setSearchValue(e.target.value)}
-                onKeyDown={updateNewMember} />
-              <Button
-                bg={'blue'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}
-                onClick={updateNewMember}>
-                Add
-              </Button>
-              </HStack>
+              {/*HERE IS THE INPUT FOR ADDING USERS!*/}
+          <AddUsersSearch updateNewMember={updateNewMember} />
               <Flex direction={'row'}>
               {Object.keys(teamForm.members).map((member) => (
                 <Tag key={member} bg={'baseBlue'} colorScheme="blue" w={'fit-content'}>

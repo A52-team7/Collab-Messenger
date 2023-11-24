@@ -4,22 +4,19 @@ import {
     Input,
     Button,
     useColorModeValue,
-    useEditable,
-    useStatStyles,
   } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
-import { addMemberToChannel, channelMessage, getChannelById } from '../../services/channels.service';
+import { userMessage } from '../../services/users.service';
+import { channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
-import MessagesList from '../MessagesList/MessagesList';
-  
+import MessagesList, { Message } from '../MessagesList/MessagesList';
+import { USER_MESSAGE } from '../../common/constants';
   
   
   
   const Chat = (): JSX.Element => {
-
     
   const location = useLocation();
 
@@ -27,88 +24,101 @@ import MessagesList from '../MessagesList/MessagesList';
 
   const {userData} = useContext(AppContext);
 
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+
+  // useEffect(() => {
+  //   getChannelById(channelId)
+  //   .then(result => {
+  //       Promise.all(
+  //           Object.keys(result.messages).map((message) => {
+  //               return getMessageById(message)
+  //               .then(res => res)
+  //               .catch(e =>console.error(e));
+  //           })
+  //       ).then(channelMessages => {
+  //           setMessages([...channelMessages]);          
+  //       })
+  //       .catch(error => console.error(error.message));
+  //   }).catch(e =>console.error(e));
+  // }, [channelId]);  
 
   useEffect(() => {
+    if(userData === null) return;
+   
+    getChannelMessagesLive(channelId, (data: string[]) => {
+    console.log(data, "data")
     getChannelById(channelId)
-    .then(result => {
-        Promise.all(
-            Object.keys(result.messages).map((message) => {
-                return getMessageById(message);
-            })
-        ).then(channelMessages => {
-            setMessages([...channelMessages]);
-            console.log(channelMessages);
-            
-        })
-        .catch(error => console.error(error.message));
-
-    }).catch(e =>console.error(e));
-  }, [channelId])
-  
-  const handleKeyDownForUser = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const userHandle = (event.target as HTMLInputElement).value.trim();
-      if (userHandle) {
-        getUserByHandle(userHandle)
-        .then(result => {
-            userChannel(channelId, result.val().handle);
-            addMemberToChannel(channelId, result.val().handle);            
-        })
-        .catch(e =>console.error(e));
-        (event.target as HTMLInputElement).value = '';
-      }
+      .then(result => {
+          Promise.all(
+              Object.keys(result.messages).map((message) => {
+                  return getMessageById(message)
+                  .then(res => res)
+                  .catch(e =>console.error(e));
+              })
+          ).then(channelMessages => {
+              setMessages([...channelMessages]);          
+          })
+          .catch(error => console.error(error.message));
+      }).catch(e =>console.error(e));
     }
-  };
+    )
+    console.log(messages, "user")
+    },[channelId])
+  
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if(userData === null) return;
     if (event.key === 'Enter') {
         const message = (event.target as HTMLInputElement).value.trim();
         if (message) {
-          addMessage(message, userData.handle, channelId)
+          addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
               channelMessage(channelId, result.id);
               userMessage(result.id, userData.handle);          
           })
           .catch(e =>console.error(e));
           (event.target as HTMLInputElement).value = '';
+          setNewMessage('');
         }
       }
   }
 
-  
+  const updateNewMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value)
+  }
+
+  const onSendMessage = () => {
+    if(userData === null) return;
+    addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
+          .then(result => {
+              channelMessage(channelId, result.id);
+              userMessage(result.id, userData.handle);          
+          })
+          .catch(e =>console.error(e));
+    setNewMessage('');
+  }
+
       return (
           <Flex
             align={'center'}
             direction={'column'}
             justify={'center'}
             py={12}>
-            <Flex 
-              boxShadow={'2xl'}
-              bg={useColorModeValue('white', 'gray.700')}
-              rounded={'xl'}
-              w={'60vw'}
-              p={10}
-              spacing={8}
-              align={'center'}>
-              <Input
-                  bg={'grey'}
-                  placeholder="Search for Users"
-                  onKeyDown={handleKeyDownForUser} />
-              <Button
-                  ml={5}
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  w={'fit-content'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}>
-                  Add
-                </Button>
-            </Flex>
-            <Stack h={'50vh'}>
-                {/* <MessagesList messages={messages}/> */}
+            <Stack
+            maxH={'60vh'}
+            w={'inherit'}
+            overflowY={'scroll'}
+            css={{
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+              'msOverflowStyle': 'none',  /* IE and Edge */
+              'scrollbarWidth': 'none',  /* Firefox */
+            }}>
+              {messages.length > 0 &&
+                <MessagesList {...{messages}}/>
+              }              
             </Stack>
             <Stack
               boxShadow={'2xl'}
@@ -117,11 +127,14 @@ import MessagesList from '../MessagesList/MessagesList';
               w={'60vw'}
               p={10}
               spacing={8}
-              align={'center'}>
+              align={'center'}
+              position= {'fixed'}
+              bottom= {'0'}>
               <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'}>
                 <Input
                   type={'text'}
                   placeholder={'Write something...'}
+                  value={newMessage}
                   color={useColorModeValue('gray.800', 'gray.200')}
                   bg={useColorModeValue('gray.100', 'gray.600')}
                   rounded={'full'}
@@ -131,6 +144,7 @@ import MessagesList from '../MessagesList/MessagesList';
                     outline: 'none',
                   }}
                   onKeyDown={handleKeyDownForMessage}
+                  onChange={updateNewMessage}
                 />
                 <Button
                   bg={'blue'}
@@ -138,7 +152,8 @@ import MessagesList from '../MessagesList/MessagesList';
                   color={'white'}
                   flex={'1 0 auto'}
                   _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}>
+                  _focus={{ bg: 'blue.500' }}
+                  onClick={onSendMessage}>
                   Send
                 </Button>
               </Stack>

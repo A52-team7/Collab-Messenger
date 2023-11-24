@@ -21,7 +21,7 @@ export const fromMessagesDocument = (snapshot: DataSnapshot): Message[] => {
     });
 }
 
-export const addMessage = (content: string, handle: string, channelId: string): Promise<any> => {
+export const addMessage = (content: string, handle: string, channelId: string, isTech: boolean, typeOfMessage: string) => {
 
     return push(
         ref(db, 'messages'),
@@ -29,17 +29,19 @@ export const addMessage = (content: string, handle: string, channelId: string): 
             author: handle,
             toChannel: channelId,
             content,
-            createdOn: Date.now()
+            createdOn: Date.now(),
+            techMessage: isTech,
+            typeOfMessage,
         },
     )
         .then(result => {
-
+            if(result.key === null) return;
             return getMessageById(result.key);
         })
         .catch(e => console.log(e));
 };
 
-export const getMessageById = (id: string): Promise<any> => {
+export const getMessageById = (id: string) => {
 
     return get(ref(db, `messages/${id}`))
         .then(result => {
