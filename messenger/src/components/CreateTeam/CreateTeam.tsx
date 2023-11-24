@@ -10,13 +10,15 @@ import {
     Tag,
     TagLabel,
     TagCloseButton,
+    HStack,
   } from '@chakra-ui/react'
 import {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, {UserState} from '../../context/AppContext'; 
 import {TEAM_NAME_LENGTH_MIN, TEAM_NAME_LENGTH_MAX} from '../../common/constants';
 import {getTeamByName, createTeam } from '../../services/teams.service'
-import {getAllUsers, updateUserTeams} from '../../services/users.service'
+import {getAllUsers, updateUserTeams, userChannel} from '../../services/users.service';
+import {addChannel} from '../../services/channels.service';
 
 export interface Team {
   id: string,
@@ -28,7 +30,7 @@ export interface Team {
   channels?: {[id: string]: boolean} 
 }
 
-const Team = () => {
+const CreateTeam = () => {
   const { userData } = useContext<UserState>(AppContext); 
   const [teamForm, setTeamForm] = useState<Team>({
     id: '',
@@ -56,9 +58,9 @@ const updateNewTeam =(field: string) => (e: React.ChangeEvent<HTMLInputElement>)
   }
 }
 
-const updateNewMember = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  if (event.key === 'Enter') {
-    const searchItem = (event.target as HTMLInputElement).value.trim();
+const updateNewMember = (event: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  if ((event as React.KeyboardEvent).key === 'Enter' || event.type === 'click') {
+    const searchItem = searchValue.trim();
     if(userData === null) return alert('Please login') ;
     if(userData.handle === searchItem){
       return alert('You try to add your user')
@@ -66,7 +68,7 @@ const updateNewMember = (event: React.KeyboardEvent<HTMLInputElement>) => {
 
     getAllUsers()
     .then(allUsersName => {
-    if(allUsersName.includes(searchItem.toLowerCase())){
+    if(allUsersName.includes(searchItem)){
       const newMembers = {...teamForm.members};
       newMembers[searchItem] = true;
     setTeamForm({
@@ -100,6 +102,7 @@ const saveNewTeam = () =>{
   if(Object.keys(teamForm.members).length === 0){
    return alert(`Enter team members`)
   }
+  if(userData === null) return alert('Please login');
 
   getTeamByName(teamForm.name)
     .then(result => {
@@ -111,16 +114,20 @@ const saveNewTeam = () =>{
       allMembers[userData.handle] = true;
       return createTeam(teamForm.name, userData.handle, allMembers, teamForm.description);
   }).then(team => {
-    Object.keys(teamForm.members).forEach((member: string) => updateUserTeams(member, team.id));
+    Object.keys(team.members).forEach((member: string) => updateUserTeams(member, team.id));
     setTeamForm({
+      id: '',
       name: '',
       owner: '',
       members: {},
       description: '',
     })
-    if(userData === null) return alert('Please login');
     updateUserTeams(userData.handle, team.id)
-  })
+    addChannel(userData.handle, team.id, 'General')
+    .then(channelId =>{
+      Object.keys(team.members).forEach((member: string) => userChannel(channelId.id, member))
+    })
+  }).catch(e => console.log(e))
 }
 
     return (
@@ -153,19 +160,23 @@ const saveNewTeam = () =>{
             </FormControl>
             <FormControl id="addMembers" isRequired>
               <FormLabel>Add members</FormLabel>
-              {/* <Input
-                placeholder="Add members"
-                _placeholder={{ color: 'gray.500' }}
-                type="text"
-                onClick={updateNewMember}
-              /> */}
+              <HStack>
                <Input
-                placeholder="Add members"
+                placeholder="Find members"
                 _placeholder={{ color: 'gray.500' }}
                 value = {searchValue}
                 onChange={(e)=>setSearchValue(e.target.value)}
                 onKeyDown={updateNewMember} />
-
+              <Button
+                bg={'blue'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}
+                onClick={updateNewMember}>
+                Add
+              </Button>
+              </HStack>
               <Flex direction={'row'}>
               {Object.keys(teamForm.members).map((member) => (
                 <Tag key={member} bg={'baseBlue'} colorScheme="blue" w={'fit-content'}>
@@ -175,7 +186,7 @@ const saveNewTeam = () =>{
               ))}
               </Flex>
             </FormControl>
-            <FormControl id="description" isRequired>
+            <FormControl id="description">
               <FormLabel>Description</FormLabel>
               <Input
                 placeholder="Describe your team or write your motto..."
@@ -212,4 +223,4 @@ const saveNewTeam = () =>{
       ) 
 }
 
-export default Team;
+export default CreateTeam;

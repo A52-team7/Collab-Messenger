@@ -28,7 +28,6 @@ export const getTeamById = (id: string) => {
             const team = result.val();
             team.id = id;
             team.createdOn = new Date(team.createdOn);
-            console.log(team, "Team Id")
             return team;
         });
 };
