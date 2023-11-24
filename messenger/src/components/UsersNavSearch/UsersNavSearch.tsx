@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import SearchBox from '../../views/SearchBox/SearchBox';
 import { getAllUsersData } from '../../services/users.service';
 import { Input, Box } from '@chakra-ui/react';
+import AppContext from '../../context/AppContext';
 
 interface User {
   handle: string;
@@ -15,6 +16,7 @@ const UsersNavSearch = (): JSX.Element => {
   const [filteredResults, setFilteredResults] = useState<User[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = useState(false);
+  const { userData } = useContext(AppContext)
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -24,6 +26,8 @@ const UsersNavSearch = (): JSX.Element => {
       const trimmedSearchValue = value.trim().toLocaleLowerCase();
 
       const username = user.handle.toLowerCase();
+      //User must not be able to find himself in the search bar.
+      if (username === userData?.handle.toLowerCase()) return;
       const email = user.email.toLowerCase();
       const firstName = user.firstName.toLowerCase();
       const lastName = user.lastName.toLowerCase();
@@ -45,24 +49,28 @@ const UsersNavSearch = (): JSX.Element => {
   }, []);
 
   return (
-    <Box w={{ base: '200px', md: '300px', lg: '500px' }}>
-      <Input
-        pr={10}
-        bg={'grey'}
+    <Box w={{ base: '200px', md: '300px', lg: '500px' }}
+      onFocus={() => setOpen(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setOpen(false);
+        }
+      }}
+    >
+      <Input pr={10} bg={'grey'}
         placeholder="Search by username / names / email"
         value={searchValue}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
         onChange={(e) => handleSearch(e.target.value)}
       />
       {
         open && <Box
           position={'absolute'}
           h={'fit-content'}
-          maxH={'200px'}
           w={'inherit'}
-          overflowY={'scroll'}
+          maxH={'200px'}
           bg={'gray.100'}
+          overflowY={'scroll'}
+          tabIndex={-1}
           zIndex={99}
           cursor={'pointer'}
           css={{
@@ -71,7 +79,8 @@ const UsersNavSearch = (): JSX.Element => {
             },
             'msOverflowStyle': 'none',  /* IE and Edge */
             'scrollbarWidth': 'none',  /* Firefox */
-          }}>
+          }}
+        >
           {searchValue.length > 0 &&
             filteredResults?.map((user) => <SearchBox
               key={user.handle}
@@ -79,6 +88,8 @@ const UsersNavSearch = (): JSX.Element => {
               email={user.email}
               firstName={user.firstName}
               lastName={user.lastName}
+              setOpen={setOpen}
+              setSearchValue={setSearchValue}
             />)}
         </Box>
       }

@@ -41,15 +41,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       pos={'fixed'}
       h={'full'}
       {...rest}>
-      <Flex alignItems={'flex-end'} mx='4' justifyContent={'flex-end'}>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-      </Flex>
+      <Box position={'absolute'} right={0}>
+        <CloseButton display={{ md: 'none' }} onClick={onClose} />
+      </Box>
       <Flex alignItems={'center'} justifyContent={'flex-end'}>
         <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading>
       </Flex>
       <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
-        <Button ><BsChatTextFill size={30} /></Button>
-        <Button ><RiTeamFill size={30} /></Button>
+        <Button borderRadius={'50%'} px={3} py={6}><BsChatTextFill size={30} /></Button>
+        <Button rounded={'xl'} px={3} py={6}><RiTeamFill size={30} /></Button>
       </Flex>
       <Box minW={'210px'}>
         <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
