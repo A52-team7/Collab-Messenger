@@ -1,6 +1,6 @@
 import { Button, Flex, Stack } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
-import { addChannel, addMemberToChannel, getChannelById, getUserChannelsLive } from '../../services/channels.service';
+import { addChannel, addMemberToChannel, addTitleToChannel, getChannelById, getUserChannelsLive } from '../../services/channels.service';
 import { useContext, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { userChannel } from '../../services/users.service';
@@ -49,10 +49,17 @@ const CreateNewChat = () => {
         if(userData === null) return;
         addChannel(userData.handle)
         .then(result => {
-            navigate('/chat', { state: { channelId: result.id } });
             userChannel(result.id, userData.handle);
-            return addMemberToChannel(result.id, userData.handle);
+            addMemberToChannel(result.id, userData.handle);
+            return result;
         })
+        .then(result => {
+            addTitleToChannel(result.id, 'New chat');
+            return result;
+          })
+        .then(result => navigate('/new-chat', { state: { channelId: result.id } })
+        )
+        .catch(error => console.error(error.message));
     }
 
     return (

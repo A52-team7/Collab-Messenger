@@ -6,8 +6,8 @@ import {
     useColorModeValue,
   } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
-import { addMemberToChannel, addTitleToChannel, channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
+import { userMessage } from '../../services/users.service';
+import { channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
@@ -25,9 +25,6 @@ import { USER_MESSAGE } from '../../common/constants';
   const {userData} = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isVisible, setIsVisible] = useState(true);
-  const [newTitle, setNewTitle] = useState('');
-  const [newUser, setNewUser] = useState('');
   const [newMessage, setNewMessage] = useState('');
 
   // useEffect(() => {
@@ -69,32 +66,6 @@ import { USER_MESSAGE } from '../../common/constants';
     console.log(messages, "user")
     },[channelId])
   
-  const handleKeyDownForTitle = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const title = (event.target as HTMLInputElement).value.trim();
-      if (title) {
-        addTitleToChannel(channelId, title);
-        (event.target as HTMLInputElement).value = '';
-        setNewTitle('');
-      }
-    }
-  };
-
-  const handleKeyDownForUser = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const userHandle = (event.target as HTMLInputElement).value.trim();
-      if (userHandle) {
-        getUserByHandle(userHandle)
-        .then(result => {
-            userChannel(channelId, result.val().handle);
-            addMemberToChannel(channelId, result.val().handle);            
-        })
-        .catch(e =>console.error(e));
-        (event.target as HTMLInputElement).value = '';
-        setNewUser('');
-      }
-    }
-  };
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if(userData === null) return;
@@ -113,35 +84,8 @@ import { USER_MESSAGE } from '../../common/constants';
       }
   }
 
-  const onVisible = () => {
-    setIsVisible(false);
-  }
-
-  const updateNewTitle= (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(e.target.value)
-  }
-
-  const updateNewUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewUser(e.target.value)
-  }
-
   const updateNewMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value)
-  }
-
-  const onAddTitle = () => {
-    addTitleToChannel(channelId, newTitle);
-    setNewTitle('');
-  }
-
-  const onAddUser = () => {
-    getUserByHandle(newUser)
-        .then(result => {
-            userChannel(channelId, result.val().handle);
-            addMemberToChannel(channelId, result.val().handle);            
-        })
-        .catch(e =>console.error(e));
-    setNewUser('');
   }
 
   const onSendMessage = () => {
@@ -161,63 +105,6 @@ import { USER_MESSAGE } from '../../common/constants';
             direction={'column'}
             justify={'center'}
             py={12}>
-              {isVisible && <Flex 
-              boxShadow={'2xl'}
-              bg={useColorModeValue('white', 'gray.700')}
-              rounded={'xl'}
-              w={'60vw'}
-              pt='5'
-              pb='5'
-              pl='10'
-              pr='10'
-              align={'center'}>
-              <Input
-                  bg={'grey'}
-                  placeholder="Add title"
-                  value={newTitle}
-                  onKeyDown={handleKeyDownForTitle} 
-                  onChange={updateNewTitle}/>
-              <Button
-                  ml={5}
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  w={'fit-content'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}
-                  onClick={onAddTitle}>
-                  Add
-                </Button>
-              </Flex>
-              }
-            {isVisible && <Flex 
-              boxShadow={'2xl'}
-              bg={useColorModeValue('white', 'gray.700')}
-              rounded={'xl'}
-              w={'60vw'}
-              p={10}
-              align={'center'}>
-              <Input
-                  bg={'grey'}
-                  placeholder="Search for Users"
-                  value={newUser}
-                  onKeyDown={handleKeyDownForUser}
-                  onChange={updateNewUser} />
-              <Button
-                  ml={5}
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  w={'fit-content'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}
-                  onClick={onAddUser}>
-                  Add
-                </Button>
-            </Flex>
-            }
             <Stack
             maxH={'60vh'}
             w={'inherit'}
@@ -258,7 +145,6 @@ import { USER_MESSAGE } from '../../common/constants';
                   }}
                   onKeyDown={handleKeyDownForMessage}
                   onChange={updateNewMessage}
-                  onClick={onVisible}
                 />
                 <Button
                   bg={'blue'}
