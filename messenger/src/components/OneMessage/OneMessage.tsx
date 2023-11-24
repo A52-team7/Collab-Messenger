@@ -8,7 +8,7 @@ const OneMessage = (message: Message) => {
 
     const {userData} = useContext(AppContext);
     if(userData === null) return;
-    const flexAlignment = message.author===userData.handle ? 'flex-start': 'flex-end';
+    const flexAlignment = message.author===userData.handle ? 'flex-end' : 'flex-start';
     
 return(
     <Flex direction={'column'} justifyContent={flexAlignment}>

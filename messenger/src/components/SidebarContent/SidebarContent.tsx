@@ -13,6 +13,7 @@ import {
   FiHome,
 } from 'react-icons/fi';
 import UserTeams from '../UserTeams/UserTeams'
+import CreateNewChat from '../CreateNewChat/CreateNewChat';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -48,7 +49,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       </Flex>
       <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
       <UserTeams/>
-      <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} />
+      {/* <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} /> */}
+      <CreateNewChat/>
     </Box >
   );
 }
