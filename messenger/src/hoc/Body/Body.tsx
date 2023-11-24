@@ -26,7 +26,7 @@ const Body = ({ children }: BodyProps): JSX.Element => {
       {/* mobilenav */}
       <Box opacity={isOpen ? 0.1 : 1}>
         <MobileNav onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 60 }} p={'4'}>
+        <Box ml={{ base: 0, md: 60 }}>
           {children}
         </Box>
       </Box>
