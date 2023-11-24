@@ -6,7 +6,7 @@ import {
     useColorModeValue,
   } from '@chakra-ui/react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getUserByHandle, userChannel} from '../../services/users.service';
+import { userChannel} from '../../services/users.service';
 import { addMemberToChannel, addTitleToChannel } from '../../services/channels.service';
 import { useState } from 'react';
   
@@ -38,16 +38,12 @@ import { useState } from 'react';
   const handleKeyDownForUser = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       const userHandle = (event.target as HTMLInputElement).value.trim();
-      if (userHandle) {
-        getUserByHandle(userHandle)
-        .then(result => {
-            userChannel(channelId, result.val().handle);
-            addMemberToChannel(channelId, result.val().handle);            
-        })
-        .catch(e =>console.error(e));
+      if (userHandle) {        
+        userChannel(channelId, userHandle);
+        addMemberToChannel(channelId, userHandle);            
+        }
         (event.target as HTMLInputElement).value = '';
         setNewUser('');
-      }
     }
   };
 
@@ -71,12 +67,8 @@ import { useState } from 'react';
   }
 
   const onAddUser = () => {
-    getUserByHandle(newUser)
-        .then(result => {
-            userChannel(channelId, result.val().handle);
-            addMemberToChannel(channelId, result.val().handle);            
-        })
-        .catch(e =>console.error(e));
+        userChannel(channelId, newUser);
+        addMemberToChannel(channelId, newUser);            
     setNewUser('');
   }
 

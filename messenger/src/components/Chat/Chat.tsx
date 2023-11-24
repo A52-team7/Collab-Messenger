@@ -4,15 +4,18 @@ import {
     Input,
     Button,
     useColorModeValue,
+    Heading,
   } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { userMessage } from '../../services/users.service';
-import { channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
+import { userChannel, userMessage } from '../../services/users.service';
+import { addMemberToChannel, channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { USER_MESSAGE } from '../../common/constants';
+import UsersDrawer from '../UsersDrawer/UsersDrawer';
+import { MdMoreHoriz } from "react-icons/md";
   
   
   
@@ -26,6 +29,8 @@ import { USER_MESSAGE } from '../../common/constants';
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [title, setTitle] = useState('');
+  const [members, setMembers] = useState<string[]>([]);
 
   // useEffect(() => {
   //   getChannelById(channelId)
@@ -50,6 +55,8 @@ import { USER_MESSAGE } from '../../common/constants';
     console.log(data, "data")
     getChannelById(channelId)
       .then(result => {
+          setTitle(result.title);
+          setMembers(Object.keys(result.members));
           Promise.all(
               Object.keys(result.messages).map((message) => {
                   return getMessageById(message)
@@ -63,8 +70,9 @@ import { USER_MESSAGE } from '../../common/constants';
       }).catch(e =>console.error(e));
     }
     )
-    console.log(messages, "user")
     },[channelId])
+    console.log(title);    
+  console.log(members);
   
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -99,12 +107,34 @@ import { USER_MESSAGE } from '../../common/constants';
     setNewMessage('');
   }
 
+  const onAddMember = (user: string): void => {
+    userChannel(channelId, user);
+    addMemberToChannel(channelId, user);
+  }
+
+  const UserDrawerProps = {
+    members: members,
+    updateNewMember: onAddMember,
+    channelId: channelId
+  };
+
       return (
           <Flex
             align={'center'}
             direction={'column'}
             justify={'center'}
             py={12}>
+            <Flex w={'100%'} mb={10} mt={-10}>
+              <Flex flex={1}>
+                <Heading>{title}</Heading>
+              </Flex>
+              {members.length > 0 && 
+                <UsersDrawer {...UserDrawerProps}/>
+              }
+              <Button colorScheme='teal'>
+                <MdMoreHoriz size={30}/>
+              </Button>
+            </Flex>
             <Stack
             maxH={'60vh'}
             w={'inherit'}

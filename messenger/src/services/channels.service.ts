@@ -1,4 +1,4 @@
-import { ref, push, get, query, equalTo, orderByChild, update, DataSnapshot, onValue } from 'firebase/database';
+import { ref, push, get, query, equalTo, orderByChild, update, DataSnapshot, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 
 
@@ -107,6 +107,11 @@ export const addMemberToChannel = (channelId: string, memberId: string) => {
     return update(ref(db), updateChannelMembers);
 }
 
+export const deleteMemberFromChannel = (channelId: string, handle: string) => {
+    remove(ref(db, `channels/${channelId}/members/${handle}`));
+    remove(ref(db, `users/${handle}/myChannels/${channelId}`));
+}
+
 export const addTitleToChannel = (channelId: string, title: string) => {
     const updateChannelTitle: {[key: string]: string} = {};
     updateChannelTitle[`/channels/${channelId}/title`] = title;
@@ -140,6 +145,21 @@ export const getUserChannelsLive = (handle: string, listener: ChannelsListener)=
     const channels= Object.keys(snapshot.val());
     
     return listener(channels);
+  })
+}
+
+
+export interface MembersListener{(members: string[]): void}
+
+export const getChannelMembersLive = (channelId: string, listener: MembersListener)=>{
+
+  return onValue(ref(db ,`channels/${channelId}/members`), (snapshot) => {
+    if(!snapshot.exists()) return[];
+    console.log(snapshot);
+    
+    const members= Object.keys(snapshot.val());
+    
+    return listener(members);
   })
 }
 

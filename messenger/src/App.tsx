@@ -11,7 +11,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './config/firebaseConfig';
 import { getUserData } from './services/users.service';
 import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
-import CreateNewChat from './components/CreateNewChat/CreateNewChat';
 import Chat from './components/Chat/Chat';
 import NewChat from './components/NewChat/NewChat';
 // import UserDetails from './view/UserDetails/UserDetails';
