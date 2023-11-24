@@ -22,3 +22,12 @@ export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 //team validations
 export const TEAM_NAME_LENGTH_MIN: number = 3;
 export const TEAM_NAME_LENGTH_MAX: number = 40;
+
+//more option menu
+export const TEAM_MORE_OPTIONS = [
+    {title: 'Add channel', function:'addChannel', icon: 'FiUsers'},
+    {title:'Add/Remove members', function: 'addOrRemoveNewMember', icon: 'FiUsers'},
+    {title: 'Edit team information', function: 'editTeamInformation', icon: 'FiEdit3'},
+    {title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon'}
+]
+export const CHAT_MESSAGE_MORE_OPTIONS=[];

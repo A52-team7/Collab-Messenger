@@ -76,3 +76,12 @@ export const userChannel = (id: string, handle: string): Promise<void> => {
 
   return update(ref(db), updateUserChannel);
 }
+
+export const getUserChannelLive = (handle: string, listener: TeamsListener)=>{
+
+  return onValue(ref(db ,`users/${handle}/myChannel`), (snapshot) => {
+    if(!snapshot.exists()) return[];
+    const channel= Object.keys(snapshot.val());
+    return listener(channel)
+  })
+}
