@@ -11,7 +11,6 @@ import {
   TagLabel,
   TagCloseButton,
 } from '@chakra-ui/react'
-import { useState, useContext } from 'react';
 import {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, {UserState} from '../../context/AppContext'; 
@@ -19,7 +18,6 @@ import {TEAM_NAME_LENGTH_MIN, TEAM_NAME_LENGTH_MAX} from '../../common/constants
 import {getTeamByName, createTeam } from '../../services/teams.service'
 import {updateUserTeams, userChannel} from '../../services/users.service';
 import {addChannel} from '../../services/channels.service';
-import { updateUserTeams } from '../../services/users.service';
 import AddUsersSearch from '../AddUsersSearch/AddUsersSearch';
 
 export interface Team {

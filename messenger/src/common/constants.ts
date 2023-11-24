@@ -26,9 +26,6 @@ export const TEAM_NAME_LENGTH_MAX: number = 40;
 //type of message
 export const USER_MESSAGE = 'user message';
 
-//type of message
-export const USER_MESSAGE = 'user message';
-
 //more option menu
 export const TEAM_MORE_OPTIONS = [
     {title: 'Add channel', function:'addChannel', icon: 'FiUsers'},
