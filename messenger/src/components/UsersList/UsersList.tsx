@@ -14,7 +14,7 @@ const UsersList = ({members, id}: UserListProps): JSX.Element => {
             <UnorderedList 
             styleType = 'none' 
             w={'100%'} 
-            h={'18vh'}
+            h={'50vh'}
             overflowY={'scroll'}
             css={{
               '&::-webkit-scrollbar': {

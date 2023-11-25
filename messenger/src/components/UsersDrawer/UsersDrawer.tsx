@@ -1,9 +1,13 @@
-import { Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Stack, useDisclosure } from "@chakra-ui/react"
+import { Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Stack, Text, useDisclosure } from "@chakra-ui/react"
 import React from 'react';
 import { BsPersonFillAdd } from "react-icons/bs";
 import UsersList from "../UsersList/UsersList";
 import SearchUsers from "../SearchUsers/SearchUsers";
 import { ADD_USERS } from "../../common/constants";
+import { deleteMemberFromChannel } from "../../services/channels.service";
+import { useContext } from 'react';
+import AppContext from '../../context/AppContext';
+import RemoveUser from "../RemoveUser/RemoveUser";
 
 export interface UserDrawerProps{
     members: string[];
@@ -14,11 +18,18 @@ export interface UserDrawerProps{
 const UsersDrawer = ({members, updateNewMember, id}: UserDrawerProps): JSX.Element => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const firstField = React.useRef<HTMLElement>(null);
+
+    const {userData} = useContext(AppContext);
+
+    const onLeaveChat = () => {
+        if(userData === null) return;
+        deleteMemberFromChannel(id, userData.handle);
+    }
   
     return (
       <>
         <Button colorScheme='teal' onClick={onOpen}>
-            <BsPersonFillAdd size={30}/>
+            <BsPersonFillAdd size={30}/><Text fontSize='xl'>{members.length}</Text>
         </Button>
         <Drawer
           isOpen={isOpen}
@@ -39,6 +50,9 @@ const UsersDrawer = ({members, updateNewMember, id}: UserDrawerProps): JSX.Eleme
                 </Stack>
                 <Stack>
                     <UsersList {...{members: members, id: id}}/>
+                </Stack>
+                <Stack alignItems={'center'}>
+                    <RemoveUser onDelete={onLeaveChat} selfRemove={true}/>
                 </Stack>
             </DrawerBody>
   

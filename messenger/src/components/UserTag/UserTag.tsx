@@ -28,11 +28,6 @@ const UserTag = ({ handle, id }: UserTagProps) => {
         deleteMemberFromChannel(id, handle);
     }
 
-    const RemoveUserProps = {
-        name:displayName,
-        onDelete: onDelete,
-    };
-
     return(
         <>
         {userInfo && (
@@ -44,7 +39,7 @@ const UserTag = ({ handle, id }: UserTagProps) => {
                     mr={2}
                 />
                 <TagLabel>{displayName}</TagLabel>
-                <RemoveUser {...RemoveUserProps}/>
+                <RemoveUser name={displayName} onDelete={onDelete} selfRemove={false}/>
             </Tag>
         )}
         </>
