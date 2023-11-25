@@ -1,10 +1,10 @@
-import { Button, Flex, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
-import { addChannel, addMemberToChannel, addTitleToChannel, getChannelById } from '../../services/channels.service';
+import { getChannelById } from '../../services/channels.service';
 import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
-import { getUserChannelsLive, userChannel } from '../../services/users.service';
-import MyChatsList from '../MyChatsList/MyChatsList';
+import { getUserChannelsLive } from '../../services/users.service';
+import MyChat from '../MyChat/MyChat';
 
 export interface Channel {
     id: string;
@@ -26,7 +26,6 @@ const MyChatsSideNavBar = () => {
         if(userData === null) return;
    
         getUserChannelsLive(userData.handle, (data: string[]) => {
-            console.log(data, "data")
             Promise.all(
              data.map((id: string) => {
               return getChannelById(id)
@@ -38,10 +37,8 @@ const MyChatsSideNavBar = () => {
             })
             .catch(error => console.error(error.message));
             });
-            console.log(channels);
             
     }, [userData]);
-    console.log(channels);
     
     
 
@@ -64,7 +61,11 @@ const MyChatsSideNavBar = () => {
                 </Button>
             </Flex>
             <Stack>
-                 <MyChatsList {...{channels}}/> 
+            {channels.map((channel: Channel) => (
+                <Box key={channel.id}>
+                    <MyChat {...channel}/>
+                </Box>
+            ))}
             </Stack>           
         </Flex>
     )
