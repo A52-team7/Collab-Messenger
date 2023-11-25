@@ -4,17 +4,18 @@ import UserTag from "../UserTag/UserTag";
 
 interface UserListProps {
     members: string[];
-    id: string
+    id?: string,
+    removeChannelMembers?: (value: string) => void;
 }
 
-const UsersList = ({members, id}: UserListProps): JSX.Element => {    
+const UsersList = ({members, id, removeChannelMembers}: UserListProps): JSX.Element => {    
        
     return (
         <>
             <UnorderedList 
             styleType = 'none' 
             w={'100%'} 
-            h={'50vh'}
+            h={'31vh'}
             overflowY={'scroll'}
             css={{
               '&::-webkit-scrollbar': {
@@ -25,7 +26,7 @@ const UsersList = ({members, id}: UserListProps): JSX.Element => {
             }}>
             {members.map((member: string) => (
                 <Box key={member}>
-                    <UserTag handle={member} id={id}/>
+                    <UserTag handle={member} id={id} removeChannelMembers={removeChannelMembers}/>
                 </Box>
             ))}
             </UnorderedList>
