@@ -113,7 +113,15 @@ console.log(channelForm.members);
                   <Stack mb={5} w={'100%'}>
                      <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
                   </Stack>
-                  <Stack w={'250px'}>
+                  <Stack w={'250px'} h={'31vh'}
+                    overflowY={'scroll'}
+                    css={{
+                    '&::-webkit-scrollbar': {
+                        display: 'none',
+                    },
+                    'msOverflowStyle': 'none',  /* IE and Edge */
+                    'scrollbarWidth': 'none',  /* Firefox */
+                    }}>
                     <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers}/>
                 </Stack>
                 <Stack w={'100%'} alignItems={'center'}>

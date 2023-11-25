@@ -1,5 +1,6 @@
-import { Box, UnorderedList } from "@chakra-ui/react";
+import { Box, Stack, UnorderedList } from "@chakra-ui/react";
 import UserTag from "../UserTag/UserTag";
+import { useRef, useEffect } from 'react';
 
 
 interface UserListProps {
@@ -9,27 +10,24 @@ interface UserListProps {
 }
 
 const UsersList = ({members, id, removeChannelMembers}: UserListProps): JSX.Element => {    
-       
+    const bottomRef = useRef<Element | null>(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+      }, [members]);   
+
     return (
         <>
             <UnorderedList 
             styleType = 'none' 
-            w={'100%'} 
-            h={'31vh'}
-            overflowY={'scroll'}
-            css={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              'msOverflowStyle': 'none',  /* IE and Edge */
-              'scrollbarWidth': 'none',  /* Firefox */
-            }}>
+            w={'100%'} >
             {members.map((member: string) => (
                 <Box key={member}>
                     <UserTag handle={member} id={id} removeChannelMembers={removeChannelMembers}/>
                 </Box>
             ))}
             </UnorderedList>
+            <Stack ref={bottomRef}/>
         </>
     );
 }
