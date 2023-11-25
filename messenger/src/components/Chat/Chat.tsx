@@ -8,7 +8,7 @@ import {
   } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import { userChannel, userMessage } from '../../services/users.service';
-import { addMemberToChannel, channelMessage, getChannelById, getChannelMessagesLive } from '../../services/channels.service';
+import { addMemberToChannel, channelMessage, getChannelById, getChannelMembersLive, getChannelMessagesLive } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
@@ -49,30 +49,39 @@ import { MdMoreHoriz } from "react-icons/md";
   // }, [channelId]);  
 
   useEffect(() => {
-    if(userData === null) return;
-   
-    getChannelMessagesLive(channelId, (data: string[]) => {
-    console.log(data, "data")
     getChannelById(channelId)
       .then(result => {
           setTitle(result.title);
           setMembers(Object.keys(result.members));
-          Promise.all(
-              Object.keys(result.messages).map((message) => {
-                  return getMessageById(message)
-                  .then(res => res)
-                  .catch(e =>console.error(e));
-              })
-          ).then(channelMessages => {
-              setMessages([...channelMessages]);          
-          })
-          .catch(error => console.error(error.message));
       }).catch(e =>console.error(e));
-    }
-    )
-    },[channelId])
-    console.log(title);    
-  console.log(members);
+  }, []);
+
+  useEffect(() => {
+    if(userData === null) return;
+   
+    getChannelMessagesLive(channelId, (data: string[]) => {
+        Promise.all(
+            data.map((message) => {
+                return getMessageById(message)
+                .then(res => res)
+                .catch(e =>console.error(e));
+            })
+        ).then(channelMessages => {
+            setMessages([...channelMessages]);          
+        })
+        .catch(error => console.error(error.message));
+    })
+    },[]);
+
+
+    useEffect(() => {
+      if(userData === null) return;
+     
+      getChannelMembersLive(channelId, (data: string[]) => {
+        return setMembers([...data]);
+      })
+      },[]);
+    
   
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -115,7 +124,7 @@ import { MdMoreHoriz } from "react-icons/md";
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
-    channelId: channelId
+    id: channelId
   };
 
       return (

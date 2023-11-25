@@ -135,21 +135,6 @@ export const getChannelMessagesLive = (channelId: string, listener: MessagesList
   })
 }
 
-export interface ChannelsListener{(channels: string[]): void}
-
-export const getUserChannelsLive = (handle: string, listener: ChannelsListener)=>{
-
-  return onValue(ref(db ,`users/${handle}/myChannels`), (snapshot) => {
-    if(!snapshot.exists()) return[];
-    console.log(snapshot);
-    
-    const channels= Object.keys(snapshot.val());
-    
-    return listener(channels);
-  })
-}
-
-
 export interface MembersListener{(members: string[]): void}
 
 export const getChannelMembersLive = (channelId: string, listener: MembersListener)=>{

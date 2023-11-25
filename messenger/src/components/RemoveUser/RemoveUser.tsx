@@ -3,7 +3,7 @@ import React from 'react';
 
 interface RemoveUserProps {
     name: string;
-    onDelete: (value:string) => void;
+    onDelete: () => void;
 }
 
 const RemoveUser = ({name, onDelete}: RemoveUserProps) => {

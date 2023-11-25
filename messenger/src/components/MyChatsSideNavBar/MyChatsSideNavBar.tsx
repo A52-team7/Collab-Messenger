@@ -1,9 +1,9 @@
-import { Button, Flex, Stack } from '@chakra-ui/react'
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
-import { addChannel, addMemberToChannel, addTitleToChannel, getChannelById, getUserChannelsLive } from '../../services/channels.service';
-import { useContext, useState } from 'react';
+import { addChannel, addMemberToChannel, addTitleToChannel, getChannelById } from '../../services/channels.service';
+import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
-import { userChannel } from '../../services/users.service';
+import { getUserChannelsLive, userChannel } from '../../services/users.service';
 import MyChatsList from '../MyChatsList/MyChatsList';
 
 export interface Channel {
@@ -15,15 +15,14 @@ export interface Channel {
     createdOn: Date;
 }
 
-const CreateNewChat = () => {
+const MyChatsSideNavBar = () => {
   
     const {userData} = useContext(AppContext);
     const navigate = useNavigate();
 
-    const [channels, setChannels] = useState<Channel[]>([])
-    const [show, setShow] = useState(false);
+    const [channels, setChannels] = useState<Channel[]>([]);
 
-    const onShow = () => {
+    useEffect(() => {
         if(userData === null) return;
    
         getUserChannelsLive(userData.handle, (data: string[]) => {
@@ -38,9 +37,8 @@ const CreateNewChat = () => {
                 setChannels([...channelMessages]);          
             })
             .catch(error => console.error(error.message));
-            })
-            setShow(true);
-    }
+            });
+    }, []);
     console.log(channels);
     
     
@@ -65,13 +63,9 @@ const CreateNewChat = () => {
     return (
         <Flex direction={'column'}>
             <Flex justifyContent={'center'}>
-                <Button
-                px={8}
-                rounded={'md'}
-                onClick={onShow}
-                >
+                <Text>
                 My chats
-                </Button>
+                </Text>
                 <Button
                 px={8}
                 rounded={'md'}
@@ -80,14 +74,12 @@ const CreateNewChat = () => {
                 New
                 </Button>
             </Flex>
-            {show && (
             <Stack>
                  <MyChatsList {...{channels}}/> 
             </Stack>           
-            )}
         </Flex>
     )
 }
 
 
-export default CreateNewChat;
+export default MyChatsSideNavBar;

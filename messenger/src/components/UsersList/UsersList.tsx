@@ -4,10 +4,10 @@ import UserTag from "../UserTag/UserTag";
 
 interface UserListProps {
     members: string[];
-    channelId: string
+    id: string
 }
 
-const UsersList = ({members, channelId}: UserListProps): JSX.Element => {    
+const UsersList = ({members, id}: UserListProps): JSX.Element => {    
        
     return (
         <>
@@ -25,7 +25,7 @@ const UsersList = ({members, channelId}: UserListProps): JSX.Element => {
             }}>
             {members.map((member: string) => (
                 <Box key={member}>
-                    <UserTag handle={member} channelId={channelId}/>
+                    <UserTag handle={member} id={id}/>
                 </Box>
             ))}
             </UnorderedList>

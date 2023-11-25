@@ -1,6 +1,6 @@
 import { Box, UnorderedList } from "@chakra-ui/react";
-import { Channel } from "../CreateNewChat/CreateNewChat";
 import MyChat from "../MyChat/MyChat";
+import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 
 interface ChannelsListProps{
     channels: Channel[];
@@ -9,7 +9,7 @@ interface ChannelsListProps{
 const MyChatsList = ({channels}: ChannelsListProps): JSX.Element => {
     return(
         <>
-            <UnorderedList styleType = 'none' w={'70vw'}>
+            <UnorderedList styleType = 'none' w={'100%'}>
             {channels.map((channel: Channel) => (
                 <Box key={channel.id}>
                     <MyChat {...channel}/>

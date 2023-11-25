@@ -1,6 +1,6 @@
 import { Text } from "@chakra-ui/react"
-import { Channel } from "../CreateNewChat/CreateNewChat"
 import { useNavigate } from "react-router-dom"
+import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 
 const MyChat = (channel: Channel) => {
 
@@ -10,7 +10,7 @@ const MyChat = (channel: Channel) => {
         navigate('/chat', { state: { channelId: channel.id } });
     }
     return (
-        <Text _hover={{ cursor: "pointer" }} onClick={onOpenChat}>{channel.title}</Text>
+        <Text _hover={{ cursor: "pointer" }} bg={'gray'} w={'100%'} onClick={onOpenChat}>{channel.title}</Text>
     )
 }
 

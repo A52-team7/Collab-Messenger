@@ -7,10 +7,10 @@ import { deleteMemberFromChannel } from "../../services/channels.service";
 
 interface UserTagProps {
     handle: string;
-    channelId:string
+    id:string
 }
 
-const UserTag = ({ handle, channelId }: UserTagProps) => {
+const UserTag = ({ handle, id }: UserTagProps) => {
 
     const [userInfo, setUserInfo] = useState<Author>();
     const [displayName, setDisplayName] = useState('');
@@ -25,7 +25,7 @@ const UserTag = ({ handle, channelId }: UserTagProps) => {
     }, [handle]);
 
     const onDelete = () => {
-        deleteMemberFromChannel(channelId, handle);
+        deleteMemberFromChannel(id, handle);
     }
 
     const RemoveUserProps = {
