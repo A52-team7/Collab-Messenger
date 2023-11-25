@@ -9,26 +9,27 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  myChannels: object[];
 }
 
 interface AddUSerSearchProps {
   updateNewMember: (user: string) => void;
+  team?: object;
 }
 
-const AddUsersSearch = ({ updateNewMember }: AddUSerSearchProps): JSX.Element => {
+const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Element => {
   const [initialData, setInitialData] = useState<User[]>([]);
   const [filteredResults, setFilteredResults] = useState<User[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = useState(false);
   const { userData } = useContext(AppContext);
 
-  const handleSearch = (value: string) => {
+  const searchAllUsers = (value: string) => {
     setSearchValue(value);
 
     if (!value) return;
+    const trimmedSearchValue = value.trim().toLocaleLowerCase();
     const filteredUsers = initialData.filter(user => {
-      const trimmedSearchValue = value.trim().toLocaleLowerCase();
-
       const username = user.handle.toLowerCase();
       //User must not be able to find himself in the search bar.
       if (username === userData?.handle.toLowerCase()) return;
@@ -37,18 +38,44 @@ const AddUsersSearch = ({ updateNewMember }: AddUSerSearchProps): JSX.Element =>
       const lastName = user.lastName.toLowerCase();
       const fullName = `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`;
 
-      if (username.startsWith(trimmedSearchValue)) return user;
-      if (email.startsWith(trimmedSearchValue)) return user;
       if (firstName.startsWith(trimmedSearchValue)) return user;
       if (lastName.startsWith(trimmedSearchValue)) return user;
+      if (username.startsWith(trimmedSearchValue)) return user;
+      if (email.startsWith(trimmedSearchValue)) return user;
       if (fullName.startsWith(trimmedSearchValue)) return user;
     });
-    setFilteredResults(filteredUsers);
+    const sortedFilteredUsers = filteredUsers.sort((a, b) => {
+      const aFirstNameContainsString = a.firstName.toLowerCase().includes(trimmedSearchValue);
+      const aLastNameContainsString = a.lastName.toLowerCase().includes(trimmedSearchValue);
+      const bFirstNameContainsString = b.firstName.toLowerCase().includes(trimmedSearchValue);
+      const bLastNameContainsString = b.lastName.toLowerCase().includes(trimmedSearchValue);
+
+      if (aFirstNameContainsString && !bFirstNameContainsString) {
+        return -1;
+      } else if (!aFirstNameContainsString && bFirstNameContainsString) {
+        return 1;
+      } else if (aLastNameContainsString && !bLastNameContainsString) {
+        return -1;
+      } else if (!aLastNameContainsString && bLastNameContainsString) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    setFilteredResults(sortedFilteredUsers);
   }
 
   useEffect(() => {
     getAllUsersData()
-      .then(data => setInitialData(Object.values(data.val())))
+      .then(data => {
+        const snapshot: User[] = Object.values(data.val());
+        // if (channelId) {
+        //   const filteredUsersByTeam = snapshot.filter((user) => user.myChannels.channelId === true);
+        //   return setInitialData(filteredUsersByTeam);
+        // }
+        // console.log(snapshot);
+        setInitialData(snapshot);
+      })
       .catch((err: Error) => console.error(err));
   }, []);
 
@@ -65,7 +92,7 @@ const AddUsersSearch = ({ updateNewMember }: AddUSerSearchProps): JSX.Element =>
         placeholder={'Search by username / names / email'}
         _placeholder={{ color: 'gray.500' }}
         value={searchValue}
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => searchAllUsers(e.target.value)}
       />
       {
         open && <Box
