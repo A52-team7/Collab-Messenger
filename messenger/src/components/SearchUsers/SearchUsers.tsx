@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import AddUsersSearchBox from '../AddUsersSearchBox/AddUsersSearchBox';
+import SearchUsersBox from '../SearchUsersBox/SearchUsersBox';
 import { getAllUsersData } from '../../services/users.service';
 import { Input, Box } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
+import { ADD_USERS } from '../../common/constants';
 
 export interface User {
   handle: string;
@@ -13,11 +14,12 @@ export interface User {
 }
 
 interface AddUSerSearchProps {
-  updateNewMember: (user: string) => void;
+  searchType: string;
+  updateNewMember?: (user: string) => void;
   team?: object;
 }
 
-const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Element => {
+const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps): JSX.Element => {
   const [initialData, setInitialData] = useState<User[]>([]);
   const [filteredResults, setFilteredResults] = useState<User[]>([]);
   const [searchValue, setSearchValue] = useState('');
@@ -69,6 +71,8 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
     getAllUsersData()
       .then(data => {
         const snapshot: User[] = Object.values(data.val());
+        // TODO: Implement when getting team name is implemented.
+
         // if (channelId) {
         //   const filteredUsersByTeam = snapshot.filter((user) => user.myChannels.channelId === true);
         //   return setInitialData(filteredUsersByTeam);
@@ -80,7 +84,7 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
   }, []);
 
   return (
-    <Box w={'100%'}
+    <Box w={searchType === ADD_USERS ? '100%' : { base: '200px', md: '300px', lg: '500px' }}
       onFocus={() => setOpen(true)}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -88,7 +92,7 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
         }
       }}
     >
-      <Input pr={10} bg={'white'}
+      <Input pr={10} bg={searchType === ADD_USERS ? 'white' : 'grey'}
         placeholder={'Search by username / names / email'}
         _placeholder={{ color: 'gray.500' }}
         value={searchValue}
@@ -100,7 +104,7 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
           h={'fit-content'}
           w={'inherit'}
           maxH={'200px'}
-          bg={'gray.300'}
+          bg={searchType === ADD_USERS ? 'gray.300' : 'gray.100'}
           overflowY={'scroll'}
           tabIndex={-1}
           zIndex={99}
@@ -114,12 +118,13 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
           }}
         >
           {searchValue.length > 0 &&
-            filteredResults?.map((user) => <AddUsersSearchBox
+            filteredResults?.map((user) => <SearchUsersBox
               key={user.handle}
               userName={user.handle}
               email={user.email}
               firstName={user.firstName}
               lastName={user.lastName}
+              searchType={searchType}
               setOpen={setOpen}
               setSearchValue={setSearchValue}
               updateNewMember={updateNewMember}
@@ -130,4 +135,4 @@ const AddUsersSearch = ({ updateNewMember, team }: AddUSerSearchProps): JSX.Elem
   );
 };
 
-export default AddUsersSearch;
+export default SearchUsers;

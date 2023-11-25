@@ -19,6 +19,10 @@ export const MSG_NAMES_LENGTH = 'Must be 4 to 32 characters';
 export const MSG_EMAIL_INVALID = 'Invalid email format';
 export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 
+// Search users types
+export const START_CHAT = 'START_CHAT';
+export const ADD_USERS = 'ADD_USERS';
+
 //team validations
 export const TEAM_NAME_LENGTH_MIN: number = 3;
 export const TEAM_NAME_LENGTH_MAX: number = 40;
@@ -28,9 +32,9 @@ export const USER_MESSAGE = 'user message';
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [
-    {title: 'Add channel', function:'addChannel', icon: 'FiUsers'},
-    {title:'Add/Remove members', function: 'addOrRemoveNewMember', icon: 'FiUsers'},
-    {title: 'Edit team information', function: 'editTeamInformation', icon: 'FiEdit3'},
-    {title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon'}
+  { title: 'Add channel', function: 'addChannel', icon: 'FiUsers' },
+  { title: 'Add/Remove members', function: 'addOrRemoveNewMember', icon: 'FiUsers' },
+  { title: 'Edit team information', function: 'editTeamInformation', icon: 'FiEdit3' },
+  { title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon' }
 ]
-export const CHAT_MESSAGE_MORE_OPTIONS=[];
+export const CHAT_MESSAGE_MORE_OPTIONS = [];
