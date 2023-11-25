@@ -23,6 +23,10 @@ export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 export const START_CHAT = 'START_CHAT';
 export const ADD_USERS = 'ADD_USERS';
 
+// Show Navbar Teams or Messages
+export const SIDEBAR_SHOW_MESSAGES = 'SIDEBAR_SHOW_MESSAGES';
+export const SIDEBAR_SHOW_TEAMS = 'SIDEBAR_SHOW_TEAMS';
+
 //title of team or channel validations
 export const TITLE_NAME_LENGTH_MIN: number = 3;
 export const TITLE_NAME_LENGTH_MAX: number = 40;

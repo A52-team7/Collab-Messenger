@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import AppContext from '../../context/AppContext';
 import NavItem from '../NavItem/NavItem';
 import {
@@ -7,17 +7,21 @@ import {
   Button,
   CloseButton,
   useColorModeValue,
-  Heading
+  Heading,
+  FormLabel,
+  Center
 } from '@chakra-ui/react';
 import {
   FiHome,
 } from 'react-icons/fi';
 import { BsChatTextFill } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
+import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constants';
 
 
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -31,7 +35,15 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
-  const { userData } = useContext(AppContext);
+  const { user } = useContext(AppContext);
+  const [show, setShow] = useState(SIDEBAR_SHOW_TEAMS);
+  const navigate = useNavigate();
+
+  const showContentHandle = (e: React.MouseEvent<HTMLElement>) => {
+    const targetId = e.currentTarget.id;
+    setShow(targetId === 'messages-btn' ? SIDEBAR_SHOW_MESSAGES : SIDEBAR_SHOW_TEAMS);
+  }
+
   return (
     <Box
       transition={'3s ease'}
@@ -48,16 +60,45 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       <Flex alignItems={'center'} justifyContent={'flex-end'}>
         <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading>
       </Flex>
-      <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
-        <Button borderRadius={'50%'} px={3} py={6}><BsChatTextFill size={30} /></Button>
-        <Button rounded={'xl'} px={3} py={6}><RiTeamFill size={30} /></Button>
-      </Flex>
-      <Box minW={'210px'}>
-        <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} />
-        <UserTeams/>
-        {/* <NavItem key={LinkItems[2].name} icon={LinkItems[2].icon} name={LinkItems[2].name} path={LinkItems[2].path} /> */}
-        <MyChatsSideNavBar/>
-      </Box>
+      {user &&
+        <>
+          <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
+            <Box
+              cursor={'pointer'}
+              onClick={() => navigate('/')}>
+              <Button px={3} py={6}>
+                <FiHome size={30} />
+              </Button>
+              <FormLabel textAlign={'center'}>HOME</FormLabel>
+            </Box>
+          </Flex>
+          <Flex alignItems='center' justifyContent={'space-around'}>
+            <Box>
+              <Button borderRadius={'50%'} px={3} py={6}
+                id={'messages-btn'}
+                onClick={(e) => showContentHandle(e)}>
+                <BsChatTextFill size={30} />
+              </Button>
+              <FormLabel>CHATS</FormLabel>
+            </Box>
+            <Box>
+              <Button rounded={'xl'} px={3} py={6}
+                id={'teams-btn'}
+                onClick={(e) => showContentHandle(e)}>
+                <RiTeamFill size={30} />
+              </Button>
+              <FormLabel>TEAMS</FormLabel>
+            </Box>
+          </Flex>
+          <Box minW={'210px'}>
+            {/* <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} /> */}
+            {show === SIDEBAR_SHOW_MESSAGES ?
+              <MyChatsSideNavBar />
+              :
+              <UserTeams />
+            }
+          </Box>
+        </>}
     </Box >
   );
 }
