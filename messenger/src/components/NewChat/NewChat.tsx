@@ -4,15 +4,17 @@ import {
     Input,
     Button,
     useColorModeValue,
+    FormLabel,
   } from '@chakra-ui/react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { userChannel} from '../../services/users.service';
-import { addChannel, addMemberToChannel, addTitleToChannel } from '../../services/channels.service';
+import { addChannel, addMemberToChannel } from '../../services/channels.service';
 import { useState } from 'react';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS, TITLE_NAME_LENGTH_MAX, TITLE_NAME_LENGTH_MIN } from '../../common/constants';
 import { useContext } from 'react';
 import AppContext, { UserState } from '../../context/AppContext';
+import UsersList from '../UsersList/UsersList';
   
 
   
@@ -22,10 +24,6 @@ import AppContext, { UserState } from '../../context/AppContext';
   }
   
   const NewChat = (): JSX.Element => {
-    
-//   const location = useLocation();
-
-//   const channelId = location.state?.channelId;
 
   const navigate = useNavigate();
 
@@ -33,6 +31,7 @@ import AppContext, { UserState } from '../../context/AppContext';
  
   const [channelForm, setChannelForm] = useState<ChannelForm>({title: '', members: {}});
 
+console.log(channelForm.members);
 
 
   const updateNewMember = (user: string) => {
@@ -41,6 +40,16 @@ import AppContext, { UserState } from '../../context/AppContext';
     setChannelForm({
       ...channelForm,
       members: newMembers
+    })
+  }
+
+  const removeChannelMembers = (member: string) => {
+    const updateMembers = { ...channelForm.members }
+    delete updateMembers[member]
+
+    setChannelForm({
+      ...channelForm,
+      members: updateMembers,
     })
   }
 
@@ -53,8 +62,14 @@ import AppContext, { UserState } from '../../context/AppContext';
 
   const onAddNewChannel = () => {
     if(userData === null) return;
+    if (!channelForm.title) {
+        return alert(`Enter title`)
+      }
     if (channelForm.title.length < TITLE_NAME_LENGTH_MIN || channelForm.title.length > TITLE_NAME_LENGTH_MAX) {
         return alert(`Channel name must be between ${TITLE_NAME_LENGTH_MIN} and ${TITLE_NAME_LENGTH_MAX} characters!`)
+    }
+    if (Object.keys(channelForm.members).length === 0) {
+        return alert(`Enter channel members`)
     }
     addChannel(userData.handle, channelForm.title, channelForm.members)
         .then(result => {
@@ -87,25 +102,43 @@ import AppContext, { UserState } from '../../context/AppContext';
               bg={useColorModeValue('white', 'gray.700')}
               rounded={'xl'}
               w={'60vw'}
-              p={10}
-              align={'center'}>
+              p={10}>
+                <FormLabel>Add title</FormLabel>
                 <Input
                   bg={'grey'}
+                  mb={5}
                   placeholder="Add title" 
                   onChange={updateTitle('title')}/>
-              <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
-              <Button
-                  ml={5}
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  w={'fit-content'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}
-                  onClick={onAddNewChannel}>
-                  Add
-                </Button>
+                  <FormLabel>Add members</FormLabel>
+                  <Stack mb={5} w={'100%'}>
+                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
+                  </Stack>
+                  <Stack w={'250px'} h={'31vh'}
+                    overflowY={'scroll'}
+                    css={{
+                    '&::-webkit-scrollbar': {
+                        display: 'none',
+                    },
+                    'msOverflowStyle': 'none',  /* IE and Edge */
+                    'scrollbarWidth': 'none',  /* Firefox */
+                    }}>
+                    <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers}/>
+                </Stack>
+                <Stack w={'100%'} alignItems={'center'}>
+                    <Button
+                        pl={35}
+                        pr={35}
+                        bg={'blue'}
+                        rounded={'full'}
+                        color={'white'}
+                        w={'fit-content'}
+                        flex={'1 0 auto'}
+                        _hover={{ bg: 'blue.500' }}
+                        _focus={{ bg: 'blue.500' }}
+                        onClick={onAddNewChannel}>
+                        Add chat
+                    </Button>
+                </Stack>
             </Flex>
             <Stack>
                      
