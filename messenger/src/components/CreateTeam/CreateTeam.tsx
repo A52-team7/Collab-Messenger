@@ -14,11 +14,11 @@ import {
 import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, { UserState } from '../../context/AppContext';
-import { TEAM_NAME_LENGTH_MIN, TEAM_NAME_LENGTH_MAX } from '../../common/constants';
+import { TITLE_NAME_LENGTH_MIN, TITLE_NAME_LENGTH_MAX } from '../../common/constants';
 import { getTeamByName, createTeam, updateTeamChannel } from '../../services/teams.service'
 import { updateUserTeams, userChannel } from '../../services/users.service';
 import { addChannel } from '../../services/channels.service';
-import AddUsersSearch from '../SearchUsers/SearchUsers';
+import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS } from '../../common/constants';
 
 export interface Team {
@@ -83,8 +83,8 @@ const CreateTeam = () => {
     if (!teamForm.name) {
       return alert(`Enter team name`)
     }
-    if (teamForm.name.length < TEAM_NAME_LENGTH_MIN || teamForm.name.length > TEAM_NAME_LENGTH_MAX) {
-      return alert(`Team name must be between ${TEAM_NAME_LENGTH_MIN} and ${TEAM_NAME_LENGTH_MAX} characters!`)
+    if (teamForm.name.length < TITLE_NAME_LENGTH_MIN || teamForm.name.length > TITLE_NAME_LENGTH_MAX) {
+      return alert(`Team name must be between ${TITLE_NAME_LENGTH_MIN} and ${TITLE_NAME_LENGTH_MAX} characters!`)
     }
     if (Object.keys(teamForm.members).length === 0) {
       return alert(`Enter team members`)
@@ -149,7 +149,7 @@ const CreateTeam = () => {
         <FormControl id="addMembers" isRequired>
           <FormLabel>Add members</FormLabel>
           {/*HERE IS THE INPUT FOR ADDING USERS!*/}
-          <AddUsersSearch updateNewMember={updateNewMember} searchType={ADD_USERS} />
+          <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
           <Flex direction={'row'}>
             {Object.keys(teamForm.members).map((member) => (
               <Tag key={member} bg={'baseBlue'} colorScheme="blue" w={'fit-content'}>

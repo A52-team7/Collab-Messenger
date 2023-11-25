@@ -38,26 +38,15 @@ const MyChatsSideNavBar = () => {
             })
             .catch(error => console.error(error.message));
             });
-    }, []);
+            console.log(channels);
+            
+    }, [userData]);
     console.log(channels);
     
     
 
     const onCreate = () => {
-        if(userData === null) return;
-        addChannel(userData.handle)
-        .then(result => {
-            userChannel(result.id, userData.handle);
-            addMemberToChannel(result.id, userData.handle);
-            return result;
-        })
-        .then(result => {
-            addTitleToChannel(result.id, 'New chat');
-            return result;
-          })
-        .then(result => navigate('/new-chat', { state: { channelId: result.id } })
-        )
-        .catch(error => console.error(error.message));
+        navigate('/new-chat' );
     }
 
     return (

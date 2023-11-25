@@ -23,9 +23,9 @@ export const MSG_LOGIN_UNABLE = 'Wrong username or password';
 export const START_CHAT = 'START_CHAT';
 export const ADD_USERS = 'ADD_USERS';
 
-//team validations
-export const TEAM_NAME_LENGTH_MIN: number = 3;
-export const TEAM_NAME_LENGTH_MAX: number = 40;
+//title of team or channel validations
+export const TITLE_NAME_LENGTH_MIN: number = 3;
+export const TITLE_NAME_LENGTH_MAX: number = 40;
 
 //type of message
 export const USER_MESSAGE = 'user message';

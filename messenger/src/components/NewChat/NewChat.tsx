@@ -7,70 +7,71 @@ import {
   } from '@chakra-ui/react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { userChannel} from '../../services/users.service';
-import { addMemberToChannel, addTitleToChannel } from '../../services/channels.service';
+import { addChannel, addMemberToChannel, addTitleToChannel } from '../../services/channels.service';
 import { useState } from 'react';
+import SearchUsers from '../SearchUsers/SearchUsers';
+import { ADD_USERS, TITLE_NAME_LENGTH_MAX, TITLE_NAME_LENGTH_MIN } from '../../common/constants';
+import { useContext } from 'react';
+import AppContext, { UserState } from '../../context/AppContext';
   
+
   
+  interface ChannelForm {
+    title: string;
+    members: {[handle:string]: boolean};
+  }
   
   const NewChat = (): JSX.Element => {
     
-  const location = useLocation();
+//   const location = useLocation();
 
-  const channelId = location.state?.channelId;
+//   const channelId = location.state?.channelId;
 
   const navigate = useNavigate();
+
+  const { userData } = useContext<UserState>(AppContext);
  
-  const [newTitle, setNewTitle] = useState('');
-  const [newUser, setNewUser] = useState('');
+  const [channelForm, setChannelForm] = useState<ChannelForm>({title: '', members: {}});
 
-  
-  const handleKeyDownForTitle = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const title = (event.target as HTMLInputElement).value.trim();
-      if (title) {
-        addTitleToChannel(channelId, title);
-        (event.target as HTMLInputElement).value = '';
-        setNewTitle('');
-      }
+
+
+  const updateNewMember = (user: string) => {
+    const newMembers = { ...channelForm.members };
+    newMembers[user] = true;
+    setChannelForm({
+      ...channelForm,
+      members: newMembers
+    })
+  }
+
+  const updateTitle = (title: string) => (e: React.ChangeEvent<HTMLInputElement>) =>{
+    setChannelForm({
+        ...channelForm,
+        [title]: e.target.value,
+    })
+  }
+
+  const onAddNewChannel = () => {
+    if(userData === null) return;
+    if (channelForm.title.length < TITLE_NAME_LENGTH_MIN || channelForm.title.length > TITLE_NAME_LENGTH_MAX) {
+        return alert(`Channel name must be between ${TITLE_NAME_LENGTH_MIN} and ${TITLE_NAME_LENGTH_MAX} characters!`)
     }
-  };
-
-  const handleKeyDownForUser = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const userHandle = (event.target as HTMLInputElement).value.trim();
-      if (userHandle) {        
-        userChannel(channelId, userHandle);
-        addMemberToChannel(channelId, userHandle);            
-        }
-        (event.target as HTMLInputElement).value = '';
-        setNewUser('');
-    }
-  };
-
-
-  const onVisible = () => {
-    navigate('/chat', { state: { channelId: channelId } });
+    addChannel(userData.handle, channelForm.title, channelForm.members)
+        .then(result => {
+            Object.keys(result.members).forEach(member => {
+                userChannel(result.id, member);
+            })
+            userChannel(result.id, userData.handle);
+            addMemberToChannel(result.id, userData.handle);
+            return result;
+        })
+        .then(res => {
+            navigate('/chat', { state: { channelId: res.id } });
+        })
+        .catch(e => console.log(e));
+        
   }
 
-  const updateNewTitle= (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(e.target.value)
-  }
-
-  const updateNewUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewUser(e.target.value)
-  }
-
-
-  const onAddTitle = () => {
-    addTitleToChannel(channelId, newTitle);
-    setNewTitle('');
-  }
-
-  const onAddUser = () => {
-        userChannel(channelId, newUser);
-        addMemberToChannel(channelId, newUser);            
-    setNewUser('');
-  }
 
 
       return (
@@ -79,49 +80,20 @@ import { useState } from 'react';
             direction={'column'}
             justify={'center'}
             py={12}>
-              <Flex 
-              boxShadow={'2xl'}
-              bg={useColorModeValue('white', 'gray.700')}
-              rounded={'xl'}
-              w={'60vw'}
-              pt='5'
-              pb='5'
-              pl='10'
-              pr='10'
-              align={'center'}>
-              <Input
-                  bg={'grey'}
-                  placeholder="Add title"
-                  value={newTitle}
-                  onKeyDown={handleKeyDownForTitle} 
-                  onChange={updateNewTitle}/>
-              <Button
-                  ml={5}
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  w={'fit-content'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}
-                  onClick={onAddTitle}>
-                  Add
-                </Button>
-              </Flex>
-              
+                            
             <Flex 
+            direction={'column'}
               boxShadow={'2xl'}
               bg={useColorModeValue('white', 'gray.700')}
               rounded={'xl'}
               w={'60vw'}
               p={10}
               align={'center'}>
-              <Input
+                <Input
                   bg={'grey'}
-                  placeholder="Search for Users"
-                  value={newUser}
-                  onKeyDown={handleKeyDownForUser}
-                  onChange={updateNewUser} />
+                  placeholder="Add title" 
+                  onChange={updateTitle('title')}/>
+              <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
               <Button
                   ml={5}
                   bg={'blue'}
@@ -131,48 +103,14 @@ import { useState } from 'react';
                   flex={'1 0 auto'}
                   _hover={{ bg: 'blue.500' }}
                   _focus={{ bg: 'blue.500' }}
-                  onClick={onAddUser}>
+                  onClick={onAddNewChannel}>
                   Add
                 </Button>
             </Flex>
             <Stack>
                      
             </Stack>
-            <Stack
-              boxShadow={'2xl'}
-              bg={useColorModeValue('white', 'gray.700')}
-              rounded={'xl'}
-              w={'60vw'}
-              p={10}
-              spacing={8}
-              align={'center'}
-              position= {'fixed'}
-              bottom= {'0'}>
-              <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'}>
-                <Input
-                  type={'text'}
-                  placeholder={'Write something...'}
-                  color={useColorModeValue('gray.800', 'gray.200')}
-                  bg={useColorModeValue('gray.100', 'gray.600')}
-                  rounded={'full'}
-                  border={0}
-                  _focus={{
-                    bg: useColorModeValue('gray.200', 'gray.800'),
-                    outline: 'none',
-                  }}
-                  onClick={onVisible}
-                />
-                <Button
-                  bg={'blue'}
-                  rounded={'full'}
-                  color={'white'}
-                  flex={'1 0 auto'}
-                  _hover={{ bg: 'blue.500' }}
-                  _focus={{ bg: 'blue.500' }}>
-                  Send
-                </Button>
-              </Stack>
-            </Stack>
+        
           </Flex>
         )
   }

@@ -25,7 +25,7 @@ export const fromChannelsDocument = (snapshot: DataSnapshot): Channel[] => {
     });
 }
 
-export const addChannel = (handle: string, teamId: string | null = null , title: string = "") => {
+export const addChannel = (handle: string, title: string, members: object, teamId: string | null = null) => {
 
     return push(
         ref(db, 'channels'),
@@ -34,6 +34,7 @@ export const addChannel = (handle: string, teamId: string | null = null , title:
             toTeam: teamId,
             createdOn: Date.now(),
             title,
+            members
         },
     )
         .then(result => {
