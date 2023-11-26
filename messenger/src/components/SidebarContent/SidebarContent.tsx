@@ -36,7 +36,7 @@ interface SidebarContentProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
   const { user } = useContext(AppContext);
   const [show, setShow] = useState(SIDEBAR_SHOW_MESSAGES);
-  const [activeBtn, setActiveBtn] = useState('');
+  const [activeBtn, setActiveBtn] = useState('messages-btn');
   const [homeActiveBtn, setHomeActiveBtn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
