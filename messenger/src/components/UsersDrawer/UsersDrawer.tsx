@@ -8,29 +8,49 @@ import { deleteMemberFromChannel } from "../../services/channels.service";
 import { useContext } from 'react';
 import AppContext from '../../context/AppContext';
 import RemoveUser from "../RemoveUser/RemoveUser";
+import { deleteMemberFromTeam } from "../../services/teams.service";
+import {Team} from '../CreateTeam/CreateTeam'
 
 export interface UserDrawerProps{
     members: string[];
     updateNewMember: (user: string) => void;
-    id: string
+    channelId?: string; 
+    team?: Team;
 }
 
-const UsersDrawer = ({members, updateNewMember, id}: UserDrawerProps): JSX.Element => {
+const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProps): JSX.Element => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const firstField = React.useRef<HTMLElement>(null);
 
     const {userData} = useContext(AppContext);
-
-    const onLeaveChat = () => {
+  
+    
+    const onLeaveChatOrTeam = () => {
         if(userData === null) return;
-        deleteMemberFromChannel(id, userData.handle);
+        if(channelId){
+        deleteMemberFromChannel(channelId, userData.handle);
+      } else if(team?.id){
+        deleteMemberFromTeam(team?.id, userData.handle);
+      }
+
     }
   
     return (
       <>
-        <Button colorScheme='teal' onClick={onOpen}>
+        {(channelId) ? (<Button colorScheme='teal' onClick={onOpen}>
             <BsPersonFillAdd size={30}/><Text fontSize='xl'>{members.length}</Text>
-        </Button>
+        </Button>) :
+        (<Button
+          w="194px"
+          variant="ghost"
+          rightIcon={<BsPersonFillAdd size={20}/>}
+          justifyContent="space-between"
+          fontWeight="normal"
+          fontSize="sm"
+         onClick={onOpen}>
+        Add/Remove members
+    </Button>)
+        }
         <Drawer
           isOpen={isOpen}
           placement='right'
@@ -49,10 +69,10 @@ const UsersDrawer = ({members, updateNewMember, id}: UserDrawerProps): JSX.Eleme
                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
                 </Stack>
                 <Stack>
-                    <UsersList {...{members: members, id: id}}/>
+                    <UsersList {...{members: members, id: channelId}}/>
                 </Stack>
                 <Stack alignItems={'center'}>
-                    <RemoveUser onDelete={onLeaveChat} selfRemove={true}/>
+                    {team?.owner === userData?.handle && <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>}
                 </Stack>
             </DrawerBody>
   

@@ -125,7 +125,7 @@ import { MdMoreHoriz } from "react-icons/md";
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
-    id: channelId
+    channalId: channelId
   };
 
       return (

@@ -6,24 +6,29 @@ import {
     useColorModeValue,
     FormLabel,
   } from '@chakra-ui/react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { userChannel} from '../../services/users.service';
 import { addChannel, addMemberToChannel } from '../../services/channels.service';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS, TITLE_NAME_LENGTH_MAX, TITLE_NAME_LENGTH_MIN } from '../../common/constants';
 import { useContext } from 'react';
 import AppContext, { UserState } from '../../context/AppContext';
 import UsersList from '../UsersList/UsersList';
-  
-
-  
+import {Team} from '../CreateTeam/CreateTeam';
+import { getTeamById, updateTeamChannel } from '../../services/teams.service';
+   
   interface ChannelForm {
     title: string;
     members: {[handle:string]: boolean};
   }
-  
+ 
+
   const NewChat = (): JSX.Element => {
+    
+  const location = useLocation();
+
+  const teamId = location.state?.id;
 
   const navigate = useNavigate();
 
@@ -31,8 +36,17 @@ import UsersList from '../UsersList/UsersList';
  
   const [channelForm, setChannelForm] = useState<ChannelForm>({title: '', members: {}});
 
-console.log(channelForm.members);
+  const [team, setTeam] = useState<Team>({});
 
+   useEffect(() => {
+    if(teamId !== null){
+    getTeamById(teamId)
+    .then(elTeam => {
+      setTeam({...elTeam})
+    })
+    .catch(e => console.log(e))
+  }
+   })
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -71,13 +85,17 @@ console.log(channelForm.members);
     if (Object.keys(channelForm.members).length === 0) {
         return alert(`Enter channel members`)
     }
-    addChannel(userData.handle, channelForm.title, channelForm.members)
+    addChannel(userData.handle, channelForm.title, channelForm.members, teamId)
         .then(result => {
             Object.keys(result.members).forEach(member => {
                 userChannel(result.id, member);
             })
             userChannel(result.id, userData.handle);
             addMemberToChannel(result.id, userData.handle);
+            if(teamId !== null){
+              updateTeamChannel(teamId, result.id)
+            }
+
             return result;
         })
         .then(res => {
@@ -86,8 +104,6 @@ console.log(channelForm.members);
         .catch(e => console.log(e));
         
   }
-
-
 
       return (
           <Flex
@@ -111,7 +127,7 @@ console.log(channelForm.members);
                   onChange={updateTitle('title')}/>
                   <FormLabel>Add members</FormLabel>
                   <Stack mb={5} w={'100%'}>
-                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
+                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
                   </Stack>
                   <Stack w={'250px'} h={'31vh'}
                     overflowY={'scroll'}
