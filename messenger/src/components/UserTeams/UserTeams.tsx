@@ -31,14 +31,16 @@ const UserTeams = () => {
     if(userData === null) return; 
     
     getUserTeamsLive(userData.handle, (data: string[]) => {
-    setMyTeam([])
-     data.forEach((id: string) => {
-      getTeamById(id)
-      .then((elTeam: Team) => {
-        setMyTeam((prevMyTeam) => [...prevMyTeam, elTeam])
-        })
+      Promise.all(
+     data.map((teamId: string) => {
+      return getTeamById(teamId)
+     }))
+     .then(elTeam => {
+      setMyTeam([...elTeam])
+      })
+      .catch(e => console.log(e))
     })
-  })
+
 },[userData])
     
     return (

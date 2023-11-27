@@ -1,5 +1,6 @@
 import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot,push, remove, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
+import {deleteMemberFromChannel,getChannelById} from './channels.service'
 
 export const createTeam = (name: string, handle: string, members: object, description: string) => {
     return push(
@@ -51,3 +52,28 @@ export const getTeamChannelsLive = (id: string, listener: ChannelsListener)=>{
       return listener(channels)
     })
   }
+
+export const deleteMemberFromTeam = (teamId: string, handle: string) => {
+    getTeamById(teamId)
+    .then((team) =>{
+        Object.keys(team.channels).map((channelId)=>{
+            getChannelById(channelId)
+            .then((elChannel) => {
+                if(elChannel.members.includes(handle)){
+                    deleteMemberFromChannel(channelId, handle)
+                }
+            })
+        })
+    }
+    )
+
+    remove(ref(db, `teams/${teamId}/members/${handle}`));
+    remove(ref(db, `users/${handle}/myTeams/${teamId}`));
+}
+
+export const addMemberToTeam = (teamId: string, memberId: string) => {
+    const updateTeamMembers: {[key: string]: boolean} = {};
+    updateTeamMembers[`/teams/${teamId}/members/${memberId}`] = true;
+
+    return update(ref(db), updateTeamMembers);
+}

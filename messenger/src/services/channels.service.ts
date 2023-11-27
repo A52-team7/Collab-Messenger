@@ -25,7 +25,7 @@ export const fromChannelsDocument = (snapshot: DataSnapshot): Channel[] => {
     });
 }
 
-export const addChannel = (handle: string, title: string, members?: object, teamId: string | null = null) => {
+export const addChannel = (handle: string, title: string, members: object, teamId: string | null) => {
 
     return push(
         ref(db, 'channels'),
@@ -53,7 +53,7 @@ export const getChannelById = (id: string) => {
             }
 
             const channel = result.val();
-            channel.id = id;
+            channel.id = id; 
             channel.createdOn = new Date(channel.createdOn);
             if (!channel.messages) channel.messages = [];
             if (!channel.members) channel.members = [];

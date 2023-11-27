@@ -68,7 +68,6 @@ function App(): JSX.Element {
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
           <Route path='/edit-team-information' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
-          <Route path='/add-remove-members' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>

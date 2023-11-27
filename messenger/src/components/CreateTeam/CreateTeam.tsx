@@ -110,7 +110,7 @@ const CreateTeam = () => {
           description: '',
         })
         updateUserTeams(userData.handle, team.id)
-        addChannel(userData.handle, team.id, 'General')
+        addChannel(userData.handle, 'General',team.members, team.id)
           .then(channel => {
             Object.keys(team.members).forEach((member: string) => userChannel(channel.id, member))
             updateTeamChannel(team.id, channel.id)

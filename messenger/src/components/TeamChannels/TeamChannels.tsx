@@ -1,9 +1,10 @@
 import { useContext, useState,useEffect } from 'react';
 import {getChannelById} from '../../services/channels.service';
-import {Channel} from '../CreateNewChat/CreateNewChat';
+import {Channel} from '../MyChatsSideNavBar/MyChatsSideNavBar';
 import {getTeamChannelsLive} from '../../services/teams.service'
 import {Button, Box, Flex} from '@chakra-ui/react';
 import AppContext, {UserState} from '../../context/AppContext'
+import { useNavigate } from "react-router-dom"
 
 
 export interface Id{
@@ -11,9 +12,9 @@ export interface Id{
   }
 
 const TeamChannels = ({id}: Id) =>{
-    console.log(id, 'team')
     const [channels, setChannels] = useState<Channel[]>([])
     const { userData } = useContext<UserState>(AppContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -28,12 +29,13 @@ const TeamChannels = ({id}: Id) =>{
             .catch(e => console.log(e))
         })
         },[])
+        
        
     return (
         <>
         {channels.map((channel: Channel) => {
         return (<Box key={channel.id}>
-        <Button variant='ghost' >
+        <Button variant='ghost' onClick={() => {navigate('/chat', { state: { channelId: channel.id } })}}>
         {channel.title} 
         </Button>
         </Box>

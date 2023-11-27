@@ -14,16 +14,22 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect,useState } from 'react';
 import AppContext, {UserState} from '../../context/AppContext';
 import {Team} from '../CreateTeam/CreateTeam';
-import {getTeamById} from '../../services/teams.service';
+import {getTeamById, updateTeamChannel, addMemberToTeam} from '../../services/teams.service';
 import { FiEdit3, FiUsers, FiXOctagon   } from "react-icons/fi";
 import {TEAM_MORE_OPTIONS} from '../../common/constants'
+import { addChannel } from '../../services/channels.service';
+import {userChannel, updateUserTeams} from '../../services/users.service'
+import {Channel} from '../MyChatsSideNavBar/MyChatsSideNavBar'
+import UsersDrawer from '../UsersDrawer/UsersDrawer'
+
 
 export interface IdTeam{
   id:string
 }
 
 const MoreOptions = ({id}: IdTeam) => {
-
+  console.log(id, 'More')
+  
   const [team, setTeam] = useState<Team>({
     id: '',
     name: '',
@@ -43,18 +49,14 @@ const MoreOptions = ({id}: IdTeam) => {
   if(userData === null) return;
 
 
-  const addChannel = () =>{
-
-
+  const addNewChannel = () =>{
+    console.log(id,'nav')
+      navigate('/new-chat', {state: {id}}) 
   }
 
-
-  const addOrRemoveNewMember =() => {
-    if(userData.handle === team.owner){
-    return navigate('/add-remove-members', { state: id })
-    }else{ 
-      return alert(`Only the team's owner should be able to add to or remove other users from the team`)
-    }
+  const addNewMember =(user: string) => {
+    updateUserTeams(user, team.id);
+    addMemberToTeam(team.id, user);
   }
 
 
@@ -62,6 +64,12 @@ const MoreOptions = ({id}: IdTeam) => {
   const removeTeam = () =>{
 // soon
   }
+
+  const UserDrawerProps = {
+    members: Object.keys(team.members),
+    updateNewMember: addNewMember,
+    teamId: team.id,
+  };
 
   return (
     <Flex justifyContent="center" mt={4}>
@@ -78,7 +86,6 @@ const MoreOptions = ({id}: IdTeam) => {
           <PopoverArrow />
           <PopoverBody>
             <Stack>
-              {}
             <Button
                 w="194px"
                 variant="ghost"
@@ -86,19 +93,10 @@ const MoreOptions = ({id}: IdTeam) => {
                 justifyContent="space-between"
                 fontWeight="normal"
                 fontSize="sm"
-                onClick={addChannel}>
+                onClick={addNewChannel}>
                 Add channel
               </Button>
-              <Button
-                w="194px"
-                variant="ghost"
-                rightIcon={<FiUsers  />}
-                justifyContent="space-between"
-                fontWeight="normal"
-                fontSize="sm"
-                onClick={addOrRemoveNewMember}>
-                Add/Remove members
-              </Button>
+              <UsersDrawer {...UserDrawerProps}/>
               <Button
                 w="194px"
                 variant="ghost"
