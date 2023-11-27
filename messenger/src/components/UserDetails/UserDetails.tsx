@@ -190,7 +190,7 @@ const UserDetails = (): JSX.Element => {
                   _hover={{ opacity: 0.7 }}
                   onClick={onOpenFileManager}
                 >
-                  Upload New Image
+                  Select New Image
                 </Button>
               </Box>
               <Input
