@@ -5,11 +5,19 @@ import { getUserData, updateUserData } from '../../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import { Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Image, Center, Box } from '@chakra-ui/react';
 import { loginUser, updateUserPassword } from '../../services/auth.service';
-import { storage } from '../../config/firebaseConfig';
-import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDatabase, ref as dbRef, set, Database, DatabaseReference } from "firebase/database";
+import { getDownloadURL, ref, uploadBytes, getStorage, StorageReference, FirebaseStorage } from 'firebase/storage';
 import { NAMES_LENGTH_MAX, NAMES_LENGTH_MIN, PASSWORD_LENGTH_MIN, PHONE_NUMBER_LENGTH_MAX } from '../../common/constants';
 
-const formErrorsInitialState = {
+interface formErrorsInitialStateInterface {
+  error: boolean;
+  fieldErr: boolean;
+  firstNameLengthErr: boolean;
+  lastNameLengthErr: boolean;
+  phoneLengthErr: boolean
+}
+
+const formErrorsInitialState: formErrorsInitialStateInterface = {
   error: true,
   fieldErr: false,
   firstNameLengthErr: false,
@@ -17,7 +25,7 @@ const formErrorsInitialState = {
   phoneLengthErr: true,
 }
 
-function UserDetails() {
+const UserDetails = (): JSX.Element => {
   const { userData, setContext } = useContext(AppContext);
   const [form, setForm] = useState({
     phoneNumber: userData?.phoneNumber,
@@ -26,19 +34,49 @@ function UserDetails() {
     password: '',
   });
   const [formErrors, setFormErrors] = useState({ ...formErrorsInitialState });
+  const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | undefined>();
+  const [submitChange, setSubmitChange] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  const [image, setImage] = useState();
-  const [formatOfImage, setFormatOfImage] = useState('');
-  const [profilePhotoSrc, setProfilePhotoSrc] = useState();
-  const [somethingIsChanged, setSomethingIsChanged] = useState(false);
+  console.log('USER DETAILS IS rerendering!!!');
 
-  const fileInput = useRef();
-
-  const handleFileUploadImage = () => {
+  const onOpenFileManager = () => {
     if (fileInput.current) {
       fileInput.current.click();
     }
   };
+
+  const onLocalyUploadImage = () => {
+    if (fileInput.current && fileInput.current.files) {
+      const file: File = fileInput.current.files[0];
+      setProfilePhotoSrc(file);
+    }
+  }
+
+  const uploadImageToFB = () => {
+    if (profilePhotoSrc) {
+      const storage: FirebaseStorage = getStorage();
+      const folderPath: string = `${userData?.handle}/${userData?.handle}-profilePhoto`;
+      const storageRef: StorageReference = ref(storage, folderPath);
+      uploadBytes(storageRef, profilePhotoSrc)
+        .then(() => {
+          const storageRef: StorageReference = ref(storage, folderPath);
+          return storageRef;
+        })
+        .then(storageRef => {
+          const url: Promise<string> = getDownloadURL(storageRef);
+          return url;
+        })
+        .then(url => {
+          const db: Database = getDatabase();
+          const userRef: DatabaseReference = dbRef(db, `users/${userData?.handle}`);
+
+          set(userRef, { ...userData, profilePhoto: url });
+          setSubmitChange(prevState => !prevState);
+        })
+        .catch((err: Error) => console.log(err));
+    }
+  }
 
   useEffect(() => {
     if (!userData) return;
@@ -52,9 +90,7 @@ function UserDetails() {
       .catch((error) => {
         console.error(error.message);
       });
-  }, []);
-
-
+  }, [submitChange, setSubmitChange]);
 
   const navigate = useNavigate();
 
@@ -65,76 +101,68 @@ function UserDetails() {
     });
   }
 
-  const updatePhoto = (e) => {
-    // setImage(e.target.files[0]);
-    // setFormatOfImage(e.target.value);
-  }
-
   const onUpdate = () => {
-    let errors = { ...formErrors };
+    if (userData) {
+      let errors = { ...formErrors };
 
-    if (!form.firstName || form.firstName.length < NAMES_LENGTH_MIN || form.firstName.length > NAMES_LENGTH_MAX) {
-      errors = { ...errors, error: true, firstNameLengthErr: true }
-    }
-    if (!form.lastName || form.lastName.length < NAMES_LENGTH_MIN || form.lastName.length > NAMES_LENGTH_MAX) {
-      errors = { ...errors, error: true, lastNameLengthErr: true }
-    }
-    if (form.phoneNumber.length > PHONE_NUMBER_LENGTH_MAX) {
-      errors = { ...errors, error: true, firstNameLengthErr: true }
-    }
-    if (form.password.length !== 0) {
-      if (form.password.length < PASSWORD_LENGTH_MIN) {
-        errors = { ...errors, error: true, phoneLengthErr: true }
+      if (!form.firstName || form.firstName.length < NAMES_LENGTH_MIN || form.firstName.length > NAMES_LENGTH_MAX) {
+        errors = { ...errors, error: true, firstNameLengthErr: true }
       }
-    }
-    setFormErrors({ ...errors });
-    if (errors.error) return;
+      if (!form.lastName || form.lastName.length < NAMES_LENGTH_MIN || form.lastName.length > NAMES_LENGTH_MAX) {
+        errors = { ...errors, error: true, lastNameLengthErr: true }
+      }
+      if (form.phoneNumber) {
+        if (form.phoneNumber.length > PHONE_NUMBER_LENGTH_MAX) {
+          errors = { ...errors, error: true, firstNameLengthErr: true }
+        }
+      }
+      if (form.password.length !== 0) {
+        if (form.password.length < PASSWORD_LENGTH_MIN) {
+          errors = { ...errors, error: true, phoneLengthErr: true }
+        }
+      }
+      setFormErrors({ ...errors });
+      if (errors.error) return;
 
-    if (form.firstName !== userData.firstName) {
-      updateUserData(userData.handle, 'firstName', form.firstName);
-      alert('First name was updated successfully!');
-      setSomethingIsChanged(true);
-    }
-    if (form.lastName !== userData.lastName) {
-      updateUserData(userData.handle, 'lastName', form.lastName);
-      alert('Last name was updated successfully!');
-      setSomethingIsChanged(true);
-    }
-    if (form.phoneNumber !== userData.phoneNumber) {
-      updateUserData(userData.handle, 'phoneNumber', form.phoneNumber);
-      alert('Phone was updated successfully!');
-      setSomethingIsChanged(true);
-    }
-    if (form.password.length !== 0) {
-      updateUserPassword(form.password)
-        .then(() => {
-          console.error('Password updated successfully');
-          loginUser(userData.email, form.password)
-            .then(credential => {
-              setContext((prevState) => ({
-                ...prevState,
-                user: credential.user,
-              }));
-            })
-            .then(() => {
-              navigate('/');
-            })
-            .catch((error) => {
-              console.error(error.message)
-            });
-        }).catch((error) => {
-          console.error(error.message);
-        });
+      if (form.firstName !== userData.firstName && form.firstName) {
+        updateUserData(userData.handle, 'firstName', form.firstName);
+        alert('First name was updated successfully!');
+      }
+      if (form.lastName !== userData.lastName && form.lastName) {
+        updateUserData(userData.handle, 'lastName', form.lastName);
+        alert('Last name was updated successfully!');
+      }
+      if (form.phoneNumber !== userData.phoneNumber && form.phoneNumber) {
+        updateUserData(userData.handle, 'phoneNumber', form.phoneNumber);
+        alert('Phone was updated successfully!');
+      }
+      if (form.password.length !== 0) {
+        updateUserPassword(form.password)
+          .then(() => {
+            console.error('Password updated successfully');
+            loginUser(userData.email, form.password)
+              .then(credential => {
+                setContext((prevState) => ({
+                  ...prevState,
+                  user: credential.user,
+                }));
+              })
+              .then(() => {
+                navigate('/');
+              })
+              .catch((error) => {
+                console.error(error.message)
+              });
+          }).catch((error) => {
+            console.error(error.message);
+          });
+      }
     }
   }
 
   const onNavigate = () => {
     navigate(-1);
   }
-
-  const onUploadProfilePhoto = async () => {
-  }
-
 
   return (
     <Flex maxH={'fit-content'} align={'center'} justify={'center'} mt={{ base: 2, sm: 5 }}>
@@ -149,7 +177,7 @@ function UserDetails() {
                 <Image
                   borderRadius='full'
                   boxSize='150px'
-                  src={profilePhotoSrc || 'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png'}
+                  src={userData?.profilePhoto}
                   alt={userData?.handle}
                 />
                 <Button
@@ -160,7 +188,7 @@ function UserDetails() {
                   transform={'translateX(-50%)'}
                   bg={'orangered'}
                   _hover={{ opacity: 0.7 }}
-                  onClick={handleFileUploadImage}
+                  onClick={onOpenFileManager}
                 >
                   Upload New Image
                 </Button>
@@ -168,7 +196,9 @@ function UserDetails() {
               <Input
                 hidden
                 type='file'
-                ref={fileInput} />
+                ref={fileInput}
+                onChange={onLocalyUploadImage}
+              />
             </Center>
           </Stack>
           <Stack className='form' position={'absolute'} right={0} top={'-29%'}>
@@ -191,7 +221,7 @@ function UserDetails() {
             <FormLabel textAlign={'center'}>New Password</FormLabel>
             <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
           </FormControl>
-          <FormControl id='password'>
+          <FormControl id='password-confirm'>
             <FormLabel textAlign={'center'}>Confirm password</FormLabel>
             <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
           </FormControl>
@@ -200,7 +230,7 @@ function UserDetails() {
           <Button bg={'red.400'} color={'white'} w='full' _hover={{ bg: 'red.400', }} onClick={onNavigate}>
             Cancel
           </Button>
-          <Button variant={'primaryButton'} w='full' _hover={{ bg: 'blue.500', }} onClick={onUpdate}>
+          <Button variant={'primaryButton'} w='full' _hover={{ bg: 'blue.500', }} onClick={uploadImageToFB}>
             Update Info
           </Button>
         </Stack>
