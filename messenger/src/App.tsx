@@ -13,7 +13,7 @@ import { getUserData } from './services/users.service';
 import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
 import Chat from './components/Chat/Chat';
 import NewChat from './components/NewChat/NewChat';
-// import UserDetails from './view/UserDetails/UserDetails';
+import UserDetails from './components/UserDetails/UserDetails';
 
 function App(): JSX.Element {
   // loading, error
@@ -64,7 +64,7 @@ function App(): JSX.Element {
           <Route path='/login' element={!appState.user && <Login />} />
           <Route path='/new-chat' element={<AuthenticatedRoute><NewChat /></AuthenticatedRoute>} />
           <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
-          {/* <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} /> */}
+          <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} />
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
           <Route path='/edit-team-information' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
