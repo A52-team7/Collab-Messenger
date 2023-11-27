@@ -92,7 +92,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
               <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
                 <HStack>
                   <Avatar
-                    bg={'white'}
                     size={'md'}
                     src={userData.profilePhoto} />
                   <VStack
