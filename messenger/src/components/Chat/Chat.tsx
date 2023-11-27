@@ -16,6 +16,7 @@ import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
+import EmojiPopover from '../EmojiPopover/EmojiPopover';
   
   
   
@@ -32,6 +33,14 @@ import { MdMoreHoriz } from "react-icons/md";
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 
+  const [emoji, setEmoji] = useState('');
+
+  // console.log(emoji.native);
+
+  useEffect(() => {
+    setNewMessage(newMessage => newMessage+ emoji.native);
+  }, [emoji]);
+  
 
   // useEffect(() => {
   //   getChannelById(channelId)
@@ -122,6 +131,10 @@ import { MdMoreHoriz } from "react-icons/md";
     addMemberToChannel(channelId, user);
   }
 
+  const onGetEmoji = (emoji: string) => {
+    setEmoji(emoji);
+  }
+ 
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
@@ -186,6 +199,7 @@ import { MdMoreHoriz } from "react-icons/md";
                   onKeyDown={handleKeyDownForMessage}
                   onChange={updateNewMessage}
                 />
+                <EmojiPopover onGetEmoji={onGetEmoji}/>
                 <Button
                   bg={'blue'}
                   rounded={'full'}
