@@ -37,7 +37,7 @@ const SearchUsersBox = ({
 
   const createChat = () => {
     if (userData === null) return;
-    addChannel(userData.handle, firstName + ' ' + lastName, [])
+    addChannel(userData.handle, firstName + ' ' + lastName, {})
       .then(result => {
         userChannel(result.id, userData.handle);
         addMemberToChannel(result.id, userData.handle);
