@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/popover";
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
+import { getEmojiDataFromNative } from "emoji-mart";
 import { BsEmojiGrin } from "react-icons/bs";
 
 export interface EmojiPopoverProps {
@@ -9,6 +10,7 @@ export interface EmojiPopoverProps {
 }
 
 const EmojiPopover = ({onGetEmoji}: EmojiPopoverProps) => {
+    getEmojiDataFromNative('👍').then(console.log);
     return(
         <Popover>
         <PopoverTrigger>

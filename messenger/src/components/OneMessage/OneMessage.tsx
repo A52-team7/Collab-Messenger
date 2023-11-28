@@ -3,8 +3,9 @@ import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
 import { getUserByHandle } from "../../services/users.service";
-import { VscReactions } from "react-icons/vsc";
 import { GoReply } from "react-icons/go";
+import ReactionPopover from "../ReactionPopover/ReactionPopover";
+import Linkify from 'react-linkify';
 
 export interface Author {
   handle: string;
@@ -40,7 +41,7 @@ return(
         {authorOfMessage && <Flex>
             <Text pl='7px' pr='7px' mr='10px'  rounded='md' bg='teal.400'>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
             <Text fontSize='sm'pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
-            <Button p={'1'} size={'xs'}><VscReactions size={20}/></Button>
+            <ReactionPopover/>
             <Button p={1} size={'xs'}><GoReply size={20}/></Button>
         </Flex> 
         }  
@@ -56,7 +57,13 @@ return(
             shadow='md'
             w={'80%'} 
           >
+           <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+            <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+              {decoratedText}
+            </a>
+          )}>
             {message.content}
+          </Linkify>
           </Box> 
     </Flex>   
 )
