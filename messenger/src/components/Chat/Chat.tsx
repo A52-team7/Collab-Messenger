@@ -29,16 +29,18 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const {userData} = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState<string>('');
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 
-  const [emoji, setEmoji] = useState('');
+  const [emoji, setEmoji] = useState<string>('');
 
   // console.log(emoji.native);
 
   useEffect(() => {
-    setNewMessage(newMessage => newMessage+ emoji.native);
+    if(emoji){
+      setNewMessage(newMessage => newMessage+ emoji.native);
+    }
   }, [emoji]);
   
 
@@ -138,7 +140,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
-    channalId: channelId
+    channelId: channelId
   };
 
       return (
