@@ -24,7 +24,7 @@ const UsersList = ({members, channelId, teamId, removeChannelMembers}: UserListP
         <>
             <UnorderedList 
             styleType = 'none' 
-            w={'100%'} >
+            w={'80%'} >
             {members.map((member: string) => (
                 <Box key={member}>
                     {channelId && (

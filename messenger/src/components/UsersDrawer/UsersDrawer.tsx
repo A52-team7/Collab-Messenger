@@ -18,7 +18,7 @@ export interface UserDrawerProps{
     team?: Team;
 }
 
-const UsersDrawer = React.memo(({members, updateNewMember, channelId, team}: UserDrawerProps): JSX.Element => {
+const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProps): JSX.Element => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const firstField = React.useRef<HTMLElement>(null);
 
@@ -100,6 +100,6 @@ const UsersDrawer = React.memo(({members, updateNewMember, channelId, team}: Use
         </Drawer>
       </>
     )
-  });
+  };
 
 export default UsersDrawer

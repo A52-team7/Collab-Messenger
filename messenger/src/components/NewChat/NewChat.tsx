@@ -155,15 +155,9 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
                     
                      
                   </Stack>
-                  <Stack w={'250px'} h={'31vh'}
+                  <Stack h={'31vh'}
                     overflowY={'scroll'}
-                    css={{
-                    '&::-webkit-scrollbar': {
-                        display: 'none',
-                    },
-                    'msOverflowStyle': 'none',  /* IE and Edge */
-                    'scrollbarWidth': 'none',  /* Firefox */
-                    }}>
+                    >
                     <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers}/>
                 </Stack>
                 <Stack w={'100%'} alignItems={'center'}>
