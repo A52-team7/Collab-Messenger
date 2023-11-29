@@ -28,30 +28,13 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
     
   const location = useLocation();
 
-  const teamId = location.state?.id;
+  const team = location.state?.team;
 
   const navigate = useNavigate();
 
   const { userData } = useContext<UserState>(AppContext);
  
   const [channelForm, setChannelForm] = useState<ChannelForm>({title: '', members: {}});
-
-  console.log(teamId);
-  console.log(channelForm.members);
-  
-  
-
-  const [team, setTeam] = useState<Team>({});
-
-   useEffect(() => {
-    if(teamId){
-    getTeamById(teamId)
-    .then(elTeam => {
-      setTeam({...elTeam})
-    })
-    .catch(e => console.log(e))
-  }
-   }, [])
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -90,22 +73,22 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
     if (Object.keys(channelForm.members).length === 0) {
         return alert(`Enter channel members`)
     }
-    if(teamId){
-      addChannel(userData.handle, channelForm.title, channelForm.members, teamId)
+    if(team){
+      addChannel(userData.handle, channelForm.title, channelForm.members, team.id)
           .then(result => {
               Object.keys(result.members).forEach(member => {
                   userChannel(result.id, member);
               })
               userChannel(result.id, userData.handle);
               addMemberToChannel(result.id, userData.handle);
-              if(teamId !== null){
-                updateTeamChannel(teamId, result.id)
+              if(team.id !== null){
+                updateTeamChannel(team.id, result.id)
               }
 
               return result;
           })
           .then(res => {
-              navigate('/chat', { state: { channelId: res.id } });
+              navigate('/chat', { state: { channelId: res.id, team: team } });
           })
           .catch(e => console.log(e));
     }else{
@@ -148,12 +131,9 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
                   onChange={updateTitle('title')}/>
                   <FormLabel>Add members</FormLabel>
                   <Stack mb={5} w={'100%'}>
-                    {/* {teamId && (
+                    {team ? (
                       <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
-                    )} */}
-                    <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
-                    
-                     
+                    ) : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>)}                                       
                   </Stack>
                   <Stack h={'31vh'}
                     overflowY={'scroll'}

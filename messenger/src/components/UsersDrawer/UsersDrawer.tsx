@@ -26,8 +26,6 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
 
     console.log(team);
     
-  
-    
     const onLeaveChatOrTeam = () => {
         if(userData === null) return;
         if(channelId){
@@ -40,21 +38,9 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
   
     return (
       <>
-        {(channelId) && (<Button colorScheme='teal' onClick={onOpen}>
+        <Button colorScheme='teal' onClick={onOpen}>
             <BsPersonFillAdd size={30}/><Text fontSize='xl'>{members.length}</Text>
-        </Button>)}
-        {team &&
-        (<Button
-          w="194px"
-          variant="ghost"
-          rightIcon={<BsPersonFillAdd size={20}/>}
-          justifyContent="space-between"
-          fontWeight="normal"
-          fontSize="sm"
-         onClick={onOpen}>
-        Add/Remove members
-    </Button>)
-        }
+        </Button>
         <Drawer
           isOpen={isOpen}
           placement='right'
@@ -70,14 +56,13 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
   
             <DrawerBody>
                 <Stack w={'18vw'} mb={20}>
-                    <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
+                {team ? (
+                      <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
+                    ) : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>)}
                 </Stack>
                 <Stack>
                   {channelId && (
                     <UsersList {...{members: members, channelId: channelId}}/>
-                  )}
-                  {team && (
-                    <UsersList {...{members: Object.keys(team.members), teamId: team.id}}/>
                   )}
                 </Stack>
                 <Stack alignItems={'center'}>

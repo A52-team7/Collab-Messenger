@@ -4,6 +4,7 @@ import { getAllUsersData } from '../../services/users.service';
 import { Input, Box } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
 import { ADD_USERS } from '../../common/constants';
+import {Team} from '../CreateTeam/CreateTeam';
 
 export interface User {
   handle: string;
@@ -16,7 +17,7 @@ export interface User {
 interface AddUSerSearchProps {
   searchType: string;
   updateNewMember?: (user: string) => void;
-  team?: object;
+  team?: Team;
 }
 
 const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps): JSX.Element => {
@@ -71,13 +72,17 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
     getAllUsersData()
       .then(data => {
         const snapshot: User[] = Object.values(data.val());
-        // TODO: Implement when getting team name is implemented.
-
-        // if (channelId) {
-        //   const filteredUsersByTeam = snapshot.filter((user) => user.myChannels.channelId === true);
-        //   return setInitialData(filteredUsersByTeam);
-        // }
-        // console.log(snapshot);
+        console.log(team,'t')
+        if (team) {
+          const members = Object.keys(team.members)
+          const filteredUsersByTeam = snapshot.filter((user) => {
+            if(members.includes(user.handle)){
+              return user
+            }});
+            console.log(filteredUsersByTeam,'sea')
+          return setInitialData(filteredUsersByTeam);
+        }
+        console.log(snapshot);
         setInitialData(snapshot);
       })
       .catch((err: Error) => console.error(err));

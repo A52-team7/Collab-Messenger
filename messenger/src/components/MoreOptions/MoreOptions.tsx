@@ -36,6 +36,7 @@ const MoreOptions = ({id}: IdTeam) => {
     owner: '',
     members: {},
     description: '',
+    generalChannel: '',
   })
 
   useEffect(() =>{
@@ -44,10 +45,10 @@ const MoreOptions = ({id}: IdTeam) => {
       return setTeam(res);
     })
     .catch(e => console.log(e));
-
+    console.log(team, 'more');
   },[])
 
-  console.log(team);
+
   
 
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const MoreOptions = ({id}: IdTeam) => {
 
 
   const addNewChannel = () =>{
-      navigate('/new-chat', {state: {id}}) 
+      navigate('/new-chat', {state: {team}}) 
   }
 
   const addNewMember =(user: string) => {
