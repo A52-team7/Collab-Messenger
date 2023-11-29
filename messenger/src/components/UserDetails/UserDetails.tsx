@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Button, Flex, FormControl, FormLabel, Heading,
   Input, Stack, Avatar, Center, Box, AlertTitle,
-  FormErrorMessage, Text, useDisclosure, Alert, AlertDescription, AlertIcon, CloseButton
+  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton
 } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
 import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
