@@ -36,7 +36,8 @@ export const getTeamById = (id: string) => {
 
 export const getTeamByName = (name: string) => {
     return get(query(ref(db, 'teams'), orderByChild('name'), equalTo(name)))
-};
+    }
+
 
 export const updateTeamChannel = (idTeam: string, idChannel: string) => {
     return update(ref(db), {[`teams/${idTeam}/channels/${idChannel}`]: true} )
@@ -76,4 +77,18 @@ export const addMemberToTeam = (teamId: string, memberId: string) => {
     updateTeamMembers[`/teams/${teamId}/members/${memberId}`] = true;
 
     return update(ref(db), updateTeamMembers);
+}
+
+export const updateGeneralTeamChannel = (idTeam: string, idChannel: string) => {
+    return update(ref(db), {[`teams/${idTeam}/generalChannel`]: idChannel} )
+}
+
+export const updateTeamName = (idTeam: string, title: string) => {
+    return update(ref(db), 
+    {[`teams/${idTeam}/name`]: title} )
+}
+
+export const updateTeamDescription = (idTeam: string, description: string) => {
+    return update(ref(db), 
+    {[`teams/${idTeam}/description`]: description} )
 }

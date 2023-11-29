@@ -26,7 +26,8 @@ import Reply from '../Reply/Reply';
   const location = useLocation();
 
   const channelId = location.state?.channelId;
-
+  const team = location.state?.team;
+console.log(team, 'team')
   const {userData} = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -145,8 +146,9 @@ import Reply from '../Reply/Reply';
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
-    channelId: channelId
-  };
+    channelId: channelId,
+    team: team,
+  }
 
       return (
           <Flex

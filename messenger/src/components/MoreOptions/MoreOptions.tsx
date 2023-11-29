@@ -36,6 +36,7 @@ const MoreOptions = ({id}: IdTeam) => {
     owner: '',
     members: {},
     description: '',
+    generalChannel: '',
   })
 
   useEffect(() =>{
@@ -44,10 +45,10 @@ const MoreOptions = ({id}: IdTeam) => {
       return setTeam(res);
     })
     .catch(e => console.log(e));
-
+    console.log(team, 'more');
   },[])
 
-  console.log(team);
+
   
 
   const navigate = useNavigate();
@@ -56,8 +57,7 @@ const MoreOptions = ({id}: IdTeam) => {
 
 
   const addNewChannel = () =>{
-    console.log(id,'nav')
-      navigate('/new-chat', {state: {id}}) 
+      navigate('/new-chat', {state: {team}}) 
   }
 
   const addNewMember =(user: string) => {
@@ -70,12 +70,6 @@ const MoreOptions = ({id}: IdTeam) => {
   const removeTeam = () =>{
 // soon
   }
-
-  const UserDrawerProps = {
-    members: Object.keys(team.members),
-    updateNewMember: addNewMember,
-    team: team,
-  };
 
   return (
     <Flex justifyContent="center" mt={4}>
@@ -102,7 +96,6 @@ const MoreOptions = ({id}: IdTeam) => {
                 onClick={addNewChannel}>
                 Add channel
               </Button>
-              <UsersDrawer {...UserDrawerProps}/>
               <Button
                 w="194px"
                 variant="ghost"
@@ -110,7 +103,7 @@ const MoreOptions = ({id}: IdTeam) => {
                 justifyContent="space-between"
                 fontWeight="normal"
                 fontSize="sm"
-                onClick={() => navigate('/edit-team-information')}>
+                onClick={() => navigate('/edit-team-information', {state:{team}})}>
                 Edit team information
               </Button>
               <Button

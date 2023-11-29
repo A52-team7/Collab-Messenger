@@ -8,9 +8,10 @@ interface UserListProps {
     channelId?: string,
     teamId?: string,
     removeChannelMembers?: (value: string) => void;
+    removeTeamMembers?: (value: string) => void;
 }
 
-const UsersList = ({members, channelId, teamId, removeChannelMembers}: UserListProps): JSX.Element => {    
+const UsersList = ({members, channelId, teamId, removeChannelMembers, removeTeamMembers}: UserListProps): JSX.Element => {    
     const bottomRef = useRef<Element | null>(null);
 
     console.log(members);
@@ -31,7 +32,7 @@ const UsersList = ({members, channelId, teamId, removeChannelMembers}: UserListP
                          <UserTag handle={member} channelId={channelId} removeChannelMembers={removeChannelMembers}/>
                     )}
                     {teamId && (
-                        <UserTag handle={member} teamId={teamId} removeChannelMembers={removeChannelMembers}/>
+                        <UserTag handle={member} teamId={teamId} removeChannelMembers={removeTeamMembers}/>
                     )}
                     {!channelId && !teamId && (
                         <UserTag handle={member} channelId={channelId} removeChannelMembers={removeChannelMembers}/>
