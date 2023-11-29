@@ -23,23 +23,27 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
     const firstField = React.useRef<HTMLElement>(null);
 
     const {userData} = useContext(AppContext);
+
+    console.log(team);
+    
   
     
     const onLeaveChatOrTeam = () => {
         if(userData === null) return;
         if(channelId){
         deleteMemberFromChannel(channelId, userData.handle);
-      } else if(team?.id){
-        deleteMemberFromTeam(team?.id, userData.handle);
+      } else if(team){
+        deleteMemberFromTeam(team.id, userData.handle);
       }
 
     }
   
     return (
       <>
-        {(channelId) ? (<Button colorScheme='teal' onClick={onOpen}>
+        {(channelId) && (<Button colorScheme='teal' onClick={onOpen}>
             <BsPersonFillAdd size={30}/><Text fontSize='xl'>{members.length}</Text>
-        </Button>) :
+        </Button>)}
+        {team &&
         (<Button
           w="194px"
           variant="ghost"
@@ -69,10 +73,19 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
                 </Stack>
                 <Stack>
-                    <UsersList {...{members: members, id: channelId}}/>
+                  {channelId && (
+                    <UsersList {...{members: members, channelId: channelId}}/>
+                  )}
+                  {team && (
+                    <UsersList {...{members: Object.keys(team.members), teamId: team.id}}/>
+                  )}
                 </Stack>
                 <Stack alignItems={'center'}>
-                    {team?.owner === userData?.handle && <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>}
+                    {team && team?.owner !== userData?.handle ? ( 
+                    <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>
+                    ) : (
+                      <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>
+                    )}
                 </Stack>
             </DrawerBody>
   
@@ -87,6 +100,6 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
         </Drawer>
       </>
     )
-  }
+  };
 
 export default UsersDrawer

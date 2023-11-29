@@ -1,10 +1,10 @@
 import {
     Flex,
     Stack,
-    Input,
     Button,
     useColorModeValue,
     Heading,
+    Textarea,
   } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import { userChannel, userMessage } from '../../services/users.service';
@@ -29,16 +29,18 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const {userData} = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState<string>('');
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 
-  const [emoji, setEmoji] = useState('');
+  const [emoji, setEmoji] = useState<string>('');
 
   // console.log(emoji.native);
 
   useEffect(() => {
-    setNewMessage(newMessage => newMessage+ emoji.native);
+    if(emoji){
+      setNewMessage(newMessage => newMessage+ emoji.native);
+    }
   }, [emoji]);
   
 
@@ -94,7 +96,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
     
   
 
-  const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if(userData === null) return;
     if (event.key === 'Enter') {
         const message = (event.target as HTMLInputElement).value.trim();
@@ -111,7 +113,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
       }
   }
 
-  const updateNewMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateNewMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewMessage(e.target.value)
   }
 
@@ -138,7 +140,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
-    channalId: channelId
+    channelId: channelId
   };
 
       return (
@@ -162,13 +164,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
             maxH={'60vh'}
             w={'inherit'}
             overflowY={'scroll'}
-            css={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              'msOverflowStyle': 'none',  /* IE and Edge */
-              'scrollbarWidth': 'none',  /* Firefox */
-            }}>
+            >
               {messages.length > 0 &&
                 <MessagesList {...{messages}}/>
               }              
@@ -183,15 +179,17 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
               align={'center'}
               position= {'fixed'}
               bottom= {'0'}>
-              <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'}>
-                <Input
+              <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
+                <Textarea
                   type={'text'}
+                  mt={-3}
                   placeholder={'Write something...'}
                   value={newMessage}
                   color={useColorModeValue('gray.800', 'gray.200')}
                   bg={useColorModeValue('gray.100', 'gray.600')}
-                  rounded={'full'}
+                  rounded={'xl'}
                   border={0}
+                  resize={'none'}
                   _focus={{
                     bg: useColorModeValue('gray.200', 'gray.800'),
                     outline: 'none',

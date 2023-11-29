@@ -4,14 +4,16 @@ import { getUserByHandle } from "../../services/users.service";
 import { Author } from "../OneMessage/OneMessage";
 import RemoveUser from "../RemoveUser/RemoveUser";
 import { deleteMemberFromChannel } from "../../services/channels.service";
+import { deleteMemberFromTeam } from "../../services/teams.service";
 
 interface UserTagProps {
     handle: string;
-    id?:string,
+    channelId?:string,
+    teamId?: string,
     removeChannelMembers?: (value: string) => void;
 }
 
-const UserTag = ({ handle, id, removeChannelMembers }: UserTagProps) => {
+const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagProps) => {
 
     const [userInfo, setUserInfo] = useState<Author>();
     const [displayName, setDisplayName] = useState('');
@@ -26,7 +28,11 @@ const UserTag = ({ handle, id, removeChannelMembers }: UserTagProps) => {
     }, [handle]);
 
     const onDelete = () => {
-        deleteMemberFromChannel(id, handle);
+        if(channelId){
+            deleteMemberFromChannel(channelId, handle);
+        }else if(teamId){
+            deleteMemberFromTeam(teamId, handle);
+        }
     }
 
     return(

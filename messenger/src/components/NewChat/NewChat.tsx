@@ -36,17 +36,22 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
  
   const [channelForm, setChannelForm] = useState<ChannelForm>({title: '', members: {}});
 
+  console.log(teamId);
+  console.log(channelForm.members);
+  
+  
+
   const [team, setTeam] = useState<Team>({});
 
    useEffect(() => {
-    if(teamId !== null){
+    if(teamId){
     getTeamById(teamId)
     .then(elTeam => {
       setTeam({...elTeam})
     })
     .catch(e => console.log(e))
   }
-   })
+   }, [])
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -85,23 +90,39 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
     if (Object.keys(channelForm.members).length === 0) {
         return alert(`Enter channel members`)
     }
-    addChannel(userData.handle, channelForm.title, channelForm.members, teamId)
-        .then(result => {
-            Object.keys(result.members).forEach(member => {
-                userChannel(result.id, member);
-            })
-            userChannel(result.id, userData.handle);
-            addMemberToChannel(result.id, userData.handle);
-            if(teamId !== null){
-              updateTeamChannel(teamId, result.id)
-            }
+    if(teamId){
+      addChannel(userData.handle, channelForm.title, channelForm.members, teamId)
+          .then(result => {
+              Object.keys(result.members).forEach(member => {
+                  userChannel(result.id, member);
+              })
+              userChannel(result.id, userData.handle);
+              addMemberToChannel(result.id, userData.handle);
+              if(teamId !== null){
+                updateTeamChannel(teamId, result.id)
+              }
 
-            return result;
-        })
-        .then(res => {
-            navigate('/chat', { state: { channelId: res.id } });
-        })
-        .catch(e => console.log(e));
+              return result;
+          })
+          .then(res => {
+              navigate('/chat', { state: { channelId: res.id } });
+          })
+          .catch(e => console.log(e));
+    }else{
+      addChannel(userData.handle, channelForm.title, channelForm.members)
+          .then(result => {
+              Object.keys(result.members).forEach(member => {
+                  userChannel(result.id, member);
+              })
+              userChannel(result.id, userData.handle);
+              addMemberToChannel(result.id, userData.handle);
+              return result;
+          })
+          .then(res => {
+              navigate('/chat', { state: { channelId: res.id } });
+          })
+          .catch(e => console.log(e));
+    }
         
   }
 
@@ -127,17 +148,16 @@ import { getTeamById, updateTeamChannel } from '../../services/teams.service';
                   onChange={updateTitle('title')}/>
                   <FormLabel>Add members</FormLabel>
                   <Stack mb={5} w={'100%'}>
-                     <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
+                    {/* {teamId && (
+                      <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
+                    )} */}
+                    <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>
+                    
+                     
                   </Stack>
-                  <Stack w={'250px'} h={'31vh'}
+                  <Stack h={'31vh'}
                     overflowY={'scroll'}
-                    css={{
-                    '&::-webkit-scrollbar': {
-                        display: 'none',
-                    },
-                    'msOverflowStyle': 'none',  /* IE and Edge */
-                    'scrollbarWidth': 'none',  /* Firefox */
-                    }}>
+                    >
                     <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers}/>
                 </Stack>
                 <Stack w={'100%'} alignItems={'center'}>

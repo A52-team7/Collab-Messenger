@@ -40,9 +40,15 @@ const MoreOptions = ({id}: IdTeam) => {
 
   useEffect(() =>{
     getTeamById(id)
-    .then(res => setTeam(res))
+    .then(res => {
+      return setTeam(res);
+    })
+    .catch(e => console.log(e));
 
   },[])
+
+  console.log(team);
+  
 
   const navigate = useNavigate();
   const { userData } = useContext<UserState>(AppContext);
@@ -68,7 +74,7 @@ const MoreOptions = ({id}: IdTeam) => {
   const UserDrawerProps = {
     members: Object.keys(team.members),
     updateNewMember: addNewMember,
-    teamId: team.id,
+    team: team,
   };
 
   return (
