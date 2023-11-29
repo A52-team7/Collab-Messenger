@@ -1,4 +1,4 @@
-import { ref, push, get, query, equalTo, orderByChild, DataSnapshot } from 'firebase/database';
+import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 
 
@@ -40,6 +40,35 @@ export const addMessage = (content: string, handle: string, channelId: string, i
         })
         .catch(e => console.log(e));
 };
+
+
+export const addReply = (content: string, handle: string, channelId: string, toMessage: string, isTech: boolean, typeOfMessage: string) => {
+
+    return push(
+        ref(db, 'messages'),
+        {
+            author: handle,
+            toChannel: channelId,
+            toMessage,
+            content,
+            createdOn: Date.now(),
+            techMessage: isTech,
+            typeOfMessage,
+        },
+    )
+        .then(result => {
+            if(result.key === null) return;
+            return getMessageById(result.key);
+        })
+        .catch(e => console.log(e));
+};
+
+export const addReplyToMessage = (messageId: string, replyId: string) => {
+    const updateMessageReplies: {[key: string]: boolean} = {};
+    updateMessageReplies[`/messages/${messageId}/replies/${replyId}`] = true;
+
+    return update(ref(db), updateMessageReplies);
+}
 
 export const getMessageById = (id: string) => {
 

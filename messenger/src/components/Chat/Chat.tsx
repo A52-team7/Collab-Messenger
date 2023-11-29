@@ -17,6 +17,7 @@ import { USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
+import Reply from '../Reply/Reply';
   
   
   
@@ -32,6 +33,10 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const [newMessage, setNewMessage] = useState<string>('');
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
+
+  const [replyIsVisible, setReplyIsVisible] = useState(false);
+  const [messageToReply, setMessageToReply] = useState<Message>({});
+
 
   const [emoji, setEmoji] = useState<string>('');
 
@@ -99,7 +104,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if(userData === null) return;
     if (event.key === 'Enter') {
-        const message = (event.target as HTMLInputElement).value.trim();
+        const message = (event.target as HTMLTextAreaElement).value.trim();
         if (message) {
           addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
@@ -107,7 +112,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
               userMessage(result.id, userData.handle);          
           })
           .catch(e =>console.error(e));
-          (event.target as HTMLInputElement).value = '';
+          (event.target as HTMLTextAreaElement).value = '';
           setNewMessage('');
         }
       }
@@ -166,10 +171,10 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
             overflowY={'scroll'}
             >
               {messages.length > 0 &&
-                <MessagesList {...{messages}}/>
+                <MessagesList {...{messages, setReplyIsVisible, setMessageToReply}}/>
               }              
             </Stack>
-            <Stack
+            {!replyIsVisible ? (<Stack
               boxShadow={'2xl'}
               bg={useColorModeValue('white', 'gray.700')}
               rounded={'xl'}
@@ -181,7 +186,6 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
               bottom= {'0'}>
               <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
                 <Textarea
-                  type={'text'}
                   mt={-3}
                   placeholder={'Write something...'}
                   value={newMessage}
@@ -210,6 +214,9 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
                 </Button>
               </Stack>
             </Stack>
+            ) : (
+              <Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible}/>
+            )}
           </Flex>
         )
   }

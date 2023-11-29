@@ -36,6 +36,7 @@ export const TITLE_NAME_LENGTH_MAX: number = 40;
 
 //type of message
 export const USER_MESSAGE = 'user message';
+export const REPLY = 'reply';
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [

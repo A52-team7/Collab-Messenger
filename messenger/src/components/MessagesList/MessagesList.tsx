@@ -7,13 +7,18 @@ export interface Message {
     content: string;
     author: string;
     createdOn: Date;
+    techMessage: boolean;
+    typeOfMessage: string;
+    toMessage: string;
 }
 
 interface MessagesListProps{
     messages: Message[];
+    setReplyIsVisible: (bool:boolean) => void;
+    setMessageToReply: (messageContent: Message) => void;
 }
 
-const MessagesList = ({messages}: MessagesListProps): JSX.Element => {    
+const MessagesList = ({messages, setReplyIsVisible, setMessageToReply}: MessagesListProps): JSX.Element => {    
     const bottomRef = useRef<Element | null>(null);
 
     useEffect(() => {
@@ -25,7 +30,7 @@ const MessagesList = ({messages}: MessagesListProps): JSX.Element => {
             <UnorderedList  styleType = 'none' w={'70vw'}>
             {messages.map((message: Message) => (
                 <Box key={message.id}>
-                    <OneMessage {...message}/>
+                    <OneMessage {...{message, setReplyIsVisible, setMessageToReply}}/>
                 </Box>
             ))}
             </UnorderedList>
