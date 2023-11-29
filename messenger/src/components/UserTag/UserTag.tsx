@@ -1,10 +1,11 @@
 import { Avatar, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getUserByHandle } from "../../services/users.service";
 import { Author } from "../OneMessage/OneMessage";
 import RemoveUser from "../RemoveUser/RemoveUser";
 import { deleteMemberFromChannel } from "../../services/channels.service";
 import { deleteMemberFromTeam } from "../../services/teams.service";
+import AppContext from "../../context/AppContext";
 
 interface UserTagProps {
     handle: string;
@@ -17,6 +18,8 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
 
     const [userInfo, setUserInfo] = useState<Author>();
     const [displayName, setDisplayName] = useState('');
+
+    const {userData} = useContext(AppContext);
 
     useEffect(() => {
         getUserByHandle(handle)
@@ -38,7 +41,7 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     return(
         <>
         {userInfo && (
-            <Tag size='lg' w={'fit-content'} colorScheme='red' borderRadius='full'>
+            <Tag size='lg' w={'205px'} h={'45px'} colorScheme='red' borderRadius='full'>
                 <Avatar
                     size='xs'
                     name={displayName}
@@ -46,10 +49,14 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
                     mr={2}
                 />
                 <TagLabel>{displayName}</TagLabel>
-                {!removeChannelMembers ? (
-                    <RemoveUser name={displayName} onDelete={onDelete} selfRemove={false}/>
-                ) : (
-                    <TagCloseButton onClick={() => removeChannelMembers(handle)} />
+                {handle !== userData?.handle && (
+                    <>
+                        {!removeChannelMembers ? (
+                            <RemoveUser name={displayName} onDelete={onDelete} selfRemove={false}/>
+                        ) : (
+                            <TagCloseButton onClick={() => removeChannelMembers(handle)} />
+                        )}
+                    </>
                 )}
             </Tag>
         )}
