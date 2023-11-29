@@ -14,6 +14,7 @@ import AuthenticatedRoute from './hoc/AuthenticatedRoute/AuthenticatedRoute';
 import Chat from './components/Chat/Chat';
 import NewChat from './components/NewChat/NewChat';
 import UserDetails from './components/UserDetails/UserDetails';
+import EditTeamInfo from './components/EditTeamInfo/EditTeamInfo';
 
 function App(): JSX.Element {
   // loading, error
@@ -65,7 +66,7 @@ function App(): JSX.Element {
           <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} />
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
-          <Route path='/edit-team-information' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
+          <Route path='/edit-team-information' element={<AuthenticatedRoute><EditTeamInfo /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>
