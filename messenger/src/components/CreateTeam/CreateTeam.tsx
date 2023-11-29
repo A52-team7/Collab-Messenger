@@ -15,11 +15,12 @@ import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AppContext, { UserState } from '../../context/AppContext';
 import { TITLE_NAME_LENGTH_MIN, TITLE_NAME_LENGTH_MAX } from '../../common/constants';
-import { getTeamByName, createTeam, updateTeamChannel } from '../../services/teams.service'
+import { getTeamByName, createTeam, updateTeamChannel, updateGeneralTeamChannel } from '../../services/teams.service'
 import { updateUserTeams, userChannel } from '../../services/users.service';
 import { addChannel } from '../../services/channels.service';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS } from '../../common/constants';
+import UsersList from '../UsersList/UsersList';
 
 export interface Team {
   id: string,
@@ -28,7 +29,8 @@ export interface Team {
   members: { [handle: string]: boolean },
   description: string,
   createdOn?: string,
-  channels?: { [id: string]: boolean }
+  channels?: { [id: string]: boolean },
+  generalChannel: string
 }
 
 const CreateTeam = () => {
@@ -39,6 +41,7 @@ const CreateTeam = () => {
     owner: '',
     members: {},
     description: '',
+    generalChannel:'',
   })
 
   const navigate = useNavigate();
@@ -92,7 +95,7 @@ const CreateTeam = () => {
     if (userData === null) return alert('Please login');
 
     getTeamByName(teamForm.name)
-      .then(result => {
+      .then((result) => {
         if (result.exists()) {
           return alert(`Team name with name ${teamForm.name} already exist!`);
         }
@@ -108,12 +111,14 @@ const CreateTeam = () => {
           owner: '',
           members: {},
           description: '',
+          generalChannel:'',
         })
         updateUserTeams(userData.handle, team.id)
         addChannel(userData.handle, 'General',team.members, team.id)
           .then(channel => {
             Object.keys(team.members).forEach((member: string) => userChannel(channel.id, member))
-            updateTeamChannel(team.id, channel.id)
+            updateTeamChannel(team.id, channel.id);
+            updateGeneralTeamChannel(team.id, channel.id);
           })
       }).catch(e => console.log(e))
   }
@@ -150,14 +155,11 @@ const CreateTeam = () => {
           <FormLabel>Add members</FormLabel>
           {/*HERE IS THE INPUT FOR ADDING USERS!*/}
           <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
-          <Flex direction={'row'}>
-            {Object.keys(teamForm.members).map((member) => (
-              <Tag key={member} bg={'baseBlue'} colorScheme="blue" w={'fit-content'}>
-                <TagLabel>{member}</TagLabel>
-                <TagCloseButton onClick={() => removeTeamMembers(member)} />
-              </Tag>
-            ))}
-          </Flex>
+          <Stack h={'15vh'}
+          overflowY={'scroll'}
+          >
+          <UsersList members={Object.keys(teamForm.members)} removeChannelMembers={removeTeamMembers}/>
+          </Stack>
         </FormControl>
         <FormControl id="description">
           <FormLabel>Description</FormLabel>
