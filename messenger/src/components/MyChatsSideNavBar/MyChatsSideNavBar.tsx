@@ -32,8 +32,9 @@ const MyChatsSideNavBar = () => {
               .then(res => res)
               .catch(e =>console.error(e));
              })
-             ).then(channelMessages => {
-                setChannels([...channelMessages]);          
+             ).then(userChannels => {
+                const onlyUserChats = userChannels.filter(channel => !Object.keys(channel).includes('toTeam'));
+                setChannels([...onlyUserChats]);          
             })
             .catch(error => console.error(error.message));
             });
