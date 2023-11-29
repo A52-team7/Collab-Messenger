@@ -27,8 +27,6 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
-  console.log('THIS IS APP.TSX AND I HAVE RERENDERED!!!');
-
   // update the user in the app state to match the one retrieved from the hook above
   if (appState.user !== userAuth) {
     setAppState((prevState: UserState) => ({
