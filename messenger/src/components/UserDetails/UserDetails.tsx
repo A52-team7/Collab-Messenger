@@ -1,28 +1,45 @@
-import { useContext, useEffect, useRef } from 'react';
-import { useState } from 'react';
-import AppContext from '../../context/AppContext';
-import { getUserData, updateUserData } from '../../services/users.service';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Flex, FormControl, FormLabel, Heading, Input, Stack, Image, Center, Box } from '@chakra-ui/react';
-import { loginUser, updateUserPassword } from '../../services/auth.service';
-import { getDatabase, ref as dbRef, set, Database, DatabaseReference } from "firebase/database";
+import {
+  Button, Flex, FormControl, FormLabel, Heading,
+  Input, Stack, Avatar, Center, Box, AlertTitle,
+  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton
+} from '@chakra-ui/react';
+import AppContext from '../../context/AppContext';
+import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
 import { getDownloadURL, ref, uploadBytes, getStorage, StorageReference, FirebaseStorage } from 'firebase/storage';
-import { NAMES_LENGTH_MAX, NAMES_LENGTH_MIN, PASSWORD_LENGTH_MIN, PHONE_NUMBER_LENGTH_MAX } from '../../common/constants';
+import { getUserData } from '../../services/users.service';
+import { loginUser, updateUserPassword } from '../../services/auth.service';
+import {
+  MSG_NAMES_LENGTH, NAMES_LENGTH_MAX,
+  NAMES_LENGTH_MIN,
+  PASSWORD_LENGTH_MIN,
+  PHONE_NUMBER_LENGTH_MAX,
+  MSG_PASSWORD_NOT_MATCH,
+  MSG_PASSWORD_LENGTH,
+  MSG_INVALID_IMAGE_FORMAT
+} from '../../common/constants';
 
 interface formErrorsInitialStateInterface {
   error: boolean;
   fieldErr: boolean;
   firstNameLengthErr: boolean;
   lastNameLengthErr: boolean;
-  phoneLengthErr: boolean
+  phoneLengthErr: boolean;
+  passwordLengthErr: boolean;
+  passwordMatchErr: boolean;
+  invalidImageFormat: boolean;
 }
 
 const formErrorsInitialState: formErrorsInitialStateInterface = {
-  error: true,
+  error: false,
   fieldErr: false,
   firstNameLengthErr: false,
   lastNameLengthErr: false,
-  phoneLengthErr: true,
+  phoneLengthErr: false,
+  passwordLengthErr: false,
+  passwordMatchErr: false,
+  invalidImageFormat: false,
 }
 
 const UserDetails = (): JSX.Element => {
@@ -32,51 +49,159 @@ const UserDetails = (): JSX.Element => {
     firstName: userData?.firstName,
     lastName: userData?.lastName,
     password: '',
+    confirmPassword: '',
   });
   const [formErrors, setFormErrors] = useState({ ...formErrorsInitialState });
-  const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | undefined>();
+  const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | null>(null);
+  const [hasFormChanged, setHasFormChanged] = useState(false);
   const [submitChange, setSubmitChange] = useState(false);
+  const [formSubmissionLoading, setFormSubmissionLoading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const onNavigate = () => {
+    navigate(-1);
+  }
 
-  console.log('USER DETAILS IS rerendering!!!');
+  const {
+    isOpen: isVisible,
+    onClose,
+    onOpen,
+  } = useDisclosure({ defaultIsOpen: true })
 
-  const onOpenFileManager = () => {
+  const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setHasFormChanged(true);
+    if (field === 'firstName') setFormErrors({ ...formErrors, firstNameLengthErr: false });
+    if (field === 'lastName') setFormErrors({ ...formErrors, lastNameLengthErr: false });
+    if (field === 'password') setFormErrors({ ...formErrors, passwordLengthErr: false });
+    if (field === 'confirmPassword') setFormErrors({ ...formErrors, passwordMatchErr: false });
+    setForm({
+      ...form,
+      [field]: e.target.value,
+    });
+  };
+
+  const onOpenFileManager = (): void => {
     if (fileInput.current) {
       fileInput.current.click();
     }
   };
 
-  const onLocalyUploadImage = () => {
-    if (fileInput.current && fileInput.current.files) {
-      const file: File = fileInput.current.files[0];
-      setProfilePhotoSrc(file);
-    }
-  }
-
-  const uploadImageToFB = () => {
-    if (profilePhotoSrc) {
-      const storage: FirebaseStorage = getStorage();
-      const folderPath: string = `${userData?.handle}/${userData?.handle}-profilePhoto`;
-      const storageRef: StorageReference = ref(storage, folderPath);
-      uploadBytes(storageRef, profilePhotoSrc)
+  const changePassword = (): void => {
+    if (userData && form.password && form.confirmPassword) {
+      updateUserPassword(form.password)
         .then(() => {
-          const storageRef: StorageReference = ref(storage, folderPath);
-          return storageRef;
-        })
-        .then(storageRef => {
-          const url: Promise<string> = getDownloadURL(storageRef);
-          return url;
-        })
-        .then(url => {
-          const db: Database = getDatabase();
-          const userRef: DatabaseReference = dbRef(db, `users/${userData?.handle}`);
+          loginUser(userData.email, form.password)
+            .then(credential => {
+              console.log('credentials', credential);
 
-          set(userRef, { ...userData, profilePhoto: url });
-          setSubmitChange(prevState => !prevState);
-        })
-        .catch((err: Error) => console.log(err));
+              setContext((prevState) => ({
+                ...prevState,
+                user: credential.user,
+              }));
+            })
+        }).catch((error) => {
+          console.error(error.message);
+          setFormSubmissionLoading(true);
+        });
     }
-  }
+  };
+
+  const onLocallyUploadImage = (): void => {
+    if (fileInput.current && fileInput.current.files) {
+      let errors = { ...formErrors };
+      const file: File = fileInput.current.files[0];
+
+      if (file.type.startsWith('image/') || file.type === '') {
+        errors = { ...errors, invalidImageFormat: false, error: false }
+      } else {
+        errors = { ...errors, invalidImageFormat: true, error: true }
+      }
+      setFormErrors({ ...errors });
+      if (errors.error) return;
+
+      setProfilePhotoSrc(file);
+      setHasFormChanged(true);
+    }
+  };
+
+  const uploadImageToFB = (userRef: DatabaseReference): Promise<void> | void => {
+    if (profilePhotoSrc) {
+      return new Promise((resolve, reject) => {
+        const storage: FirebaseStorage = getStorage();
+        const folderPath: string = `${userData?.handle}/${userData?.handle}-profilePhoto`;
+        const storageRef: StorageReference = ref(storage, folderPath);
+        uploadBytes(storageRef, profilePhotoSrc)
+          .then(() => {
+            const storageRef: StorageReference = ref(storage, folderPath);
+            return storageRef;
+          })
+          .then(storageRef => {
+            const url: Promise<string> = getDownloadURL(storageRef);
+            return url;
+          })
+          .then(url => {
+
+            update(userRef, { profilePhoto: url });
+            resolve();
+          })
+          .catch((err: Error) => {
+            console.log(err);
+            return reject(err);
+          });
+      });
+    }
+  };
+
+  const onUpdate = (): void => {
+    if (userData) {
+      let errors = { ...formErrorsInitialState };
+
+      if (!form.firstName || form.firstName.length < NAMES_LENGTH_MIN || form.firstName.length > NAMES_LENGTH_MAX) {
+        errors = { ...errors, error: true, firstNameLengthErr: true };
+      }
+      if (!form.lastName || form.lastName.length < NAMES_LENGTH_MIN || form.lastName.length > NAMES_LENGTH_MAX) {
+        errors = { ...errors, error: true, lastNameLengthErr: true };
+      }
+      if (form.phoneNumber) {
+        if (form.phoneNumber.length !== 0 && form.phoneNumber.length > PHONE_NUMBER_LENGTH_MAX)
+          errors = { ...errors, error: true, firstNameLengthErr: true };
+      }
+      if (form.password.length !== 0 || form.confirmPassword.length !== 0) {
+        if (form.password.length < PASSWORD_LENGTH_MIN || form.confirmPassword.length < PASSWORD_LENGTH_MIN) {
+          errors = { ...errors, error: true, passwordLengthErr: true }
+        }
+        if (form.password !== form.confirmPassword) {
+          errors = { ...errors, error: true, passwordMatchErr: true }
+        }
+      }
+
+      setFormErrors({ ...errors });
+
+      if (errors.error || formErrors.error) return console.log('ERRORS');
+      setFormSubmissionLoading(true);
+
+      const formToUpdate: object = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phoneNumber: form.phoneNumber,
+      };
+
+      const db: Database = getDatabase();
+      const userRef: DatabaseReference = dbRef(db, `users/${userData?.handle}`);
+
+      update(userRef, { ...formToUpdate })
+        .then(() => uploadImageToFB(userRef))
+        .then(() => changePassword())
+        .then(() => setSubmitChange(prevState => !prevState))
+        .then(() => setProfilePhotoSrc(null))
+        .then(() => setHasFormChanged(false))
+        .then(() => onOpen())
+        .catch((err: Error) => {
+          console.error(err);
+          setFormSubmissionLoading(false);
+        });
+    }
+  };
 
   useEffect(() => {
     if (!userData) return;
@@ -87,98 +212,32 @@ const UserDetails = (): JSX.Element => {
           userData: snapshot.val()[Object.keys(snapshot.val())[0]]
         }));
       })
+      .then(() => setFormSubmissionLoading(false))
       .catch((error) => {
         console.error(error.message);
       });
-  }, [submitChange, setSubmitChange]);
-
-  const navigate = useNavigate();
-
-  const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [field]: e.target.value,
-    });
-  }
-
-  const onUpdate = () => {
-    if (userData) {
-      let errors = { ...formErrors };
-
-      if (!form.firstName || form.firstName.length < NAMES_LENGTH_MIN || form.firstName.length > NAMES_LENGTH_MAX) {
-        errors = { ...errors, error: true, firstNameLengthErr: true }
-      }
-      if (!form.lastName || form.lastName.length < NAMES_LENGTH_MIN || form.lastName.length > NAMES_LENGTH_MAX) {
-        errors = { ...errors, error: true, lastNameLengthErr: true }
-      }
-      if (form.phoneNumber) {
-        if (form.phoneNumber.length > PHONE_NUMBER_LENGTH_MAX) {
-          errors = { ...errors, error: true, firstNameLengthErr: true }
-        }
-      }
-      if (form.password.length !== 0) {
-        if (form.password.length < PASSWORD_LENGTH_MIN) {
-          errors = { ...errors, error: true, phoneLengthErr: true }
-        }
-      }
-      setFormErrors({ ...errors });
-      if (errors.error) return;
-
-      if (form.firstName !== userData.firstName && form.firstName) {
-        updateUserData(userData.handle, 'firstName', form.firstName);
-        alert('First name was updated successfully!');
-      }
-      if (form.lastName !== userData.lastName && form.lastName) {
-        updateUserData(userData.handle, 'lastName', form.lastName);
-        alert('Last name was updated successfully!');
-      }
-      if (form.phoneNumber !== userData.phoneNumber && form.phoneNumber) {
-        updateUserData(userData.handle, 'phoneNumber', form.phoneNumber);
-        alert('Phone was updated successfully!');
-      }
-      if (form.password.length !== 0) {
-        updateUserPassword(form.password)
-          .then(() => {
-            console.error('Password updated successfully');
-            loginUser(userData.email, form.password)
-              .then(credential => {
-                setContext((prevState) => ({
-                  ...prevState,
-                  user: credential.user,
-                }));
-              })
-              .then(() => {
-                navigate('/');
-              })
-              .catch((error) => {
-                console.error(error.message)
-              });
-          }).catch((error) => {
-            console.error(error.message);
-          });
-      }
-    }
-  }
-
-  const onNavigate = () => {
-    navigate(-1);
-  }
+  }, [submitChange, setSubmitChange, setFormErrors]);
 
   return (
-    <Flex maxH={'fit-content'} align={'center'} justify={'center'} mt={{ base: 2, sm: 5 }}>
-      <Stack spacing={4} maxW={'435px'} bg={'grey'} rounded={'xl'} boxShadow={'lg'} p={{ base: 1, sm: 6 }}>
-        <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+    <Flex maxH={'fit-content'} align={'center'} justify={'center'} mt={{ base: 2, sm: 5 }} bg={'lightBlue'}>
+      <Stack
+        spacing={4}
+        maxW={'fit-content'}
+        bg={'grey'}
+        rounded={'xl'}
+        boxShadow={'lg'}
+        p={{ base: 1, sm: 6 }}>
+        <Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           User Details
         </Heading>
-        <Flex justifyContent={'space-between'} position={'relative'}>
+        <Flex justifyContent={'space-between'}>
           <Stack direction={['column']} spacing={6}>
             <Center flexDirection={'column'}>
               <Box position='relative'>
-                <Image
+                <Avatar
                   borderRadius='full'
                   boxSize='150px'
                   src={userData?.profilePhoto}
-                  alt={userData?.handle}
                 />
                 <Button
                   maxW={'150px'}
@@ -190,52 +249,105 @@ const UserDetails = (): JSX.Element => {
                   _hover={{ opacity: 0.7 }}
                   onClick={onOpenFileManager}
                 >
-                  Select New Image
+                  Upload New Image
                 </Button>
               </Box>
               <Input
                 hidden
                 type='file'
                 ref={fileInput}
-                onChange={onLocalyUploadImage}
+                onChange={onLocallyUploadImage}
               />
             </Center>
+            <Box textAlign={'center'}>
+              {formErrors.invalidImageFormat && <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>}
+            </Box>
           </Stack>
-          <Stack className='form' position={'absolute'} right={0} top={'-29%'}>
-            <FormControl id='firstName'>
+          <Stack className='form' right={0} top={'-29%'}>
+            <FormControl isRequired id='firstName'
+              isInvalid={formErrors.firstNameLengthErr}>
               <FormLabel textAlign={'center'}>First name</FormLabel>
               <Input type='text' textAlign={'center'} bg={'white'} value={form.firstName} onChange={updateForm('firstName')} />
+              {
+                formErrors.firstNameLengthErr &&
+                <Center>
+                  <FormErrorMessage style={{ alignSelf: 'center' }}>{MSG_NAMES_LENGTH}</FormErrorMessage>
+                </Center>
+              }
             </FormControl>
-            <FormControl id='lastName'>
+            <FormControl isRequired id='lastName'
+              isInvalid={formErrors.lastNameLengthErr}>
               <FormLabel textAlign={'center'}>Last name</FormLabel>
               <Input type='text' textAlign={'center'} bg={'white'} value={form.lastName} onChange={updateForm('lastName')} />
+              {
+                formErrors.lastNameLengthErr &&
+                <Center>
+                  <FormErrorMessage style={{ alignSelf: 'center' }}>{MSG_NAMES_LENGTH}</FormErrorMessage>
+                </Center>
+              }
             </FormControl>
-            <FormControl id='phoneNumber'>
+            <FormControl id='phoneNumber'
+            >
               <FormLabel textAlign={'center'}>Phone number</FormLabel>
               <Input type='text' textAlign={'center'} bg={'white'} value={form.phoneNumber} onChange={updateForm('phoneNumber')} />
+              {
+                formErrors.firstNameLengthErr &&
+                <Center>
+                  <FormErrorMessage style={{ alignSelf: 'center' }}>{MSG_NAMES_LENGTH}</FormErrorMessage>
+                </Center>
+              }
             </FormControl>
           </Stack>
         </Flex>
-        <Stack flexDirection={'row'} mt={10}>
-          <FormControl id='password'>
-            <FormLabel textAlign={'center'}>New Password</FormLabel>
-            <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
-          </FormControl>
-          <FormControl id='password-confirm'>
-            <FormLabel textAlign={'center'}>Confirm password</FormLabel>
-            <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
-          </FormControl>
-        </Stack>
+        <Flex>
+          <Stack flexDirection={'row'}>
+            <FormControl id='password' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
+              <FormLabel textAlign={'center'}>New Password</FormLabel>
+              <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
+            </FormControl>
+            <FormControl id='password-confirm' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
+              <FormLabel textAlign={'center'}>Confirm password</FormLabel>
+              <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.confirmPassword} onChange={updateForm('confirmPassword')} />
+            </FormControl>
+          </Stack>
+        </Flex>
+        <Box textAlign={'center'}>
+          {formErrors.passwordLengthErr && <Text fontSize={'sm'} color={'red'} >{MSG_PASSWORD_LENGTH}</Text>}
+          {formErrors.passwordMatchErr && <Text fontSize={'sm'} color={'red'} >{MSG_PASSWORD_NOT_MATCH}</Text>}
+        </Box>
+        <Box>
+          {isVisible &&
+            <Alert status={'success'}
+              textAlign={'center'}
+              w={'fit-content'}
+              rounded={'xl'}>
+              <AlertIcon />
+              <Box>
+                <AlertTitle>User Details updated successfully</AlertTitle>
+              </Box>
+              <CloseButton
+                rounded={'xl'}
+                onClick={onClose}
+              />
+            </Alert>
+          }
+        </Box>
         <Stack spacing={6} direction={['column', 'row']}>
           <Button bg={'red.400'} color={'white'} w='full' _hover={{ bg: 'red.400', }} onClick={onNavigate}>
             Cancel
           </Button>
-          <Button variant={'primaryButton'} w='full' _hover={{ bg: 'blue.500', }} onClick={uploadImageToFB}>
+          <Button
+            bg={hasFormChanged ? 'green' : 'gray'}
+            isLoading={formSubmissionLoading}
+            variant={'primaryButton'} w='full'
+            _hover={{ bg: 'blue.500', }}
+            isDisabled={!hasFormChanged}
+            onClick={onUpdate}>
             Update Info
           </Button>
         </Stack>
       </Stack>
     </Flex>
-  )
+  );
 }
 export default UserDetails

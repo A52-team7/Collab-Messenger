@@ -32,7 +32,7 @@ export const getUserData = (uid: string): Promise<DataSnapshot> => {
 
 export const updateUserData = (handle: string, key: string, value: string): Promise<void> => {
   return update(ref(db), { [`users/${handle}/${key}`]: `${value}` });
-}
+};
 
 export const getAllUsersData = (): Promise<DataSnapshot> => {
   return get(query(ref(db, 'users')));
@@ -48,50 +48,50 @@ export const getAllUsers = (): Promise<string[]> => {
     });
 };
 
-export const updateUserTeams = (handle: string, idTeam: string): Promise<void> =>{
-return update(ref(db), {[`users/${handle}/myTeams/${idTeam}`]: true} )
+export const updateUserTeams = (handle: string, idTeam: string): Promise<void> => {
+  return update(ref(db), { [`users/${handle}/myTeams/${idTeam}`]: true })
 }
 
-export interface TeamsListener{(teams: string[]): void}
+export interface TeamsListener { (teams: string[]): void }
 
-export const getUserTeamsLive = (handle: string, listener: TeamsListener)=>{
+export const getUserTeamsLive = (handle: string, listener: TeamsListener) => {
 
-  return onValue(ref(db ,`users/${handle}/myTeams`), (snapshot) => {
-    if(!snapshot.exists()) return[];
-    const teams= Object.keys(snapshot.val());
+  return onValue(ref(db, `users/${handle}/myTeams`), (snapshot) => {
+    if (!snapshot.exists()) return [];
+    const teams = Object.keys(snapshot.val());
     return listener(teams)
   })
 }
 
-export const getAllUserTeams = (handle: string)=>{
-  return get(ref(db ,`users/${handle}/myTeams`))
+export const getAllUserTeams = (handle: string) => {
+  return get(ref(db, `users/${handle}/myTeams`))
 }
 
 export const userMessage = (id: string, handle: string): Promise<void> => {
-  const updateUserMessage: {[key: string]: boolean} = {};
+  const updateUserMessage: { [key: string]: boolean } = {};
   updateUserMessage[`/users/${handle}/myMessages/${id}`] = true;
 
   return update(ref(db), updateUserMessage);
 }
 
 export const userChannel = (id: string, handle: string): Promise<void> => {
-  const updateUserChannel: {[key: string]: boolean} = {};
+  const updateUserChannel: { [key: string]: boolean } = {};
   updateUserChannel[`/users/${handle}/myChannels/${id}`] = true;
 
   return update(ref(db), updateUserChannel);
 }
 
 
-export interface ChannelsListener{(channels: string[]): void}
+export interface ChannelsListener { (channels: string[]): void }
 
-export const getUserChannelsLive = (handle: string, listener: ChannelsListener)=>{
+export const getUserChannelsLive = (handle: string, listener: ChannelsListener) => {
 
-  return onValue(ref(db ,`users/${handle}/myChannels`), (snapshot) => {
-    if(!snapshot.exists()) return[];
+  return onValue(ref(db, `users/${handle}/myChannels`), (snapshot) => {
+    if (!snapshot.exists()) return [];
     console.log(snapshot);
-    
-    const channels= Object.keys(snapshot.val());
-    
+
+    const channels = Object.keys(snapshot.val());
+
     return listener(channels);
   })
 }
