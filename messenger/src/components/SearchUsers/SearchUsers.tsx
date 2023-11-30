@@ -4,7 +4,7 @@ import { getAllUsersData } from '../../services/users.service';
 import { Input, Box } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
 import { ADD_USERS } from '../../common/constants';
-import {Team} from '../CreateTeam/CreateTeam';
+import { Team } from '../CreateTeam/CreateTeam';
 
 export interface User {
   handle: string;
@@ -72,14 +72,15 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
     getAllUsersData()
       .then(data => {
         const snapshot: User[] = Object.values(data.val());
-        console.log(team,'t')
+        console.log(team, 't')
         if (team) {
           const members = Object.keys(team.members)
           const filteredUsersByTeam = snapshot.filter((user) => {
-            if(members.includes(user.handle)){
+            if (members.includes(user.handle)) {
               return user
-            }});
-            console.log(filteredUsersByTeam,'sea')
+            }
+          });
+          console.log(filteredUsersByTeam, 'sea')
           return setInitialData(filteredUsersByTeam);
         }
         console.log(snapshot);
@@ -89,7 +90,7 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
   }, []);
 
   return (
-    <Box w={searchType === ADD_USERS ? '100%' : { base: '200px', md: '300px', lg: '500px' }}
+    <Box w={searchType === ADD_USERS ? '100%' : { base: '90%', md: '300px', lg: '480px' }}
       onFocus={() => setOpen(true)}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
