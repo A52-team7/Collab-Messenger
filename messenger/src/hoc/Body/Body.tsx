@@ -19,14 +19,14 @@ const Body = ({ children }: BodyProps): JSX.Element => {
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}>
-        <DrawerContent maxW={'211px'}>
+        <DrawerContent maxW={'fit-content'}>
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
       <Box opacity={isOpen ? 0.1 : 1}>
         <MobileNav onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 60 }}>
+        <Box ml={{ base: 0, md: 80 }}>
           {children}
         </Box>
       </Box>
