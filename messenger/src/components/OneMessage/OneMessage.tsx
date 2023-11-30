@@ -21,110 +21,118 @@ export interface Author {
 
 export interface OneMessageProps {
   message: Message;
-  setReplyIsVisible: (bool:boolean) => void;
+  setReplyIsVisible: (bool: boolean) => void;
   setMessageToReply: (messageContent: Message) => void;
 }
 
-const OneMessage = ({message, setReplyIsVisible, setMessageToReply}: OneMessageProps) => {
+const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessageProps) => {
 
-    const {userData} = useContext(AppContext);
+  const { userData } = useContext(AppContext);
 
-    const [authorOfMessage, setAuthorOfMessage] = useState<Author>();
-    const [isReply, setIsReply] = useState(false);
-    const [toMessage, setToMessage] = useState<Message>({});
-    const [authorOfToMessage, setAuthorOfToMessage] = useState('');
-    const [visibleOptions, setVisibleOptions] = useState(false);
+  const [authorOfMessage, setAuthorOfMessage] = useState<Author>();
+  const [isReply, setIsReply] = useState(false);
+  const [toMessage, setToMessage] = useState<Message>({});
+  const [authorOfToMessage, setAuthorOfToMessage] = useState('');
+  const [visibleOptions, setVisibleOptions] = useState(false);
 
-    useEffect(() => {
-      if(message.typeOfMessage === REPLY){
-        getMessageById(message.toMessage)
+  useEffect(() => {
+    if (message.typeOfMessage === REPLY) {
+      getMessageById(message.toMessage)
         .then(result => {
           setToMessage(result);
           getUserByHandle(result.author)
-          .then(res => res.val())
-          .then(r => setAuthorOfToMessage(r.firstName + ' ' + r.lastName))
-          .catch(error => console.error(error.message));
+            .then(res => res.val())
+            .then(r => setAuthorOfToMessage(r.firstName + ' ' + r.lastName))
+            .catch(error => console.error(error.message));
         })
         .catch(error => console.error(error.message));
-        setIsReply(true);
-      }
-    }, []);
-    
+      setIsReply(true);
+    }
+  }, []);
 
-    useEffect(() => {
-      getUserByHandle(message.author)
+
+  useEffect(() => {
+    getUserByHandle(message.author)
       .then(result => setAuthorOfMessage(result.val()))
       .catch(error => console.error(error.message));
-    }, []);
-    
-
-    if(userData === null) return;
-    const flexAlignment = message.author===userData.handle ? 'flex-end' : 'flex-start';
+  }, []);
 
 
-    const onReply = () => {
-      setReplyIsVisible(true);
-      setMessageToReply(message);
-    }
+  if (userData === null) return;
+  const flexAlignment = message.author === userData.handle ? 'flex-end' : 'flex-start';
 
-    const onSeeOptions = () => {
-      setVisibleOptions(true);
-    }
 
-    const onHideOptions = () => {
-      setVisibleOptions(false);
-    }
-    
-return(
-    <Flex direction={'column'} justifyContent={flexAlignment} onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}>
-        {isReply && (
-            <Flex maxW={'500px'}>
-                <Text pr={2} noOfLines={1}>Replied to: {authorOfToMessage}: {toMessage.content}</Text>
+  const onReply = () => {
+    setReplyIsVisible(true);
+    setMessageToReply(message);
+  }
+
+  const onSeeOptions = () => {
+    setVisibleOptions(true);
+  }
+
+  const onHideOptions = () => {
+    setVisibleOptions(false);
+  }
+
+  return (
+    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}>
+      {isReply && (
+        <Flex maxW={'500px'}>
+          <Text pr={2} noOfLines={1}>Replied to: {authorOfToMessage}: {toMessage.content}</Text>
+        </Flex>
+      )}
+      {authorOfMessage && <Flex>
+        <Text pl='7px' pr='7px' mr='10px' rounded='md' bg='teal.400'>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
+        <Text fontSize='sm' pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
+      </Flex>
+      }
+      <Flex alignItems={'center'}>
+        <Box
+          pt='10px'
+          pb='10px'
+          pl='20px'
+          pr='20px'
+          color='white'
+          mb='4'
+          bg='teal.500'
+          rounded='md'
+          shadow='md'
+          minW={'230px'}
+          maxW={'40vw'}
+          w={'fit-content'}
+        >
+          <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+            <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+              {decoratedText}
+            </a>
+          )}>
+            {message.content}
+          </Linkify>
+          {visibleOptions && message.author === userData.handle &&
+            <Flex position={'absolute'}
+              top={'50%'}
+              left={'-111px'}
+              transform={'translateY(-50%)'}>
+              <ReactionPopover />
+              <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+              <Button p={1} size={'xs'} bg={'none'}><AiOutlineEdit size={20} /></Button>
+              <Button p={1} size={'xs'} bg={'none'}><AiOutlineDelete size={20} /></Button>
             </Flex>
-          )}
-        {authorOfMessage && <Flex>
-            <Text pl='7px' pr='7px' mr='10px'  rounded='md' bg='teal.400'>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
-            <Text fontSize='sm' pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
-        </Flex> 
-        }  
-        <Flex alignItems={'center'}>
-            <Box
-              pt='10px'
-              pb='10px'
-              pl='20px'
-              pr='20px'
-              color='white'
-              mb='4'
-              bg='teal.500'
-              rounded='md'
-              shadow='md'
-              // minW={'350px'}
-              maxW={'80%'}
-              w={'fit-content'} 
-            >
-            <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-              <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
-                {decoratedText}
-              </a>
-            )}>
-              {message.content}
-            </Linkify>
-            </Box> 
-            {visibleOptions && (
-            <Flex>
-              <ReactionPopover/>
-              <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20}/></Button>
-              {message.author===userData.handle && (
-                <>
-                  <Button p={1} size={'xs'} bg={'none'}><AiOutlineEdit size={20}/></Button>
-                  <Button p={1} size={'xs'} bg={'none'}><AiOutlineDelete size={20}/></Button>
-                </>
-              )}
+          }
+          {visibleOptions && message.author !== userData.handle &&
+            <Flex position={'absolute'}
+              top={'48%'}
+              right={'-48px'}
+              transform={'translateY(-50%)'}>
+              <ReactionPopover />
+              <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
             </Flex>
-            )}
-          </Flex>
-    </Flex>   
-)
+          }
+        </Box>
+      </Flex>
+    </Flex>
+  )
 }
 
 export default OneMessage;
