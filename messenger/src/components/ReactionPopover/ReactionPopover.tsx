@@ -5,7 +5,7 @@ const ReactionPopover = () => {
     return(
         <Popover>
         <PopoverTrigger>
-            <Button p={1} size={'xs'}><VscReactions size={20}/></Button>
+            <Button p={1} size={'xs'} bg={'none'}><VscReactions size={20}/></Button>
         </PopoverTrigger>
         <PopoverContent w={'fit-content'}>
             <PopoverArrow />

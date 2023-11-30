@@ -66,7 +66,7 @@ const UserDetails = (): JSX.Element => {
     isOpen: isVisible,
     onClose,
     onOpen,
-  } = useDisclosure({ defaultIsOpen: true })
+  } = useDisclosure({ defaultIsOpen: false })
 
   const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>): void => {
     setHasFormChanged(true);
@@ -115,6 +115,7 @@ const UserDetails = (): JSX.Element => {
         errors = { ...errors, invalidImageFormat: false, error: false }
       } else {
         errors = { ...errors, invalidImageFormat: true, error: true }
+        setHasFormChanged(false);
       }
       setFormErrors({ ...errors });
       if (errors.error) return;
@@ -299,21 +300,21 @@ const UserDetails = (): JSX.Element => {
             </FormControl>
           </Stack>
         </Flex>
-        <Flex>
-          <Stack flexDirection={'row'}>
-            <FormControl id='password' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
-              <FormLabel textAlign={'center'}>New Password</FormLabel>
-              <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
-            </FormControl>
-            <FormControl id='password-confirm' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
-              <FormLabel textAlign={'center'}>Confirm password</FormLabel>
-              <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.confirmPassword} onChange={updateForm('confirmPassword')} />
-            </FormControl>
-          </Stack>
-        </Flex>
-        <Box textAlign={'center'}>
-          {formErrors.passwordLengthErr && <Text fontSize={'sm'} color={'red'} >{MSG_PASSWORD_LENGTH}</Text>}
-          {formErrors.passwordMatchErr && <Text fontSize={'sm'} color={'red'} >{MSG_PASSWORD_NOT_MATCH}</Text>}
+        <Box>
+          <Flex mb={1}>
+            <Stack flexDirection={'row'}>
+              <FormControl id='password' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
+                <FormLabel textAlign={'center'}>New Password</FormLabel>
+                <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
+              </FormControl>
+              <FormControl id='password-confirm' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
+                <FormLabel textAlign={'center'}>Confirm password</FormLabel>
+                <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.confirmPassword} onChange={updateForm('confirmPassword')} />
+              </FormControl>
+            </Stack>
+          </Flex>
+          {formErrors.passwordLengthErr && <Text m={0} textAlign={'center'} fontSize={'sm'} color={'red'} >{MSG_PASSWORD_LENGTH}</Text>}
+          {formErrors.passwordMatchErr && <Text m={0} textAlign={'center'} fontSize={'sm'} color={'red'} >{MSG_PASSWORD_NOT_MATCH}</Text>}
         </Box>
         <Box>
           {isVisible &&

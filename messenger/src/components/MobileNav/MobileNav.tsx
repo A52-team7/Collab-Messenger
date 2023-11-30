@@ -59,7 +59,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
 
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
+      ml={{ base: 0, md: 80 }}
       px={{ base: 4, md: 0 }}
       height={'14'}
       alignItems='center'
@@ -79,8 +79,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
         icon={<HamburgerIcon />}
       />
 
-      <Box m={'auto'} w={{ base: '100%', md: '100%', lg: '80%' }}>
-        <Box ml={{ base: 0, md: 10, lg: 5 }}>
+      <Box m={'auto'} w={{ base: '100%', md: '100%', lg: '100%' }}>
+        <Box ml={{ base: 1, md: 1, lg: 1 }}>
           <SearchUsers searchType={START_CHAT} />
         </Box>
       </Box>

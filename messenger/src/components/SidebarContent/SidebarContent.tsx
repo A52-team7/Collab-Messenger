@@ -65,14 +65,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       bg={'blue'}
       borderRight={'1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'fit-content', md: 60 }}
+      w={{ base: 'fit-content', md: 80 }}
       pos={'fixed'}
       h={'full'}
       {...rest}>
       <Box position={'absolute'} right={0}>
         <CloseButton display={{ md: 'none' }} onClick={onClose} />
       </Box>
-      <Flex alignItems={'center'} justifyContent={'flex-end'}>
+      <Flex alignItems={'center'} justifyContent={'center'}>
         <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading>
       </Flex>
       {user &&
