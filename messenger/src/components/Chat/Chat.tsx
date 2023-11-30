@@ -8,13 +8,13 @@ import {
   Box
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { userChannel, userMessage } from '../../services/users.service';
+import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
 import { addMemberToChannel, channelMessage, getChannelById, getChannelMembersLive, getChannelMessagesLive } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
-import { USER_MESSAGE } from '../../common/constants';
+import { ADDED, ADD_PERSON, ADMIN, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
@@ -138,6 +138,20 @@ const Chat = (): JSX.Element => {
   const onAddMember = (user: string): void => {
     userChannel(channelId, user);
     addMemberToChannel(channelId, user);
+    getUserByHandle(user)
+    .then(result => result.val())
+    .then(res => {
+      getChannelById(channelId)
+      .then(channel => {
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + res.firstName + ' ' + res.lastName + TO + channel.title, ADMIN, channelId, true, ADD_PERSON)
+        .then(message => {
+          channelMessage(channelId, message.id);
+        })
+        .catch(error => console.error(error.message));
+      })
+      .catch(error => console.error(error.message));
+    })
+    .catch(error => console.error(error.message));
   }
 
   const onGetEmoji = (emoji: string) => {

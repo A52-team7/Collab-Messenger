@@ -8,8 +8,10 @@ import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
-import { REPLY } from "../../common/constants";
+import { ADD_PERSON, REMOVE_PERSON, REPLY } from "../../common/constants";
 import { getMessageById } from "../../services/messages";
+import { IoPersonAddSharp } from "react-icons/io5";
+import { IoPersonRemoveOutline } from "react-icons/io5";
 export interface Author {
   handle: string;
   uid: string;
@@ -76,6 +78,14 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   }
 
   return (
+    <>
+    {message.techMessage ? (
+      <Flex position={'relative'} w={'100%'} justifyContent={'center'} alignItems={'center'}>
+        {message.typeOfMessage===ADD_PERSON && <IoPersonAddSharp />}
+        {message.typeOfMessage===REMOVE_PERSON && <IoPersonRemoveOutline />}
+        <Text ml={2}>{message.content}</Text>
+      </Flex>
+    ) : (
     <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}>
       {isReply && (
         <Flex maxW={'500px'}>
@@ -132,6 +142,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
         </Box>
       </Flex>
     </Flex>
+    )}
+    </>
   )
 }
 

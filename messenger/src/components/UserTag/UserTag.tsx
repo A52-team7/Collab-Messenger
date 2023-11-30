@@ -3,9 +3,11 @@ import { useState, useEffect, useContext } from 'react';
 import { getUserByHandle } from "../../services/users.service";
 import { Author } from "../OneMessage/OneMessage";
 import RemoveUser from "../RemoveUser/RemoveUser";
-import { deleteMemberFromChannel } from "../../services/channels.service";
+import { channelMessage, deleteMemberFromChannel, getChannelById } from "../../services/channels.service";
 import { deleteMemberFromTeam } from "../../services/teams.service";
 import AppContext from "../../context/AppContext";
+import { addMessage } from "../../services/messages";
+import { ADMIN, FROM, REMOVED, REMOVE_PERSON } from "../../common/constants";
 
 interface UserTagProps {
     handle: string;
@@ -33,6 +35,15 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     const onDelete = () => {
         if(channelId){
             deleteMemberFromChannel(channelId, handle);
+            getChannelById(channelId)
+            .then(channel => {
+                addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + REMOVED + displayName + FROM + channel.title, ADMIN, channelId, true, REMOVE_PERSON)
+                .then(message => {
+                channelMessage(channelId, message.id);
+                })
+                .catch(error => console.error(error.message));
+            })
+            .catch(error => console.error(error.message));
         }else if(teamId){
             deleteMemberFromTeam(teamId, handle);
         }
