@@ -177,7 +177,7 @@ const Chat = (): JSX.Element => {
         overflowY={'scroll'}
       >
         {messages.length > 0 &&
-          <Box>
+          <Box h={'100vh'}>
             <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
           </Box>
         }
