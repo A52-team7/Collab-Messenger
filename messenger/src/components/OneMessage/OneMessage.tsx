@@ -2,16 +2,17 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
-import { getUserByHandle } from "../../services/users.service";
+import { addUserReactionToMessage, getUserByHandle } from "../../services/users.service";
 import { GoReply } from "react-icons/go";
 import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ADD_PERSON, REMOVE_PERSON, REPLY } from "../../common/constants";
-import { getMessageById } from "../../services/messages";
+import { ReactionArray, addReactionToMessage, getIfUserHasReactedToMessage, getMessageById, getMessageReactionsLive } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
+import ReactionItem from "../ReactionItem/ReactionItem";
 export interface Author {
   handle: string;
   uid: string;
@@ -35,7 +36,20 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [isReply, setIsReply] = useState(false);
   const [toMessage, setToMessage] = useState<Message>({});
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
-  const [visibleOptions, setVisibleOptions] = useState(false);
+  // const [visibleOptions, setVisibleOptions] = useState(false);
+
+  const [reactions, setReactions] = useState<ReactionArray>();
+  const [test, setTest] = useState();
+
+  useEffect(() => {
+      getIfUserHasReactedToMessage(message.id, userData.handle)
+      .then((r) => {
+        setTest(r);
+      })
+  }, []);
+
+  console.log(test);
+  
 
   useEffect(() => {
     if (message.typeOfMessage === REPLY) {
@@ -59,6 +73,14 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
       .catch(error => console.error(error.message));
   }, []);
 
+  useEffect(() => {
+    if (userData === null) return;
+
+    getMessageReactionsLive(message.id, (data: ReactionArray) => {
+      setReactions(data);
+    })
+  }, []);  
+
 
   if (userData === null) return;
   const flexAlignment = message.author === userData.handle ? 'flex-end' : 'flex-start';
@@ -69,12 +91,17 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     setMessageToReply(message);
   }
 
-  const onSeeOptions = () => {
-    setVisibleOptions(true);
-  }
+  // const onSeeOptions = () => {
+  //   setVisibleOptions(true);
+  // }
 
-  const onHideOptions = () => {
-    setVisibleOptions(false);
+  // const onHideOptions = () => {
+  //   setVisibleOptions(false);
+  // }
+
+  const onAddReaction = (reaction: string) => {
+    addReactionToMessage(message.id, reaction, userData.handle);
+    addUserReactionToMessage(message.id, reaction, userData.handle);
   }
 
   return (
@@ -86,7 +113,9 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
         <Text ml={2}>{message.content}</Text>
       </Flex>
     ) : (
-    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}>
+    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} 
+    // onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}
+    >
       {isReply && (
         <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
           <Text><GoReply size={20} /></Text>
@@ -120,28 +149,37 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           )}>
             {message.content}
           </Linkify>
-          {visibleOptions && message.author === userData.handle &&
+          {/* {visibleOptions &&  */}
+          {message.author === userData.handle &&
             <Flex position={'absolute'}
               top={'50%'}
               left={'-111px'}
               transform={'translateY(-50%)'}>
-              <ReactionPopover />
+              <ReactionPopover onAddReaction={onAddReaction}/>
               <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
               <Button p={1} size={'xs'} bg={'none'}><AiOutlineEdit size={20} /></Button>
               <Button p={1} size={'xs'} bg={'none'}><AiOutlineDelete size={20} /></Button>
             </Flex>
           }
-          {visibleOptions && message.author !== userData.handle &&
+          {/* {visibleOptions &&  */}
+          {message.author !== userData.handle &&
             <Flex position={'absolute'}
               top={'48%'}
               right={'-48px'}
               transform={'translateY(-50%)'}>
-              <ReactionPopover />
+              <ReactionPopover onAddReaction={onAddReaction}/>
               <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
             </Flex>
           }
         </Box>
       </Flex>
+        <Flex mt={-5}>
+        {reactions && reactions.reactions.map((reaction) => (
+              <Box key={reaction[0]}>
+                  <ReactionItem reaction={reaction} onAddReaction={onAddReaction}/>
+              </Box>
+        ))}
+        </Flex>
     </Flex>
     )}
     </>

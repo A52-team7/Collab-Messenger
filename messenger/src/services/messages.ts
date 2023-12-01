@@ -1,4 +1,4 @@
-import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update } from 'firebase/database';
+import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 
 
@@ -120,11 +120,46 @@ export const getAllMessages = (): Promise<Message[]> => {
         });
 };
 
-// export const addReactionToMessage = (messageId: string, reaction: string) => {
-//     if(ref(db), `/messages/${messageId}/reactions/${reaction}`)
-//     const updateChannelTitle: {[key: string]: string} = {};
-//     updateChannelTitle[`/channels/${channelId}/title`] = title;
+export const addReactionToMessage = (messageId: string, reaction: string, handle: string) => {
+    const updateMessageReactions: {[key: string]: boolean} = {};
+    updateMessageReactions[`/messages/${messageId}/reactions/${reaction}/${handle}`] = true;
 
-//     return update(ref(db), updateChannelTitle);
-// }
+    return update(ref(db), updateMessageReactions);
+}
 
+export const getIfUserHasReactedToMessage = (messageId: string, handle: string) => {
+
+    return get(query(ref(db, `messages/${messageId}/reactions`), orderByChild('😆'), equalTo(`${handle}:true`)))
+        .then(snapshot => {
+            if (!snapshot.exists()) return [];
+
+            return (snapshot);
+        });
+};
+
+export interface ReactionItem {
+    0: string;
+    1: string[];
+  }
+export interface ReactionArray {
+    reactions: ReactionItem[];
+}
+
+export interface ReactionsListener{(reactions: ReactionArray): void}
+
+export const getMessageReactionsLive = (messageId: string, listener: ReactionsListener)=>{
+
+  return onValue(ref(db ,`messages/${messageId}/reactions`), (snapshot) => {
+    if(!snapshot.exists()) return[];
+    
+    const reactions: ReactionItem[]= Object.keys(snapshot.val()).map((reaction) => {
+        return [reaction, Object.keys(snapshot.val()[reaction])] as ReactionItem;
+    });
+    
+    const reactionArray: ReactionArray = {
+        reactions: reactions
+    };
+
+    return listener(reactionArray);
+  })
+}

@@ -95,3 +95,10 @@ export const getUserChannelsLive = (handle: string, listener: ChannelsListener) 
     return listener(channels);
   })
 }
+
+export const addUserReactionToMessage = (messageId: string, reaction: string, handle: string) => {
+  const updateUserReactionToMessage: {[key: string]: string} = {};
+  updateUserReactionToMessage[`/users/${handle}/myReactions/${messageId}`] = reaction;
+
+  return update(ref(db), updateUserReactionToMessage);
+}
