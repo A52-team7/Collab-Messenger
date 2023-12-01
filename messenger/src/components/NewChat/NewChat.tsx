@@ -81,7 +81,6 @@ const NewChat = (): JSX.Element => {
             userChannel(result.id, member);
           })
           userChannel(result.id, userData.handle);
-          addMemberToChannel(result.id, userData.handle);
           if (team.id !== null) {
             updateTeamChannel(team.id, result.id)
           }
