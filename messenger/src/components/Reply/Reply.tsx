@@ -7,7 +7,6 @@ import { REPLY } from "../../common/constants";
 import { channelMessage } from "../../services/channels.service";
 import { userMessage } from "../../services/users.service";
 import { Message } from "../MessagesList/MessagesList";
-import { set } from "firebase/database";
 
 export interface ReplyProps {
     channelId: string;

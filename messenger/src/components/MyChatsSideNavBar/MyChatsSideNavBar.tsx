@@ -64,7 +64,7 @@ const MyChatsSideNavBar = () => {
             <Stack>
             {channels.map((channel: Channel) => (
                 <Box key={channel.id}>
-                    <MyChat {...channel}/>
+                    <MyChat channel={channel}/>
                 </Box>
             ))}
             </Stack>           

@@ -120,4 +120,11 @@ export const getAllMessages = (): Promise<Message[]> => {
         });
 };
 
+// export const addReactionToMessage = (messageId: string, reaction: string) => {
+//     if(ref(db), `/messages/${messageId}/reactions/${reaction}`)
+//     const updateChannelTitle: {[key: string]: string} = {};
+//     updateChannelTitle[`/channels/${channelId}/title`] = title;
+
+//     return update(ref(db), updateChannelTitle);
+// }
 
