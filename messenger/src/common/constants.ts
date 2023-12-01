@@ -37,6 +37,14 @@ export const TITLE_NAME_LENGTH_MAX: number = 40;
 //type of message
 export const USER_MESSAGE = 'user message';
 export const REPLY = 'reply';
+export const ADDED = 'added ';
+export const ADMIN = 'admin';
+export const ADD_PERSON = 'add person';
+export const TO = ' to ';
+export const REMOVE_PERSON = 'remove person';
+export const REMOVED = 'removed ';
+export const FROM = ' from ';
+export const LEFT = 'left ';
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [

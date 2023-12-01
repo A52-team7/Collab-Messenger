@@ -3,13 +3,14 @@ import React from 'react';
 import { BsPersonFillAdd } from "react-icons/bs";
 import UsersList from "../UsersList/UsersList";
 import SearchUsers from "../SearchUsers/SearchUsers";
-import { ADD_USERS } from "../../common/constants";
-import { deleteMemberFromChannel } from "../../services/channels.service";
+import { ADD_USERS, ADMIN, LEFT, REMOVE_PERSON } from "../../common/constants";
+import { channelMessage, deleteMemberFromChannel, getChannelById } from "../../services/channels.service";
 import { useContext } from 'react';
 import AppContext from '../../context/AppContext';
 import RemoveUser from "../RemoveUser/RemoveUser";
 import { deleteMemberFromTeam } from "../../services/teams.service";
 import {Team} from '../CreateTeam/CreateTeam'
+import { addMessage } from "../../services/messages";
 
 export interface UserDrawerProps{
     members: string[];
@@ -23,13 +24,20 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
     const firstField = React.useRef<HTMLElement>(null);
 
     const {userData} = useContext(AppContext);
-
-    console.log(team);
     
     const onLeaveChatOrTeam = () => {
         if(userData === null) return;
         if(channelId){
         deleteMemberFromChannel(channelId, userData.handle);
+        getChannelById(channelId)
+            .then(channel => {
+                addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + LEFT + channel.title, ADMIN, channelId, true, REMOVE_PERSON)
+                .then(message => {
+                channelMessage(channelId, message.id);
+                })
+                .catch(error => console.error(error.message));
+            })
+            .catch(error => console.error(error.message));
       } else if(team){
         deleteMemberFromTeam(team.id, userData.handle);
       }

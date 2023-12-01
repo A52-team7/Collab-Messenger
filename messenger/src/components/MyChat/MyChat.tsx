@@ -5,7 +5,7 @@ import { Text } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 import { setChannelToSeen, getChannelSeenLive } from "../../services/channels.service";
 
-const MyChat = (channel: Channel) => {
+const MyChat = ({ channel }: { channel: Channel }) => {
   const { userData } = useContext(AppContext);
   const [seenState, setSeenState] = useState<boolean | null>(null);
   const navigate = useNavigate();

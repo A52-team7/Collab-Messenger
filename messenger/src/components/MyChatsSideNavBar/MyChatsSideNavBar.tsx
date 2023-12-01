@@ -48,29 +48,29 @@ const MyChatsSideNavBar = () => {
     navigate('/new-chat');
   }
 
-  return (
-    <Flex direction={'column'}>
-      <Flex justifyContent={'center'}>
-        <Text>
-          My chats
-        </Text>
-        <Button
-          px={8}
-          rounded={'md'}
-          onClick={onCreate}
-        >
-          New
-        </Button>
-      </Flex>
-      <Stack>
-        {channels.map((channel: Channel) => (
-          <Box key={channel.id}>
-            <MyChat {...channel} />
-          </Box>
-        ))}
-      </Stack>
-    </Flex>
-  )
+    return (
+        <Flex direction={'column'}>
+            <Flex justifyContent={'center'}>
+                <Text>
+                My chats
+                </Text>
+                <Button
+                px={8}
+                rounded={'md'}
+                onClick={onCreate}
+                >
+                New
+                </Button>
+            </Flex>
+            <Stack>
+            {channels.map((channel: Channel) => (
+                <Box key={channel.id}>
+                    <MyChat channel={channel}/>
+                </Box>
+            ))}
+            </Stack>           
+        </Flex>
+    )
 }
 
 

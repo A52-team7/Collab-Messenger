@@ -28,7 +28,6 @@ export interface IdTeam{
 }
 
 const MoreOptions = ({id}: IdTeam) => {
-  console.log(id, 'More')
   
   const [team, setTeam] = useState<Team>({
     id: '',
@@ -48,13 +47,9 @@ const MoreOptions = ({id}: IdTeam) => {
     console.log(team, 'more');
   },[])
 
-
-  
-
   const navigate = useNavigate();
   const { userData } = useContext<UserState>(AppContext);
   if(userData === null) return;
-
 
   const addNewChannel = () =>{
       navigate('/new-chat', {state: {team}}) 
@@ -64,8 +59,6 @@ const MoreOptions = ({id}: IdTeam) => {
     updateUserTeams(user, team.id);
     addMemberToTeam(team.id, user);
   }
-
-
 
   const removeTeam = () =>{
 // soon
