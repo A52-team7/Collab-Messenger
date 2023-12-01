@@ -10,7 +10,15 @@ import {
 } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
-import { addMemberToChannel, channelMessage, getChannelById, getChannelMembersLive, getChannelMessagesLive, getDateOfLeftChannel, getIfChannelIsLeft, removeLeftChannel } from '../../services/channels.service';
+import {
+  addMemberToChannel,
+  channelMessage,
+  getChannelById,
+  getChannelMembersLive,
+  getChannelMessagesLive, getDateOfLeftChannel, getIfChannelIsLeft, removeLeftChannel,
+  setChannelToSeen,
+  setAllInChannelToUnseen
+} from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
@@ -20,7 +28,7 @@ import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
-
+import TeamInfo from '../TeamInfo/TeamInfo'
 
 
 const Chat = (): JSX.Element => {
@@ -29,7 +37,7 @@ const Chat = (): JSX.Element => {
 
   const channelId = location.state?.channelId;
   const team = location.state?.team;
-  console.log(team, 'team')
+  
   const { userData } = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -100,6 +108,7 @@ const Chat = (): JSX.Element => {
           }
         }
       })
+        .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
     })
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
@@ -113,8 +122,6 @@ const Chat = (): JSX.Element => {
     })
   }, []);
 
-
-
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (userData === null) return;
     if (event.key === 'Enter') {
@@ -124,6 +131,7 @@ const Chat = (): JSX.Element => {
           .then(result => {
             channelMessage(channelId, result.id);
             userMessage(result.id, userData.handle);
+            setAllInChannelToUnseen(channelId, userData.handle);
           })
           .catch(e => console.error(e));
         (event.target as HTMLTextAreaElement).value = '';
@@ -197,7 +205,8 @@ const Chat = (): JSX.Element => {
           <Flex flex={1}>
             <Heading>{title}</Heading>
           </Flex>
-          {members.length > 0 &&
+          {team && <TeamInfo {...team}/> }
+        {members.length > 0 &&
             <UsersDrawer {...UserDrawerProps} />
           }
           <Button colorScheme='teal'>

@@ -72,7 +72,6 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
     getAllUsersData()
       .then(data => {
         const snapshot: User[] = Object.values(data.val());
-        console.log(team, 't')
         if (team) {
           const members = Object.keys(team.members)
           const filteredUsersByTeam = snapshot.filter((user) => {
@@ -80,10 +79,8 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
               return user
             }
           });
-          console.log(filteredUsersByTeam, 'sea')
           return setInitialData(filteredUsersByTeam);
         }
-        console.log(snapshot);
         setInitialData(snapshot);
       })
       .catch((err: Error) => console.error(err));
