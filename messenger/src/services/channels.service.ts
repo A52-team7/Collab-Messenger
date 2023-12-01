@@ -160,8 +160,6 @@ export const addTitleToChannel = (channelId: string, title: string) => {
 
 export interface MessagesListener { (messages: string[]): void }
 
-export interface MessagesListener { (messages: string[]): void }
-
 export const getChannelMessagesLive = (channelId: string, listener: MessagesListener) => {
 
   return onValue(ref(db, `channels/${channelId}/messages`), (snapshot) => {
@@ -202,7 +200,6 @@ export const setAllInChannelToUnseen = (channelId: string, senderUsername: strin
       Object.entries(seenUnseenMembers).forEach(([key]) => {
         key === senderUsername ? seenUnseenMembers[key] = true : seenUnseenMembers[key] = false;
       })
-      console.log('aaaaaaaaaaaaaaa', seenUnseenMembers);
 
       return seenUnseenMembers;
     })
@@ -212,8 +209,8 @@ export const setAllInChannelToUnseen = (channelId: string, senderUsername: strin
     .catch((error: Error) => console.error(error));
 }
 
-export interface MessagesListener { (user: boolean): void }
-export const getChannelSeenLive = (channelId: string, user: string, listener: MessagesListener) => {
+export interface SeenListener { (user: boolean): void }
+export const getChannelSeenLive = (channelId: string, user: string, listener: SeenListener) => {
   onValue(ref(db, `channels/${channelId}/seenBy/${user}`), (snapshot) => {
     listener(snapshot.val());
   })
