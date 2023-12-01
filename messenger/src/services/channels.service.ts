@@ -111,8 +111,37 @@ export const addMemberToChannel = (channelId: string, memberId: string) => {
 
 export const deleteMemberFromChannel = (channelId: string, handle: string) => {
     remove(ref(db, `channels/${channelId}/members/${handle}`));
-    remove(ref(db, `users/${handle}/myChannels/${channelId}`));
+    const updateLeftChannelsOfUser: {[key: string]: number} = {};
+    updateLeftChannelsOfUser[`/users/${handle}/leftChannels/${channelId}`] = Date.now();
+
+    return update(ref(db), updateLeftChannelsOfUser);
 }
+
+//used when you want to add user who has been removed from that chat
+export const removeLeftChannel = (channelId: string, handle: string) => {
+    remove(ref(db, `/users/${handle}/leftChannels/${channelId}`));
+}
+
+export const getIfChannelIsLeft = (handle: string, channelId: string) => {
+
+    return get(query(ref(db, `users/${handle}/leftChannels`)))
+        .then(snapshot => {
+            if(snapshot.exists() && Object.keys(snapshot.val()).includes(channelId)){
+                return true;
+            }
+            return false;
+        });
+};
+
+export const getDateOfLeftChannel = (handle: string, channelId: string) => {
+
+    return get(query(ref(db, `users/${handle}/leftChannels`)))
+        .then(snapshot => {
+            if(snapshot.exists() && Object.keys(snapshot.val()).includes(channelId)){
+                return snapshot.val()[channelId];
+            }
+        });
+};
 
 export const addTitleToChannel = (channelId: string, title: string) => {
     const updateChannelTitle: {[key: string]: string} = {};
@@ -128,7 +157,7 @@ export const getChannelMessagesLive = (channelId: string, listener: MessagesList
 
   return onValue(ref(db ,`channels/${channelId}/messages`), (snapshot) => {
     if(!snapshot.exists()) return[];
-    console.log(snapshot);
+    
     
     const messages= Object.keys(snapshot.val());
     
@@ -142,7 +171,6 @@ export const getChannelMembersLive = (channelId: string, listener: MembersListen
 
   return onValue(ref(db ,`channels/${channelId}/members`), (snapshot) => {
     if(!snapshot.exists()) return[];
-    console.log(snapshot);
     
     const members= Object.keys(snapshot.val());
     

@@ -44,7 +44,7 @@ export const TO = ' to ';
 export const REMOVE_PERSON = 'remove person';
 export const REMOVED = 'removed ';
 export const FROM = ' from ';
-export const LEFT = 'left';
+export const LEFT = 'left ';
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [

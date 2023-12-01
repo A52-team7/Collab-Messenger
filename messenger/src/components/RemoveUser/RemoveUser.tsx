@@ -56,9 +56,15 @@ const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
                 <Button ref={cancelRef} onClick={onClose}>
                   Cancel
                 </Button>
+                {!selfRemove ? (
                 <Button colorScheme='red' onClick={onDelete} ml={3}>
                   Delete
                 </Button>
+                ) : (
+                  <Button colorScheme='red' onClick={onDelete} ml={3}>
+                  Leave
+                </Button>
+                )}
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialogOverlay>

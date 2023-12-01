@@ -11,7 +11,6 @@ import RemoveUser from "../RemoveUser/RemoveUser";
 import { deleteMemberFromTeam } from "../../services/teams.service";
 import {Team} from '../CreateTeam/CreateTeam'
 import { addMessage } from "../../services/messages";
-import { useNavigate } from "react-router-dom";
 
 export interface UserDrawerProps{
     members: string[];
@@ -25,8 +24,6 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
     const firstField = React.useRef<HTMLElement>(null);
 
     const {userData} = useContext(AppContext);
-
-    const navigate = useNavigate();
     
     const onLeaveChatOrTeam = () => {
         if(userData === null) return;
@@ -38,7 +35,6 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
                 .then(message => {
                 channelMessage(channelId, message.id);
                 })
-                .then(() => navigate('/'))
                 .catch(error => console.error(error.message));
             })
             .catch(error => console.error(error.message));

@@ -88,8 +88,9 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     ) : (
     <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}>
       {isReply && (
-        <Flex maxW={'500px'}>
-          <Text pr={2} noOfLines={1}>Replied to: {authorOfToMessage}: {toMessage.content}</Text>
+        <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
+          <Text><GoReply size={20} /></Text>
+          <Text pr={2} noOfLines={1}>{authorOfToMessage}: {toMessage.content}</Text>
         </Flex>
       )}
       {authorOfMessage && <Flex>
