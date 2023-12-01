@@ -19,7 +19,7 @@ import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
-
+import TeamInfo from '../TeamInfo/TeamInfo'
 
 
 const Chat = (): JSX.Element => {
@@ -28,7 +28,7 @@ const Chat = (): JSX.Element => {
 
   const channelId = location.state?.channelId;
   const team = location.state?.team;
-  console.log(team, 'team')
+  
   const { userData } = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -164,6 +164,7 @@ const Chat = (): JSX.Element => {
         <Flex flex={1}>
           <Heading>{title}</Heading>
         </Flex>
+        {team && <TeamInfo {...team}/> }
         {members.length > 0 &&
           <UsersDrawer {...UserDrawerProps} />
         }
