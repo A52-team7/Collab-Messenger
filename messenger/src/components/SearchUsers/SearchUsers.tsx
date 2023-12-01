@@ -80,10 +80,8 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
               return user
             }
           });
-          console.log(filteredUsersByTeam, 'sea')
           return setInitialData(filteredUsersByTeam);
         }
-        console.log(snapshot);
         setInitialData(snapshot);
       })
       .catch((err: Error) => console.error(err));
