@@ -85,7 +85,7 @@ const TeamInfo = (team: Team) => {
           <DrawerBody>
             <Wrap>
             <WrapItem>
-            <Avatar size='2xl' name={team.name} />{' '}
+            <Avatar size='2xl' name={team.name} src={team.teamPhoto} />{' '}
             </WrapItem>
             </Wrap>
             <Text>{team.description}</Text>
