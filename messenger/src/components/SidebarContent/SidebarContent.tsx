@@ -73,20 +73,19 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       <Box position={'absolute'} right={0}>
         <CloseButton display={{ md: 'none' }} onClick={onClose} />
       </Box>
-      <Flex alignItems={'center'} justifyContent={'center'}>
+      <Flex
+        w={'100%'}
+        alignItems={'center'}
+        justifyContent={'center'}>
         {/* <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading> */}
-        <Button
-            id={'home-btn'} 
-            w={'fit-content'}
-            h={'fit-content'}
-            bg={'none'}
-            onClick={(e) => showContentHandle(e)}>
-            <Image 
-            src={'../../../public/logo.jpg'} 
-            alt={'logo'} 
-            boxSize='200px' 
-            borderRadius="full"/>
-        </Button>
+        <Image
+          _hover={{ cursor: 'pointer' }}
+          src={'/logo.jpg'}
+          alt={'logo'}
+          boxSize='125px'
+          borderRadius="full"
+          id={'home-btn'}
+          onClick={(e) => showContentHandle(e)} />
       </Flex>
       {user &&
         <>
