@@ -6,13 +6,13 @@ import { addUserReactionToMessage, getUserByHandle } from "../../services/users.
 import { GoReply } from "react-icons/go";
 import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
-import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ADD_PERSON, REMOVE_PERSON, REPLY } from "../../common/constants";
-import { ReactionArray, addReactionToMessage, getIfUserHasReactedToMessage, getMessageById, getMessageReactionsLive } from "../../services/messages";
+import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import ReactionItem from "../ReactionItem/ReactionItem";
+import RemoveMessage from "../RemoveMessage/RemoveMessage";
 export interface Author {
   handle: string;
   uid: string;
@@ -39,16 +39,16 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
   const [reactions, setReactions] = useState<ReactionArray>();
-  const [test, setTest] = useState();
+  // const [test, setTest] = useState();
 
-  useEffect(() => {
-      getIfUserHasReactedToMessage(message.id, userData.handle)
-      .then((r) => {
-        setTest(r);
-      })
-  }, []);
+  // useEffect(() => {
+  //     getUsersReactedToMessage(message.id)
+  //     .then((r) => {
+  //       setTest(r);
+  //     })
+  // }, []);
 
-  console.log(test);
+  // console.log(test);
   
 
   useEffect(() => {
@@ -102,6 +102,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const onAddReaction = (reaction: string) => {
     addReactionToMessage(message.id, reaction, userData.handle);
     addUserReactionToMessage(message.id, reaction, userData.handle);
+  }
+
+  const onDeleteMessage = () => {
+    deleteMessage(message.id);
   }
 
   return (
@@ -158,7 +162,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
               <ReactionPopover onAddReaction={onAddReaction}/>
               <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
               <Button p={1} size={'xs'} bg={'none'}><AiOutlineEdit size={20} /></Button>
-              <Button p={1} size={'xs'} bg={'none'}><AiOutlineDelete size={20} /></Button>
+              <RemoveMessage onDeleteMessage={onDeleteMessage}/>
             </Flex>
           }
           {/* {visibleOptions &&  */}
@@ -173,7 +177,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           }
         </Box>
       </Flex>
-        <Flex mt={-5}>
+        <Flex mt={-8}>
         {reactions && reactions.reactions.map((reaction) => (
               <Box key={reaction[0]}>
                   <ReactionItem reaction={reaction} onAddReaction={onAddReaction}/>

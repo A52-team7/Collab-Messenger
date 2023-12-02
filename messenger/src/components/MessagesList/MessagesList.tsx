@@ -11,6 +11,8 @@ export interface Message {
   techMessage: boolean;
   typeOfMessage: string;
   toMessage: string;
+  toChannel: string;
+  reactions: [];
 }
 
 interface MessagesListProps {

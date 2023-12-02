@@ -8,7 +8,7 @@ export interface ReactionItemProps{
 
 const ReactionItem = ({reaction, onAddReaction}: ReactionItemProps) => {
     return (
-        <Button bg={'teal.600'} color={'white'} mr={2} p={1} onClick={() => onAddReaction(reaction[0])}>
+        <Button bg={'none'} color={'white'} mr={2} p={1} onClick={() => onAddReaction(reaction[0])}>
             <Text>{reaction[0]}</Text>
             <Text>{reaction[1].length}</Text>
         </Button>

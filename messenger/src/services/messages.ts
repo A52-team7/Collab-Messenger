@@ -1,11 +1,8 @@
-import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update, onValue } from 'firebase/database';
+import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
+import { Message } from '../components/MessagesList/MessagesList.tsx';
 
 
-interface Message {
-    id: string;
-    createdOn: Date;
-}
 
 export const fromMessagesDocument = (snapshot: DataSnapshot): Message[] => {
     const messagesDocument = snapshot.val();
@@ -127,15 +124,15 @@ export const addReactionToMessage = (messageId: string, reaction: string, handle
     return update(ref(db), updateMessageReactions);
 }
 
-export const getIfUserHasReactedToMessage = (messageId: string, handle: string) => {
+// export const getUsersReactedToMessage = (messageId: string, handle: string) => {
 
-    return get(query(ref(db, `messages/${messageId}/reactions`), orderByChild('😆'), equalTo(`${handle}:true`)))
-        .then(snapshot => {
-            if (!snapshot.exists()) return [];
+//     return get(query(ref(db, `messages/${messageId}`), orderByChild('reactions'), equalTo(`${handle}`)))
+//         .then(snapshot => {
+//             if (!snapshot.exists()) return [];
 
-            return (snapshot);
-        });
-};
+//             return (snapshot);
+//         });
+// };
 
 export interface ReactionItem {
     0: string;
@@ -162,4 +159,28 @@ export const getMessageReactionsLive = (messageId: string, listener: ReactionsLi
 
     return listener(reactionArray);
   })
+}
+
+export const deleteMessage = (messageId: string) => {
+    getMessageById(messageId)
+    .then((message) => {
+
+    remove(ref(db, `users/${message.author}/myMessages/${messageId}`));
+
+    remove(ref(db, `channels/${message.toChannel}/messages/${messageId}`));
+
+    if(Object.keys(message).includes('reactions')){
+        const reactionsOfMessage: ReactionItem[]= Object.keys(message.reactions).map((reaction) => {
+            return [reaction, Object.keys(message.reactions[reaction])];
+        });
+        
+        reactionsOfMessage.map(reaction => {
+            (reaction[1]).map(user => remove(ref(db, `users/${user}/myReactions/${reaction[0]}/${messageId}`)));
+        });
+    }
+
+    remove(ref(db, `messages/${messageId}`));
+        
+    })
+    .catch(e => console.log(e));
 }
