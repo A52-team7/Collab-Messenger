@@ -11,6 +11,9 @@ import {
   Text,
   Container,
   Heading,
+  Wrap,
+  WrapItem,
+  Avatar,
 } from '@chakra-ui/react';
 import MoreOptions from '../MoreOptions/MoreOptions'
 import AppContext, {UserState} from '../../context/AppContext'
@@ -60,7 +63,12 @@ const UserTeams = () => {
                   display="flex"
                   alignItems="center"
                   justifyContent="space-between"
-                  p={4}>
+                  p={2}>
+                  <Wrap>
+                  <WrapItem>
+                  <Avatar size='sm' name={team.name} src={team.teamPhoto} />{' '}
+                  </WrapItem>
+                  </Wrap>
                   <Text fontSize="md">{team.name}</Text>
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>

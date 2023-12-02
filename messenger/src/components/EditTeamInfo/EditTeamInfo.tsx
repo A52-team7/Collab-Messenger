@@ -6,9 +6,16 @@ import {
     Heading,
     Input,
     Stack,
-    useColorModeValue
+    Center,
+    Box,
+    Avatar,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    CloseButton,
+    useDisclosure,
   } from '@chakra-ui/react';
-import { useState, useContext } from 'react'
+import { useState, useContext,useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppContext, { UserState } from '../../context/AppContext';
 import { TITLE_NAME_LENGTH_MIN, TITLE_NAME_LENGTH_MAX } from '../../common/constants';
@@ -19,6 +26,8 @@ import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS } from '../../common/constants';
 import {Team} from '../CreateTeam/CreateTeam';
 import UsersList from '../UsersList/UsersList';
+import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
+import { getDownloadURL, ref, uploadBytes, getStorage, StorageReference, FirebaseStorage } from 'firebase/storage';
 
 
 const EditTeamInfo = () => {
@@ -26,8 +35,15 @@ const EditTeamInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const team = location.state.team;
-
   const [teamForm, setTeamForm] = useState<Team>({...team})
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [teamPhoto,setTeamPhoto] = useState<File | null>(null)
+
+  const {
+    isOpen: isSave,
+    onClose,
+    onOpen,
+  } = useDisclosure({ defaultIsOpen: false })
 
   const updateNewTeam = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     if (field !== 'members') {
@@ -69,6 +85,51 @@ const EditTeamInfo = () => {
     })
   }
 
+  const onOpenFileManager = (): void => {
+    if (fileInput.current) {
+      fileInput.current.click();
+    }
+  };
+
+  const onLocallyUploadImage = (): void => {
+    if (fileInput.current && fileInput.current.files) {
+      const file: File = fileInput.current.files[0];
+
+      // if (!file.type.startsWith('image/') || file.type !== '') {
+      //   return alert('File is not image') 
+      // } 
+      setTeamPhoto(file);
+      
+    }
+  };
+
+  const uploadImageToFB = (teamRef: DatabaseReference): Promise<void> | void => {
+    if (teamPhoto) {
+      return new Promise((resolve, reject) => {
+        const storage: FirebaseStorage = getStorage();
+        const folderPath: string = `${teamForm?.name}/${teamForm?.name}-teamPhoto`;
+        const storageRef: StorageReference = ref(storage, folderPath);
+        uploadBytes(storageRef, teamPhoto)
+          .then(() => {
+            const storageRef: StorageReference = ref(storage, folderPath);
+            return storageRef;
+          })
+          .then(storageRef => {
+            const url: Promise<string> = getDownloadURL(storageRef);
+            return url;
+          })
+          .then(url => {
+            update(teamRef, { teamPhoto: url });
+            setTeamForm({...teamForm, teamPhoto: url})
+            resolve();
+          })
+          .catch((err: Error) => {
+            return reject(err);
+          });
+      });
+    }
+  };
+
   const saveTeam = () => {
     if (!teamForm.name) {
       return alert(`Enter team name`)
@@ -81,6 +142,9 @@ const EditTeamInfo = () => {
     }
     if (userData === null) return alert('Please login');
 
+    const db: Database = getDatabase();
+    const teamRef: DatabaseReference = dbRef(db, `teams/${teamForm.id}`);
+
     if(teamForm.name !== team.name){
     getTeamByName(teamForm.name)
       .then(result => {
@@ -91,33 +155,65 @@ const EditTeamInfo = () => {
       }).catch(e => console.log(e))
     }
     updateTeamDescription(team.id, teamForm.description)
-    navigate(-1)
+    .then(() => uploadImageToFB(teamRef))
+    .then(() => onOpen())
+    .catch(e => console.log(e))
   }
 
     return (
         <Flex
-          minH={'100vh'}
+          minH={'fit-content'}
           align={'center'}
           justify={'center'}
-          bg={useColorModeValue('gray.50', 'gray.800')}>
+          mt={{ base: 2, sm: 5 }} bg={'lightBlue'}>
           <Stack
             spacing={4}
-            w={'full'}
-            maxW={'md'}
-            bg={useColorModeValue('white', 'gray.700')}
+            maxW={'fit-content'}
+            bg={'grey'}
             rounded={'xl'}
             boxShadow={'lg'}
-            p={6}
-            my={12}>
-            <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+            p={{ base: 1, sm: 6 }}>
+            <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }} textAlign={'center'}>
               Edit your team
             </Heading>
+            <Flex justifyContent={'space-between'}>
+            <Stack direction={['column']} spacing={6} p={10} >
+            <Center flexDirection={'column'}>
+              <Box position='relative'>
+                <Avatar
+                  borderRadius='full'
+                  boxSize='150px'
+                  src={teamForm.teamPhoto}
+                />
+                <Button
+                  maxW={'150px'}
+                  position={'absolute'}
+                  bottom={'-5'}
+                  left={'50%'}
+                  transform={'translateX(-50%)'}
+                  bg={'orangered'}
+                  _hover={{ opacity: 0.7 }}
+                  onClick={onOpenFileManager}
+                >
+                  Upload New Image
+                </Button>
+              </Box>
+              <Input
+                hidden
+                type='file'
+                ref={fileInput}
+                onChange={onLocallyUploadImage}
+              />
+            </Center>
+          </Stack>
+            <Stack right={0} top={'-29%'}>
             <FormControl id="userName" isRequired>
               <FormLabel>Team name</FormLabel>
               <Input
                 placeholder="Write your team name..."
                 _placeholder={{ color: 'gray.500' }}
                 type="text"
+                bg={'white'}
                 value={teamForm.name}
                 onChange={updateNewTeam('name')}
               />
@@ -137,10 +233,29 @@ const EditTeamInfo = () => {
                 placeholder="Describe your team or write your motto..."
                 _placeholder={{ color: 'gray.500' }}
                 type="text"
+                bg={'white'}
                 value={teamForm.description}
                 onChange={updateNewTeam('description')}
               />
             </FormControl>
+            </Stack>
+            </Flex>
+            <Box>
+            {isSave && 
+              <Alert status={'success'}
+              textAlign={'center'}
+              w={'fit-content'}
+              rounded={'xl'}>
+              <AlertIcon />
+              <Box>
+                <AlertTitle>Team information updated successfully</AlertTitle>
+              </Box>
+              <CloseButton
+                rounded={'xl'}
+                onClick={onClose}
+              />
+            </Alert>}
+            </Box>
             <Stack spacing={6} direction={['column', 'row']}>
               <Button
                 bg={'red.400'}
