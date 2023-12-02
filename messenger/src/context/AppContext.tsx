@@ -4,6 +4,7 @@ import { User } from "firebase/auth";
 export interface UserState {
   user: User | null,
   userData: UserData | null,
+  loading: boolean | null;
   setContext: React.Dispatch<React.SetStateAction<UserState>>,
 }
 
@@ -22,6 +23,7 @@ export interface UserData {
 const AppContext = createContext<UserState>({
   user: null,
   userData: null,
+  loading: null,
   setContext: () => { }
 });
 
