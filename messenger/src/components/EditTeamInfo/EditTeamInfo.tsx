@@ -20,15 +20,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AppContext, { UserState } from '../../context/AppContext';
 import { TITLE_NAME_LENGTH_MIN, TITLE_NAME_LENGTH_MAX } from '../../common/constants';
 import { getTeamByName, updateTeamName, updateTeamDescription, addMemberToTeam } from '../../services/teams.service'
-import { updateUserTeams, userChannel } from '../../services/users.service';
-import { addMemberToChannel } from '../../services/channels.service';
+import { updateUserTeams, userChannel, getUserByHandle } from '../../services/users.service';
+import { addMemberToChannel, channelMessage, getChannelById } from '../../services/channels.service';
 import SearchUsers from '../SearchUsers/SearchUsers';
-import { ADD_USERS } from '../../common/constants';
+import { ADDED, ADD_PERSON, ADMIN, TO, ADD_USERS } from '../../common/constants';
 import {Team} from '../CreateTeam/CreateTeam';
 import UsersList from '../UsersList/UsersList';
-import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
+import { getDatabase, ref as dbRef, Database, DatabaseReference, update} from "firebase/database";
 import { getDownloadURL, ref, uploadBytes, getStorage, StorageReference, FirebaseStorage } from 'firebase/storage';
-
+import { addMessage } from "../../services/messages";
+import { FaCamera } from "react-icons/fa";
 
 const EditTeamInfo = () => {
   const { userData } = useContext<UserState>(AppContext);
@@ -38,6 +39,7 @@ const EditTeamInfo = () => {
   const [teamForm, setTeamForm] = useState<Team>({...team})
   const fileInput = useRef<HTMLInputElement>(null);
   const [teamPhoto,setTeamPhoto] = useState<File | null>(null)
+  const [newMember, setNewMember] = useState<string[]>([])
 
   const {
     isOpen: isSave,
@@ -45,21 +47,13 @@ const EditTeamInfo = () => {
     onOpen,
   } = useDisclosure({ defaultIsOpen: false })
 
-  const updateNewTeam = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateTeamInfo = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     if (field !== 'members') {
       setTeamForm({
         ...teamForm,
         [field]: e.target.value,
       })
-    } else {
-      const newMembers = { ...teamForm.members };
-      newMembers[e.target.value] = true;
-
-      setTeamForm({
-        ...teamForm,
-        members: newMembers
-      })
-    }
+    } 
   }
 
   const updateNewMember = (user: string) => {
@@ -69,20 +63,7 @@ const EditTeamInfo = () => {
       ...teamForm,
       members: newMembers
     })
-    addMemberToTeam(teamForm.id, user)
-    addMemberToChannel(teamForm.generalChannel, user)
-    userChannel(teamForm.generalChannel, user)
-    updateUserTeams(user, teamForm.id)
-  }
-
-  const removeTeamMembers = (member: string) => {
-    const updateMembers = { ...teamForm.members }
-    delete updateMembers[member]
-
-    setTeamForm({
-      ...teamForm,
-      members: updateMembers,
-    })
+    setNewMember([...newMember, user])
   }
 
   const onOpenFileManager = (): void => {
@@ -156,6 +137,31 @@ const EditTeamInfo = () => {
     }
     updateTeamDescription(team.id, teamForm.description)
     .then(() => uploadImageToFB(teamRef))
+    .then(() => {
+      newMember.forEach((member: string) => {
+        addMemberToTeam(teamForm.id, member)
+        .then(() => addMemberToChannel(teamForm.generalChannel, member))
+        .then(() => userChannel(teamForm.generalChannel, member))
+        .then(() => updateUserTeams(member, teamForm.id))
+        .then(() =>{
+          getUserByHandle(member)
+          .then(res =>{
+            const user = res.val()
+            const displayName = user.firstName + ' ' + user.lastName
+             getChannelById(teamForm.generalChannel)
+             .then(channel =>{
+                addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + displayName + TO + channel.title, ADMIN, channel.id, true, ADD_PERSON)
+                .then(message => {
+                channelMessage(channel.id, message.id);
+                })
+                .catch(error => console.error(error.message))
+              })
+          })
+
+          
+        })
+      })
+    })
     .then(() => onOpen())
     .catch(e => console.log(e))
   }
@@ -186,16 +192,20 @@ const EditTeamInfo = () => {
                   src={teamForm.teamPhoto}
                 />
                 <Button
-                  maxW={'150px'}
                   position={'absolute'}
-                  bottom={'-5'}
-                  left={'50%'}
+                  bottom={0}
+                  right={-15}
                   transform={'translateX(-50%)'}
-                  bg={'orangered'}
-                  _hover={{ opacity: 0.7 }}
+                  p={0}
+                  bg={'green.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'green.100' }}
+                  border={'1px solid'}
+                  borderColor={'green.200'}
+                  color={'green.500'}
                   onClick={onOpenFileManager}
                 >
-                  Upload New Image
+                   <FaCamera size={30} />
                 </Button>
               </Box>
               <Input
@@ -215,7 +225,7 @@ const EditTeamInfo = () => {
                 type="text"
                 bg={'white'}
                 value={teamForm.name}
-                onChange={updateNewTeam('name')}
+                onChange={updateTeamInfo('name')}
               />
             </FormControl>
             <FormControl id="addMembers" isRequired>
@@ -224,7 +234,7 @@ const EditTeamInfo = () => {
               <Stack h={'15vh'}
                overflowY={'scroll'}
               >
-              <UsersList members={Object.keys(teamForm.members)} removeTeamMembers={removeTeamMembers}/>
+              <UsersList members={Object.keys(teamForm.members)} teamId={teamForm.id}/>
               </Stack>
             </FormControl>
             <FormControl id="description">
@@ -235,7 +245,7 @@ const EditTeamInfo = () => {
                 type="text"
                 bg={'white'}
                 value={teamForm.description}
-                onChange={updateNewTeam('description')}
+                onChange={updateTeamInfo('description')}
               />
             </FormControl>
             </Stack>
@@ -258,22 +268,20 @@ const EditTeamInfo = () => {
             </Box>
             <Stack spacing={6} direction={['column', 'row']}>
               <Button
-                bg={'red.400'}
-                color={'white'}
-                w="full"
-                _hover={{
-                  bg: 'red.500',
-                }}
+                 w='full'
+                 border={'2px solid'}
+                 borderColor={'green.400'}
+                 bg={'none'}
+                 color={'green.400'}
+                 _hover={{ opacity: 0.8 }}
                 onClick={() => navigate(-1)}>
                 Cancel
               </Button>
               <Button
-                bg={'blue'}
-                color={'white'}
-                w="full"
-                _hover={{
-                  bg: 'blue.500',
-                }}
+                bg={'green.400'}
+                variant={'primaryButton'} 
+                w='full'
+                _hover={{ opacity: 0.8 }}
                 onClick={saveTeam}>
                 Save
               </Button>

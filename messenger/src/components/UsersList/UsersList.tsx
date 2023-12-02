@@ -13,8 +13,6 @@ interface UserListProps {
 
 const UsersList = ({members, channelId, teamId, removeChannelMembers, removeTeamMembers}: UserListProps): JSX.Element => {    
     const bottomRef = useRef<Element | null>(null);
-
-    console.log(members);
     
 
     useEffect(() => {

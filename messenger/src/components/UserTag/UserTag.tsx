@@ -8,6 +8,7 @@ import { deleteMemberFromTeam } from "../../services/teams.service";
 import AppContext from "../../context/AppContext";
 import { addMessage } from "../../services/messages";
 import { ADMIN, FROM, REMOVED, REMOVE_PERSON } from "../../common/constants";
+import { useNavigate } from 'react-router-dom';
 
 interface UserTagProps {
     handle: string;
@@ -20,7 +21,6 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
 
     const [userInfo, setUserInfo] = useState<Author>();
     const [displayName, setDisplayName] = useState('');
-
     const {userData} = useContext(AppContext);
 
     useEffect(() => {
@@ -44,9 +44,14 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
                 .catch(error => console.error(error.message));
             })
             .catch(error => console.error(error.message));
-        }else if(teamId){
-            deleteMemberFromTeam(teamId, handle);
         }
+    }
+
+    const onDeleteTeamMember = () =>{
+        if(teamId !== undefined && userData?.firstName !== undefined){
+        deleteMemberFromTeam(teamId, handle, userData.firstName, userData?.lastName, displayName)
+        //navigate(-1)
+    }
     }
 
     return(
@@ -62,11 +67,13 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
                 <TagLabel>{displayName}</TagLabel>
                 {handle !== userData?.handle && (
                     <>
-                        {!removeChannelMembers ? (
+                        {(teamId && channelId == undefined) ? (<RemoveUser name={displayName} onDelete={onDeleteTeamMember} selfRemove={false}/>)
+                          : !removeChannelMembers  ? (
                             <RemoveUser name={displayName} onDelete={onDelete} selfRemove={false}/>
                         ) : (
                             <TagCloseButton onClick={() => removeChannelMembers(handle)} />
                         )}
+                        
                     </>
                 )}
             </Tag>
