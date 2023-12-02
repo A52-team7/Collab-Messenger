@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot, onValue } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 
 export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
@@ -101,4 +101,8 @@ export const addUserReactionToMessage = (messageId: string, reaction: string, ha
   updateUserReactionToMessage[`/users/${handle}/myReactions/${reaction}/${messageId}`] = true;
 
   return update(ref(db), updateUserReactionToMessage);
+}
+
+export const removeUserReactionFromMessage = (messageId: string, reaction: string, handle: string) => {
+  remove(ref(db, `users/${handle}/myReactions/${reaction}/${messageId}`));
 }
