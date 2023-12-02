@@ -30,7 +30,8 @@ export interface Team {
   description: string,
   createdOn?: string,
   channels?: { [id: string]: boolean },
-  generalChannel: string
+  generalChannel: string,
+  teamPhoto?: string,
 }
 
 const CreateTeam = () => {
