@@ -29,6 +29,9 @@ function App(): JSX.Element {
     setContext: () => { },
   });
 
+  console.log('I am reloading');
+
+
   // update the user in the app state to match the one retrieved from the hook above
   if (appState.user !== userAuth) {
     setAppState((prevState: UserState) => ({
