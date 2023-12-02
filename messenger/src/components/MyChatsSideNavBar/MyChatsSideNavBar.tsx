@@ -16,7 +16,11 @@ export interface Channel {
   seenBy: []
 }
 
-const MyChatsSideNavBar = () => {
+interface MyChatsSideNavBarProps {
+  onClose: () => void;
+}
+
+const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
 
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
@@ -48,29 +52,29 @@ const MyChatsSideNavBar = () => {
     navigate('/new-chat');
   }
 
-    return (
-        <Flex direction={'column'}>
-            <Flex justifyContent={'center'}>
-                <Text>
-                My chats
-                </Text>
-                <Button
-                px={8}
-                rounded={'md'}
-                onClick={onCreate}
-                >
-                New
-                </Button>
-            </Flex>
-            <Stack>
-            {channels.map((channel: Channel) => (
-                <Box key={channel.id}>
-                    <MyChat channel={channel}/>
-                </Box>
-            ))}
-            </Stack>           
-        </Flex>
-    )
+  return (
+    <Flex direction={'column'}>
+      <Flex justifyContent={'center'}>
+        <Text>
+          My chats
+        </Text>
+        <Button
+          px={8}
+          rounded={'md'}
+          onClick={onCreate}
+        >
+          New
+        </Button>
+      </Flex>
+      <Stack>
+        {channels.map((channel: Channel) => (
+          <Box onClick={() => onClose()} key={channel.id}>
+            <MyChat channel={channel} />
+          </Box>
+        ))}
+      </Stack>
+    </Flex>
+  )
 }
 
 

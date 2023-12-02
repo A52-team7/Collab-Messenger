@@ -1,6 +1,8 @@
-import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot,push, remove, onValue } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, push, remove, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
-import {deleteMemberFromChannel,getChannelById} from './channels.service'
+import {deleteMemberFromChannel,getChannelById, channelMessage} from './channels.service'
+import { ADMIN, FROM, REMOVED, REMOVE_PERSON } from "../common/constants";
+import { addMessage } from "./messages";
 
 export const createTeam = (name: string, handle: string, members: object, description: string) => {
     return push(
@@ -54,14 +56,23 @@ export const getTeamChannelsLive = (id: string, listener: ChannelsListener)=>{
     })
   }
 
-export const deleteMemberFromTeam = (teamId: string, handle: string) => {
+export const deleteMemberFromTeam = (teamId: string, handle: string, firstName: string, lastName: string, displayName: string) => {
     getTeamById(teamId)
     .then((team) =>{
         Object.keys(team.channels).map((channelId)=>{
             getChannelById(channelId)
             .then((elChannel) => {
-                if(elChannel.members.includes(handle)){
+                console.log(elChannel)
+                const members = Object.keys(elChannel.members)
+                if(members.includes(handle)){
                     deleteMemberFromChannel(channelId, handle)
+                    .then(() => {        
+                    addMessage(firstName + ' ' + lastName + ' ' + REMOVED + displayName + FROM + elChannel.title, ADMIN, elChannel.id, true, REMOVE_PERSON)
+                    .then(message => {
+                    channelMessage(channelId, message.id);
+                    })
+                    .catch(error => console.error(error.message));
+                    })
                 }
             })
         })
@@ -92,3 +103,14 @@ export const updateTeamDescription = (idTeam: string, description: string) => {
     return update(ref(db), 
     {[`teams/${idTeam}/description`]: description} )
 }
+
+export interface Listener{(data: string[]): void}
+
+export const getTeamInfoLife = (listener: Listener)=>{
+
+    return onValue(ref(db ,`teams/`), (snapshot) => {
+      if(!snapshot.exists()) return[];
+      const team = Object.keys(snapshot.val());
+      return listener(team)
+    })
+  }

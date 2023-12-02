@@ -19,7 +19,7 @@ const Body = ({ children }: BodyProps): JSX.Element => {
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}>
-        <DrawerContent maxW={'fit-content'}>
+        <DrawerContent maxW={'210px'}>
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>

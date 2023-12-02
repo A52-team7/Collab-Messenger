@@ -8,7 +8,6 @@ import { channelMessage, deleteMemberFromChannel, getChannelById } from "../../s
 import { useContext } from 'react';
 import AppContext from '../../context/AppContext';
 import RemoveUser from "../RemoveUser/RemoveUser";
-import { deleteMemberFromTeam } from "../../services/teams.service";
 import {Team} from '../CreateTeam/CreateTeam'
 import { addMessage } from "../../services/messages";
 
@@ -38,9 +37,7 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
                 .catch(error => console.error(error.message));
             })
             .catch(error => console.error(error.message));
-      } else if(team){
-        deleteMemberFromTeam(team.id, userData.handle);
-      }
+      } 
 
     }
   
@@ -74,7 +71,7 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
                   )}
                 </Stack>
                 <Stack alignItems={'center'}>
-                    {team && team?.owner !== userData?.handle ? ( 
+                    {(team && team?.owner !== userData?.handle) ? ( 
                     <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>
                     ) : (
                       <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>

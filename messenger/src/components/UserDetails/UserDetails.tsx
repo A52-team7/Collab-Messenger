@@ -19,6 +19,7 @@ import {
   MSG_PASSWORD_LENGTH,
   MSG_INVALID_IMAGE_FORMAT
 } from '../../common/constants';
+import { FaCamera } from "react-icons/fa";
 
 interface formErrorsInitialStateInterface {
   error: boolean;
@@ -234,23 +235,28 @@ const UserDetails = (): JSX.Element => {
         <Flex justifyContent={'space-between'}>
           <Stack direction={['column']} spacing={6}>
             <Center flexDirection={'column'}>
-              <Box position='relative'>
+              <Box position='relative'
+                _hover={{ cursor: 'pointer', opacity: 0.9 }}
+                onClick={onOpenFileManager}>
                 <Avatar
                   borderRadius='full'
                   boxSize='150px'
                   src={userData?.profilePhoto}
                 />
                 <Button
-                  maxW={'150px'}
                   position={'absolute'}
-                  bottom={'-5'}
-                  left={'50%'}
+                  bottom={0}
+                  right={-15}
                   transform={'translateX(-50%)'}
-                  bg={'orangered'}
-                  _hover={{ opacity: 0.7 }}
-                  onClick={onOpenFileManager}
+                  p={0}
+                  bg={'green.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'green.100' }}
+                  border={'1px solid'}
+                  borderColor={'green.200'}
+                  color={'green.500'}
                 >
-                  Upload New Image
+                  <FaCamera size={30} />
                 </Button>
               </Box>
               <Input
@@ -260,9 +266,11 @@ const UserDetails = (): JSX.Element => {
                 onChange={onLocallyUploadImage}
               />
             </Center>
-            <Box textAlign={'center'}>
-              {formErrors.invalidImageFormat && <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>}
-            </Box>
+            {formErrors.invalidImageFormat &&
+              <Box textAlign={'center'}>
+                <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>
+              </Box>
+            }
           </Stack>
           <Stack className='form' right={0} top={'-29%'}>
             <FormControl isRequired id='firstName'
@@ -334,14 +342,21 @@ const UserDetails = (): JSX.Element => {
           }
         </Box>
         <Stack spacing={6} direction={['column', 'row']}>
-          <Button bg={'red.400'} color={'white'} w='full' _hover={{ bg: 'red.400', }} onClick={onNavigate}>
+          <Button
+            w='full'
+            border={'2px solid'}
+            borderColor={'green.400'}
+            bg={'none'}
+            color={'green.400'}
+            _hover={{ opacity: 0.8 }}
+            onClick={onNavigate}>
             Cancel
           </Button>
           <Button
-            bg={hasFormChanged ? 'green' : 'gray'}
+            bg={hasFormChanged ? 'green.400' : 'gray'}
             isLoading={formSubmissionLoading}
             variant={'primaryButton'} w='full'
-            _hover={{ bg: 'blue.500', }}
+            _hover={{ opacity: 0.8 }}
             isDisabled={!hasFormChanged}
             onClick={onUpdate}>
             Update Info
