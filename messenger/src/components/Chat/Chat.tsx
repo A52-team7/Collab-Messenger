@@ -67,7 +67,7 @@ const Chat = (): JSX.Element => {
       }
     })
     .catch(e => console.error(e));
-  }, []);
+  }, [channelId, userData]);
   
 
   const [emoji, setEmoji] = useState<string>('');
@@ -86,10 +86,12 @@ const Chat = (): JSX.Element => {
         setTitle(result.title);
         setMembers(Object.keys(result.members));
       }).catch(e => console.error(e));
-  }, []);
+  }, [channelId]);
 
   useEffect(() => {
     if (userData === null) return;
+
+    setMessages([]); 
 
     getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
@@ -120,7 +122,7 @@ const Chat = (): JSX.Element => {
     getChannelMembersLive(channelId, (data: string[]) => {
       return setMembers([...data]);
     })
-  }, []);
+  }, [channelId, userData]);
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (userData === null) return;
@@ -189,7 +191,7 @@ const Chat = (): JSX.Element => {
     updateNewMember: onAddMember,
     channelId: channelId,
     team: team,
-  }
+  }  
 
   return (
     <Flex
@@ -219,10 +221,14 @@ const Chat = (): JSX.Element => {
         w={'inherit'}
         overflowY={'scroll'}
       >
-        {ifIsLeftIsSet && messages.length > 0 &&
-          <Box h={'100vh'}>
-            <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
-          </Box>
+        {ifIsLeftIsSet && 
+          <>
+            {messages.length > 0 &&
+            <Box h={'100vh'}>
+              <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
+            </Box>
+            }
+          </>
         }
       </Stack>
       {isLeft ? (

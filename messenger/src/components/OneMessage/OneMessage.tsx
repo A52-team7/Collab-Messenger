@@ -177,13 +177,15 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           }
         </Box>
       </Flex>
-        <Flex mt={-8}>
-        {reactions && reactions.reactions.map((reaction) => (
-              <Box key={reaction[0]}>
-                  <ReactionItem reaction={reaction} onAddReaction={onAddReaction}/>
-              </Box>
-        ))}
-        </Flex>
+        {reactions && 
+            <Flex mt={-8}>
+            {reactions.reactions.map((reaction) => (
+                  <Box key={reaction[0]}>
+                      <ReactionItem reaction={reaction} onAddReaction={onAddReaction}/>
+                  </Box>
+            ))}
+            </Flex>
+        }   
     </Flex>
     )}
     </>
