@@ -266,9 +266,11 @@ const UserDetails = (): JSX.Element => {
                 onChange={onLocallyUploadImage}
               />
             </Center>
-            <Box textAlign={'center'}>
-              {formErrors.invalidImageFormat && <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>}
-            </Box>
+            {formErrors.invalidImageFormat &&
+              <Box textAlign={'center'}>
+                <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>
+              </Box>
+            }
           </Stack>
           <Stack className='form' right={0} top={'-29%'}>
             <FormControl isRequired id='firstName'

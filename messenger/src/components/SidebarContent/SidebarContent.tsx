@@ -38,9 +38,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
   const { user } = useContext(AppContext);
   const [show, setShow] = useState(SIDEBAR_SHOW_MESSAGES);
   const [activeBtn, setActiveBtn] = useState('messages-btn');
-  // const [homeActiveBtn, setHomeActiveBtn] = useState(false);
   const navigate = useNavigate();
-  // const location = useLocation();
 
   const showContentHandle = (e: React.MouseEvent<HTMLElement>) => {
     const targetId = e.currentTarget.id;
@@ -52,21 +50,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
     setActiveBtn(targetId);
   }
 
-  // useEffect(() => {
-  //   if (location.pathname === '/') {
-  //     setHomeActiveBtn(true);
-  //   } else {
-  //     setHomeActiveBtn(false);
-  //   }
-  // }, [location]);
-
   return (
     <Box
       transition={'3s ease'}
       bg={'blue'}
       borderRight={'1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'fit-content', md: 80 }}
+      w={{ base: '220px', md: 80 }}
       pos={'fixed'}
       h={'full'}
       {...rest}>
@@ -77,7 +67,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         w={'100%'}
         alignItems={'center'}
         justifyContent={'center'}>
-        {/* <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading> */}
         <Image
           _hover={{ cursor: 'pointer' }}
           src={'/logo.jpg'}
@@ -89,18 +78,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       </Flex>
       {user &&
         <>
-          {/* <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
-            <Box>
-              <Button px={3} py={6}
-                id={'home-btn'}
-                bg={homeActiveBtn ? 'cyan' : 'gray.100'}
-                _hover={{ opacity: 0.5 }}
-                onClick={(e) => showContentHandle(e)}>
-                <FiHome size={30} />
-              </Button>
-              <FormLabel htmlFor={'home-btn'}>HOME</FormLabel>
-            </Box>
-          </Flex> */}
           <Flex alignItems='center' justifyContent={'space-around'}>
             <Box>
               <Button borderRadius={'50%'} px={3} py={6}
@@ -124,11 +101,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
             </Box>
           </Flex>
           <Box minW={'210px'}>
-            {/* <NavItem key={LinkItems[0].name} icon={LinkItems[0].icon} name={LinkItems[0].name} path={LinkItems[0].path} /> */}
             {show === SIDEBAR_SHOW_MESSAGES ?
-              <MyChatsSideNavBar />
+              <MyChatsSideNavBar onClose={onClose} />
               :
-              <UserTeams />
+              <UserTeams onClose={onClose} />
             }
           </Box>
         </>}
