@@ -10,6 +10,7 @@ import {
   useColorModeValue,
   Heading,
   FormLabel,
+  Image,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -37,9 +38,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
   const { user } = useContext(AppContext);
   const [show, setShow] = useState(SIDEBAR_SHOW_MESSAGES);
   const [activeBtn, setActiveBtn] = useState('messages-btn');
-  const [homeActiveBtn, setHomeActiveBtn] = useState(false);
+  // const [homeActiveBtn, setHomeActiveBtn] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
   const showContentHandle = (e: React.MouseEvent<HTMLElement>) => {
     const targetId = e.currentTarget.id;
@@ -51,13 +52,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
     setActiveBtn(targetId);
   }
 
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setHomeActiveBtn(true);
-    } else {
-      setHomeActiveBtn(false);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (location.pathname === '/') {
+  //     setHomeActiveBtn(true);
+  //   } else {
+  //     setHomeActiveBtn(false);
+  //   }
+  // }, [location]);
 
   return (
     <Box
@@ -73,11 +74,23 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         <CloseButton display={{ md: 'none' }} onClick={onClose} />
       </Box>
       <Flex alignItems={'center'} justifyContent={'center'}>
-        <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading>
+        {/* <Heading textAlign={'center'} fontSize={24}>COLLAB-MESSENGER</Heading> */}
+        <Button
+            id={'home-btn'} 
+            w={'fit-content'}
+            h={'fit-content'}
+            bg={'none'}
+            onClick={(e) => showContentHandle(e)}>
+            <Image 
+            src={'../../../public/logo.jpg'} 
+            alt={'logo'} 
+            boxSize='200px' 
+            borderRadius="full"/>
+        </Button>
       </Flex>
       {user &&
         <>
-          <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
+          {/* <Flex mt={{ base: 5, md: 5 }} alignItems='center' justifyContent={'space-around'}>
             <Box>
               <Button px={3} py={6}
                 id={'home-btn'}
@@ -88,7 +101,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
               </Button>
               <FormLabel htmlFor={'home-btn'}>HOME</FormLabel>
             </Box>
-          </Flex>
+          </Flex> */}
           <Flex alignItems='center' justifyContent={'space-around'}>
             <Box>
               <Button borderRadius={'50%'} px={3} py={6}
