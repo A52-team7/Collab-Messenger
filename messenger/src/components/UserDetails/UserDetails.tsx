@@ -221,7 +221,11 @@ const UserDetails = (): JSX.Element => {
   }, [submitChange, setSubmitChange, setFormErrors]);
 
   return (
-    <Flex maxH={'fit-content'} align={'center'} justify={'center'} mt={{ base: 2, sm: 5 }} bg={'lightBlue'}>
+    <Flex maxH={'fit-content'} 
+    align={'center'} 
+    justify={'center'} 
+    mt={{ base: 2, sm: 5 }} 
+    bg={'lightBlue'}>
       <Stack
         spacing={4}
         maxW={'fit-content'}

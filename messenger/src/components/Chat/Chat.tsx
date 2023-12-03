@@ -238,8 +238,8 @@ const Chat = (): JSX.Element => {
       ): (
         <>
           {!replyIsVisible ? (<Stack
-            boxShadow={'2xl'}
-            bg={useColorModeValue('white', 'gray.700')}
+            // boxShadow={'2xl'}
+            // bg={useColorModeValue('white', 'gray.700')}
             rounded={'xl'}
             w={'60vw'}
             p={10}

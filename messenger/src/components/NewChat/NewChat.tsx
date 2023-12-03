@@ -110,17 +110,25 @@ const NewChat = (): JSX.Element => {
 
   return (
     <Flex
-      align={'center'}
-      direction={'column'}
-      justify={'center'}
-      py={12}>
+    maxH={'fit-content'} 
+    align={'center'} 
+    justify={'center'} 
+    mt={{ base: 2, sm: 5 }} 
+    bg={'lightBlue'}
+      // align={'center'}
+      // direction={'center'}
+      // justify={'center'}
+      // py={12}
+      // maxW={'600px'}
+      >
 
       <Flex
+      
         direction={'column'}
         boxShadow={'2xl'}
         bg={useColorModeValue('white', 'gray.700')}
         rounded={'xl'}
-        w={'60vw'}
+        //w={'60vw'}
         p={10}>
         <FormLabel>Add title</FormLabel>
         <Input
@@ -129,7 +137,7 @@ const NewChat = (): JSX.Element => {
           placeholder="Add title"
           onChange={updateTitle('title')} />
         <FormLabel>Add members</FormLabel>
-        <Stack mb={5} w={'100%'}>
+        <Stack mb={5} w={'500px'}>
           {team ? (
             <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />
           ) : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
@@ -139,18 +147,13 @@ const NewChat = (): JSX.Element => {
         >
           <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
         </Stack>
-        <Stack w={'100%'} alignItems={'center'}>
+        <Stack  alignItems={'center'}>
           <Button
-            pl={35}
-            pr={35}
-            bg={'blue'}
-            rounded={'full'}
-            color={'white'}
-            w={'fit-content'}
-            flex={'1 0 auto'}
-            _hover={{ bg: 'blue.500' }}
-            _focus={{ bg: 'blue.500' }}
-            onClick={onAddNewChannel}>
+         bg={'green.400'}
+         maxW={'100px'}
+         variant={'primaryButton'} w='full'
+         _hover={{ opacity: 0.8 }}
+          onClick={onAddNewChannel}>
             Add chat
           </Button>
         </Stack>
