@@ -18,7 +18,7 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
     return (
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="top">
             <PopoverTrigger>
-                <Button 
+                {reaction && (<Button 
                 color={'white'}  
                 mr={2} 
                 p={1} 
@@ -36,6 +36,7 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
                     <Text>{reaction[0]}</Text>
                     <Text>{reaction[1].length}</Text>
                 </Button>
+                )}
             </PopoverTrigger>
             <PopoverContent w={'fit-content'}>
                 <PopoverArrow />

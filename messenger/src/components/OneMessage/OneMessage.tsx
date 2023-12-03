@@ -38,7 +38,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
-  const [reactions, setReactions] = useState<ReactionArray>();  
+  const [reactions, setReactions] = useState<ReactionArray | null>(null);  
 
   useEffect(() => {
     if (message.typeOfMessage === REPLY) {
@@ -65,10 +65,14 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   useEffect(() => {
     if (userData === null) return;
 
+
     getMessageReactionsLive(message.id, (data: ReactionArray) => {
       setReactions(data);
     })
-  }, []);  
+    
+  }, [message.id, userData]);  
+
+  console.log(reactions);
 
 
   if (userData === null) return;
@@ -111,7 +115,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
         <Text ml={2}>{message.content}</Text>
       </Flex>
     ) : (
-    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} 
+    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={5}
     // onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}
     >
       {isReply && (
@@ -173,7 +177,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
       </Flex>
         {reactions && 
             <Flex mt={'-28px'}>
-            {reactions.reactions.map((reaction) => (
+            {reactions.reactions !== null && reactions.reactions.map((reaction) => (
                   <Box key={reaction[0]}>
                       <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction}/>
                   </Box>

@@ -134,7 +134,7 @@ export interface ReactionItem {
     1: string[];
   }
 export interface ReactionArray {
-    reactions: ReactionItem[];
+    reactions: ReactionItem[] | null;
 }
 
 export interface ReactionsListener{(reactions: ReactionArray): void}
@@ -142,7 +142,7 @@ export interface ReactionsListener{(reactions: ReactionArray): void}
 export const getMessageReactionsLive = (messageId: string, listener: ReactionsListener)=>{
 
   return onValue(ref(db ,`messages/${messageId}/reactions`), (snapshot) => {
-    if(!snapshot.exists()) return[];
+    if(!snapshot.exists()) return listener({reactions: null});
     
     const reactions: ReactionItem[]= Object.keys(snapshot.val()).map((reaction) => {
         return [reaction, Object.keys(snapshot.val()[reaction])] as ReactionItem;
