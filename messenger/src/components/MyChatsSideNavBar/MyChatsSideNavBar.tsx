@@ -1,10 +1,11 @@
-import { Box, Button, Flex, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack, Text, HStack, Heading } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { getChannelById } from '../../services/channels.service';
 import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
 import { getUserChannelsLive } from '../../services/users.service';
 import MyChat from '../MyChat/MyChat';
+import { FiPlusSquare } from "react-icons/fi";
 
 export interface Channel {
   id: string;
@@ -54,18 +55,11 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
 
   return (
     <Flex direction={'column'}>
-      <Flex justifyContent={'center'}>
-        <Text>
-          My chats
-        </Text>
-        <Button
-          px={8}
-          rounded={'md'}
-          onClick={onCreate}
-        >
-          New
-        </Button>
-      </Flex>
+      
+      <HStack justify="space-between">
+          <Heading as='h2' size='lg' textAlign="left">My chats</Heading>
+          <Button variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
+        </HStack>
       <Stack>
         {channels.map((channel: Channel) => (
           <Box onClick={() => onClose()} key={channel.id}>

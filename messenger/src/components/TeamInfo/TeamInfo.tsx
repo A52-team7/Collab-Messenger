@@ -1,9 +1,6 @@
 import {
     Button,
-    Flex,
     Heading,
-    Input,
-    Stack,
     Drawer,
     DrawerBody,
     DrawerHeader,
@@ -14,6 +11,7 @@ import {
     Text,
     Wrap,
     WrapItem,
+    HStack,
     Tabs, TabList, TabPanels, Tab, TabPanel
   } from '@chakra-ui/react';
 import { useState, useContext, useEffect } from 'react'
@@ -75,20 +73,20 @@ const TeamInfo = (team: Team) => {
 
   return (
     <>
-      <Button  key={'lg'} variant='ghost' onClick={onOpen}>
+      <Button  key={'lg'} variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onOpen}>
       <FcAbout size={30} />
       </Button>
       <Drawer placement={'right'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth='1px'>{team.name}</DrawerHeader>
+        <DrawerContent minW={'600px'}>
+          <DrawerHeader fontSize="3xl" textAlign="center" borderBottomWidth='1px'>{team.name}</DrawerHeader>
           <DrawerBody>
-            <Wrap>
+            <Wrap justify="center">
             <WrapItem>
-            <Avatar size='2xl' name={team.name} src={team.teamPhoto} />{' '}
+            <Avatar size='2xl' name={team.name} src={team.teamPhoto} mx="auto" my={10} />{' '}
             </WrapItem>
             </Wrap>
-            <Text>{team.description}</Text>
+            <Text textAlign="center" mx="auto" my={4} border={'1px solid gray'}>{team.description}</Text>
             <Tabs isFitted variant='enclosed'>
             <TabList mb='1em'>
             <Tab>Owner</Tab>
@@ -96,20 +94,27 @@ const TeamInfo = (team: Team) => {
             </TabList>
             <TabPanels>
             <TabPanel>
+             <HStack justify="left">
+            <Avatar size='sm' name={owner.firstName + ' ' + owner.lastName} src={owner.profilePhoto} my={4}/>{' '}
             <p>{owner.firstName} {owner.lastName}, {owner.email} </p>
+            </HStack> 
             </TabPanel>
             <TabPanel>
             {members.map((member: User) => {
-             return (<Text key={member.handle}>{member.firstName} {member.lastName}, {member.email} </Text>)
+             return (
+             <HStack justify="left" borderBottomWidth='1px'>
+             <Avatar size='sm' name={member.firstName + ' ' + member.lastName} src={member.profilePhoto}my={4} />{' '} 
+             <Text key={member.handle} my={4} >{member.firstName} {member.lastName}, {member.email} </Text>
+             </HStack>)
             })}
             </TabPanel>
             </TabPanels>
             </Tabs>
-            <Heading as='h6' size='xs'>
-            Channels
+            <Heading fontSize="xl" mt={7}>
+            Channels:
             </Heading>
             {allChannels.map(channel => {
-              return (<Text key={channel.id}>{channel.title} </Text>)
+              return (<Text key={channel.id} fontSize="lg" my={4} borderBottomWidth='1px'>{channel.title} </Text>)
             })}
           </DrawerBody>
         </DrawerContent>

@@ -129,7 +129,7 @@ const CreateTeam = () => {
       minH={'100vh'}
       align={'center'}
       justify={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}>
+      >
       <Stack
         spacing={4}
         w={'full'}
@@ -174,22 +174,19 @@ const CreateTeam = () => {
         </FormControl>
         <Stack spacing={6} direction={['column', 'row']}>
           <Button
-            bg={'red.400'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'red.500',
-            }}
+            w='full'
+            border={'2px solid'}
+            borderColor={'green.400'}
+            bg={'none'}
+            color={'green.400'}
+            _hover={{ opacity: 0.8 }}
             onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button
-            bg={'blue'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'blue.500',
-            }}
+            bg={'green.400'}
+            variant={'primaryButton'} w='full'
+            _hover={{ opacity: 0.8 }}
             onClick={saveNewTeam}>
             Submit
           </Button>

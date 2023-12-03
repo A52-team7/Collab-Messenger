@@ -69,7 +69,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         justifyContent={'center'}>
         <Image
           _hover={{ cursor: 'pointer' }}
-          src={'/logo.jpg'}
+          src={'/logo-removebg-preview.png'}
           alt={'logo'}
           boxSize='125px'
           borderRadius="full"
@@ -90,7 +90,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
               <FormLabel htmlFor={'messages-btn'}>CHATS</FormLabel>
             </Box>
             <Box>
-              <Button rounded={'xl'} px={3} py={6}
+              <Button borderRadius={'50%'} px={3} py={6}
                 id={'teams-btn'}
                 bg={activeBtn === 'teams-btn' ? 'green.300' : 'gray.100'}
                 _hover={{ opacity: 0.5 }}

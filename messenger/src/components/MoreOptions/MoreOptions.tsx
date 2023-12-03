@@ -39,7 +39,6 @@ const MoreOptions = ({id}: IdTeam) => {
       return setTeam(res);
     })
     .catch(e => console.log(e));
-    console.log(team, 'more');
   },[])
 
   const navigate = useNavigate();
@@ -55,25 +54,26 @@ const MoreOptions = ({id}: IdTeam) => {
   }
 
   return (
-    <Flex justifyContent="center" mt={4}>
+    <Flex mt={4}>
       <Popover placement="bottom" isLazy>
         <PopoverTrigger>
           <IconButton
             aria-label="More server options"
-            icon={<BsThreeDotsVertical />}
-            variant="solid"
+            variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }}
+            icon={<BsThreeDotsVertical size={25}  />}
             w="fit-content"
+            justifyContent="space-between"
+            mt={-4}
           />
         </PopoverTrigger>
         <PopoverContent w="fit-content" _focus={{ boxShadow: 'none' }}>
           <PopoverArrow />
           <PopoverBody>
-            <Stack>
+            <Stack justifyContent="flex-start">
             <Button
-                w="194px"
+                w="170px"
                 variant="ghost"
-                rightIcon={<FiUsers  />}
-                justifyContent="space-between"
+                leftIcon={<FiUsers  />}
                 fontWeight="normal"
                 fontSize="sm"
                 onClick={addNewChannel}>
@@ -81,10 +81,9 @@ const MoreOptions = ({id}: IdTeam) => {
               </Button>
               {(team.owner === userData.handle) && 
               (<Button
-                w="194px"
+                w="170px"
                 variant="ghost"
-                rightIcon={<FiEdit3 />}
-                justifyContent="space-between"
+                leftIcon={<FiEdit3 />}
                 fontWeight="normal"
                 fontSize="sm"
                 onClick={() => navigate('/edit-team-information', {state:{team}})}>

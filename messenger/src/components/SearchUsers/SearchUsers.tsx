@@ -12,6 +12,7 @@ export interface User {
   firstName: string;
   lastName: string;
   myChannels: object[];
+  profilePhoto: string;
 }
 
 interface AddUSerSearchProps {
