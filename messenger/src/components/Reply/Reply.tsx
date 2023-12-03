@@ -75,18 +75,18 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
 
     return(
         <Stack
-        boxShadow={'2xl'}
-        bg={useColorModeValue('white', 'gray.700')}
-        rounded={'xl'}
+        // boxShadow={'2xl'}
+        // bg={useColorModeValue('white', 'gray.700')}
+        // rounded={'xl'}
         w={'60vw'}
         p={10}
         spacing={8}
         align={'center'}
         position= {'fixed'}
         bottom= {'0'}>
-        <Flex maxW={'80%'}  mt={'-15px'}>
-            <Text bg={'gray.100'} alignContent={'center'} noOfLines={1}> Reply to: {messageToReply.content}</Text>
-            <Button rounded={20} size={'xs'} onClick={onCloseReply}>X</Button>
+        <Flex maxW={'80%'}  mt={'-15px'} bg={'gray.100'} pl={5} pr={3}>
+            <Text alignContent={'center'} noOfLines={1}> Reply to: {messageToReply.content}</Text>
+            <Button bg={'teal'} rounded={20} ml={3} size={'xs'} onClick={onCloseReply}>X</Button>
         </Flex>
         <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
           <Textarea

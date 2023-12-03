@@ -45,7 +45,7 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
         .catch(error => console.error(error.message));
     });
 
-  }, [userData]);
+  }, [userData, channels]);
 
 
 

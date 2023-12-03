@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
@@ -8,12 +8,15 @@ import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineEdit } from "react-icons/ai";
 import { ADD_PERSON, CHANGE_TITLE, REMOVE_PERSON, REPLY } from "../../common/constants";
-import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive, removeReactionFromMessage } from "../../services/messages";
+import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive, removeReactionFromMessage, updateContentOfMessage } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import ReactionItem from "../ReactionItem/ReactionItem";
 import RemoveMessage from "../RemoveMessage/RemoveMessage";
 import { GrEdit } from "react-icons/gr";
+import { FaCheck } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
+import EmojiPopover from "../EmojiPopover/EmojiPopover";
 export interface Author {
   handle: string;
   uid: string;
@@ -39,7 +42,19 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
-  const [reactions, setReactions] = useState<ReactionArray | null>(null);  
+  const [reactions, setReactions] = useState<ReactionArray | null>(null); 
+  
+  const [editMessage, setEditMessage] = useState<boolean>(false);
+  const [contentOfMessage, setContentOfMessage] = useState<string>('');
+
+  const [emoji, setEmoji] = useState<string>('');
+
+
+  useEffect(() => {
+    if (emoji) {
+      setContentOfMessage(message => message + emoji.native);
+    }
+  }, [emoji]);
 
   useEffect(() => {
     if (message.typeOfMessage === REPLY) {
@@ -56,6 +71,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     }
   }, []);
 
+  useEffect(() => {
+    setContentOfMessage(message.content);
+  }, []);
+
 
   useEffect(() => {
     getUserByHandle(message.author)
@@ -65,8 +84,6 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
 
   useEffect(() => {
     if (userData === null) return;
-
-
     getMessageReactionsLive(message.id, (data: ReactionArray) => {
       setReactions(data);
     })
@@ -105,6 +122,35 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     deleteMessage(message.id);
   }
 
+  const updateNewMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContentOfMessage(e.target.value);
+  }
+
+  const onEditMessage = () => {
+    setEditMessage(true);
+  }
+
+  const onExitEditMessage = () => {
+    setEditMessage(false);
+  }
+
+  const onUpdateMessage = () => {
+    updateContentOfMessage(message.id, contentOfMessage);
+    setEditMessage(false);
+  }
+
+  const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const messageContent = (event.target as HTMLInputElement).value.trim();
+      updateContentOfMessage(message.id, messageContent);
+      setEditMessage(false);
+    }
+  }
+
+  const onGetEmoji = (emoji: string) => {
+    setEmoji(emoji);
+  }
+
   return (
     <>
     {message.techMessage ? (
@@ -130,6 +176,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
       </Flex>
       }
       <Flex alignItems={'center'}>
+        {!editMessage ? (
         <Box
           pt='10px'
           pb='10px'
@@ -149,7 +196,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
               {decoratedText}
             </a>
           )}>
-            {message.content}
+            {contentOfMessage}
           </Linkify>
           {/* {visibleOptions &&  */}
           {message.author === userData.handle &&
@@ -159,7 +206,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
               transform={'translateY(-50%)'}>
               <ReactionPopover onAddReaction={onAddReaction}/>
               <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
-              <Button p={1} size={'xs'} bg={'none'}><AiOutlineEdit size={20} /></Button>
+              <Button p={1} size={'xs'} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
               <RemoveMessage onDeleteMessage={onDeleteMessage}/>
             </Flex>
           }
@@ -174,6 +221,14 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
             </Flex>
           }
         </Box>
+        ) : (
+          <Flex mb={8}>
+            <Input value={contentOfMessage} bg={'grey'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage}/>
+            <EmojiPopover onGetEmoji={onGetEmoji}/>
+            <Button p={1} onClick={onUpdateMessage}><FaCheck size={20}/></Button>
+            <Button p={1} onClick={onExitEditMessage}><IoClose size={25}/></Button>
+          </Flex>
+        )}
       </Flex>
         {reactions && 
             <Flex mt={'-28px'}>

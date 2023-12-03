@@ -1,7 +1,8 @@
 import { Button, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useDisclosure } from "@chakra-ui/react";
 import { ReactionItem } from "../../services/messages";
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
+import { getUserByHandle } from "../../services/users.service";
 
 export interface ReactionItemProps{
     reaction: ReactionItem;
@@ -14,6 +15,21 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
     const { userData } = useContext(AppContext);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const [reactedUsers, setReactedUsers] = useState<string[]>([]);
+
+    useEffect(() => {
+        Promise.all(
+            reaction[1].map((user) => {
+              return getUserByHandle(user)
+                .then(res => res.val().firstName + ' ' + res.val().lastName)
+                .catch(e => console.error(e));
+            })
+          ).then(users => {
+              setReactedUsers([...users]);
+          })
+          .catch(e => console.error(e));
+    }, [reaction]);    
 
     return (
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="top">
@@ -38,9 +54,9 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
                 </Button>
                 )}
             </PopoverTrigger>
-            <PopoverContent w={'fit-content'}>
+            <PopoverContent w={'250px'}>
                 <PopoverArrow />
-                <PopoverBody>{reaction[0]}: {reaction[1].join(', ')}</PopoverBody>
+                <PopoverBody>{reaction[0]}: {reactedUsers.join(', ')}</PopoverBody>
             </PopoverContent>
         </Popover>
     )

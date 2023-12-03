@@ -10,7 +10,7 @@ export interface EmojiPopoverProps {
 
 const EmojiPopover = ({onGetEmoji}: EmojiPopoverProps) => {
     return(
-        <Popover>
+        <Popover placement="top">
         <PopoverTrigger>
             <Button><BsEmojiGrin size={30}/></Button>
         </PopoverTrigger>

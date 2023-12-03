@@ -179,3 +179,10 @@ export const deleteMessage = (messageId: string) => {
     })
     .catch(e => console.log(e));
 }
+
+export const updateContentOfMessage = (messageId: string, content: string) => {
+    const updateMessageContent: {[key: string]: string} = {};
+    updateMessageContent[`/messages/${messageId}/content`] = content;
+
+    return update(ref(db), updateMessageContent);
+}

@@ -88,7 +88,6 @@ export const getUserChannelsLive = (handle: string, listener: ChannelsListener) 
 
   return onValue(ref(db, `users/${handle}/myChannels`), (snapshot) => {
     if (!snapshot.exists()) return [];
-    console.log(snapshot);
 
     const channels = Object.keys(snapshot.val());
 
