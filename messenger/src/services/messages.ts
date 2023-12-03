@@ -1,6 +1,7 @@
 import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 import { Message } from '../components/MessagesList/MessagesList.tsx';
+import { removeUserReactionFromMessage } from './users.service.ts';
 
 
 
@@ -124,15 +125,9 @@ export const addReactionToMessage = (messageId: string, reaction: string, handle
     return update(ref(db), updateMessageReactions);
 }
 
-// export const getUsersReactedToMessage = (messageId: string, handle: string) => {
-
-//     return get(query(ref(db, `messages/${messageId}`), orderByChild('reactions'), equalTo(`${handle}`)))
-//         .then(snapshot => {
-//             if (!snapshot.exists()) return [];
-
-//             return (snapshot);
-//         });
-// };
+export const removeReactionFromMessage = (messageId: string, reaction: string, handle: string) => {
+    remove(ref(db, `messages/${messageId}/reactions/${reaction}/${handle}`));
+}
 
 export interface ReactionItem {
     0: string;
@@ -175,7 +170,7 @@ export const deleteMessage = (messageId: string) => {
         });
         
         reactionsOfMessage.map(reaction => {
-            (reaction[1]).map(user => remove(ref(db, `users/${user}/myReactions/${reaction[0]}/${messageId}`)));
+            (reaction[1]).map(user => removeUserReactionFromMessage(messageId, reaction[0], user));
         });
     }
 

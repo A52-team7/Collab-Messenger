@@ -2,13 +2,13 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
-import { addUserReactionToMessage, getUserByHandle } from "../../services/users.service";
+import { addUserReactionToMessage, getUserByHandle, removeUserReactionFromMessage } from "../../services/users.service";
 import { GoReply } from "react-icons/go";
 import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineEdit } from "react-icons/ai";
 import { ADD_PERSON, REMOVE_PERSON, REPLY } from "../../common/constants";
-import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive } from "../../services/messages";
+import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive, removeReactionFromMessage } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import ReactionItem from "../ReactionItem/ReactionItem";
@@ -38,18 +38,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
-  const [reactions, setReactions] = useState<ReactionArray>();
-  // const [test, setTest] = useState();
-
-  // useEffect(() => {
-  //     getUsersReactedToMessage(message.id)
-  //     .then((r) => {
-  //       setTest(r);
-  //     })
-  // }, []);
-
-  // console.log(test);
-  
+  const [reactions, setReactions] = useState<ReactionArray>();  
 
   useEffect(() => {
     if (message.typeOfMessage === REPLY) {
@@ -102,6 +91,11 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const onAddReaction = (reaction: string) => {
     addReactionToMessage(message.id, reaction, userData.handle);
     addUserReactionToMessage(message.id, reaction, userData.handle);
+  }
+
+  const onRemoveReaction = (reaction: string) => {
+    removeReactionFromMessage(message.id, reaction, userData.handle);
+    removeUserReactionFromMessage(message.id, reaction, userData.handle);
   }
 
   const onDeleteMessage = () => {
@@ -178,10 +172,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
         </Box>
       </Flex>
         {reactions && 
-            <Flex mt={-8}>
+            <Flex mt={'-28px'}>
             {reactions.reactions.map((reaction) => (
                   <Box key={reaction[0]}>
-                      <ReactionItem reaction={reaction} onAddReaction={onAddReaction}/>
+                      <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction}/>
                   </Box>
             ))}
             </Flex>
