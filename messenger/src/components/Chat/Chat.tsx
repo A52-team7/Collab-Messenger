@@ -23,7 +23,7 @@ import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
-import { ADDED, ADD_PERSON, ADMIN, TO, USER_MESSAGE } from '../../common/constants';
+import { ADDED, ADD_PERSON, ADMIN, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
@@ -233,7 +233,7 @@ const Chat = (): JSX.Element => {
       </Stack>
       {isLeft ? (
         <Box>
-          <Text>You are not able to write in this chat any more!</Text>
+          <Text>{LEFT_CHAT_MESSAGE}</Text>
         </Box>
       ): (
         <>

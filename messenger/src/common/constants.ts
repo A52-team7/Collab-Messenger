@@ -45,6 +45,7 @@ export const REMOVE_PERSON = 'remove person';
 export const REMOVED = 'removed ';
 export const FROM = ' from ';
 export const LEFT = 'left ';
+export const LEFT_CHAT_MESSAGE = 'You are not able to write in this chat any more!'
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [
@@ -54,3 +55,10 @@ export const TEAM_MORE_OPTIONS = [
   { title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon' }
 ]
 export const CHAT_MESSAGE_MORE_OPTIONS = [];
+
+//emoji constants
+export const LIKE = '👍';
+export const HEART = '❤️';
+export const SMILE = '😆';
+export const HEART_EYES = '😍';
+export const ASTONISHED = '😲';
