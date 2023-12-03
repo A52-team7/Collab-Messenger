@@ -14,7 +14,6 @@ export interface Id {
 const TeamChannels = ({ id }: Id) => {
   const [channels, setChannels] = useState<Channel[]>([])
 
-
   const [team, setTeam] = useState<Team>({
     id: '',
     name: '',
@@ -43,30 +42,9 @@ const TeamChannels = ({ id }: Id) => {
       .then(res => setTeam(res))
   }, [])
 
-  const handleOpenChannel = (id: string) => {
-    if (userData) {
-      navigate(`/chat/${id}`, { state: { team: team } })
-      setChannelToSeen(id, userData?.handle);
-    }
-  };
-
-  return (
-    <>
-      {channels.map((channel: Channel) => {
-        let userHasSeen: boolean = false;
-        Object.entries(channel.seenBy).map(([key, value]) => {
-          if (key === userData?.handle && value === true) userHasSeen = true;
-        });
-
-        return (<Box key={channel.id}>
-          <Button bg={userHasSeen ? 'green' : 'red'} variant='ghost' onClick={() => handleOpenChannel(channel.id)}>
-            {channel.title} ({userHasSeen ? 'seen' : 'not seen'})
-          </Button>
-        </Box>
-        )
-      })}
-    </>
-  )
+  return channels.map((channel: Channel) => <Box key={channel.id}>
+    <TeamChannel channelId={channel.id} channelTitle={channel.title} team={team} />
+  </Box>)
 }
 
 export default TeamChannels;
