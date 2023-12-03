@@ -8,7 +8,7 @@ import {
   Box,
   Text
 } from '@chakra-ui/react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
 import {
   addMemberToChannel,
@@ -28,14 +28,18 @@ import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
-import TeamInfo from '../TeamInfo/TeamInfo'
+import TeamInfo from '../TeamInfo/TeamInfo';
+import { GrEdit } from "react-icons/gr";
 
 
 const Chat = (): JSX.Element => {
 
   const location = useLocation();
 
-  const channelId = location.state?.channelId;
+  // const channelId = location.state?.channelId;
+  const params = useParams();
+  const channelId = params.id;
+  
   const team = location.state?.team;
   
   const { userData } = useContext(AppContext);
@@ -52,8 +56,10 @@ const Chat = (): JSX.Element => {
   const [isLeft, setIsLeft] = useState<boolean>();
   const [dateOfLeaving, setDateOfLeaving] = useState('');
 
+  const [editTitle, setEditTitle] = useState<boolean>(false);
+
   useEffect(() => {
-    if(userData === null) return;
+    if(userData === null || !channelId) return;
     getIfChannelIsLeft(userData.handle, channelId)
     .then((result) => {
       setIsLeft(result);
@@ -206,9 +212,10 @@ const Chat = (): JSX.Element => {
         <Flex w={'inherit'} mb={10} mt={-10}>
           <Flex flex={1}>
             <Heading>{title}</Heading>
+            <Button bg={'none'}><GrEdit size={20}/></Button>
           </Flex>
           {team && <TeamInfo {...team}/> }
-        {members.length > 0 &&
+          {members.length > 0 &&
             <UsersDrawer {...UserDrawerProps} />
           }
           <Button colorScheme='teal'>
