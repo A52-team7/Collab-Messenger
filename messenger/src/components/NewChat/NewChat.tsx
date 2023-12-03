@@ -5,6 +5,7 @@ import {
   Button,
   useColorModeValue,
   FormLabel,
+  Select,
 } from '@chakra-ui/react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userChannel } from '../../services/users.service';
@@ -35,6 +36,8 @@ const NewChat = (): JSX.Element => {
   const { userData } = useContext<UserState>(AppContext);
 
   const [channelForm, setChannelForm] = useState<ChannelForm>({ title: '', members: {} });
+
+  const [isPrivate, setIsPrivate] = useState<string>('Private')
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -108,6 +111,16 @@ const NewChat = (): JSX.Element => {
 
   }
 
+  const privacyChange =(privacyValue: string) =>{
+    setChannelForm({...channelForm, members: {}})
+    if (privacyValue === 'Standard') {
+      setIsPrivate('Standard');
+      setChannelForm({...channelForm, members: team.members})
+    } else if (privacyValue === 'Private') {
+      setIsPrivate('Private');
+    }
+  }
+
   return (
     <Flex
       maxH={'fit-content'}
@@ -136,17 +149,25 @@ const NewChat = (): JSX.Element => {
           mb={5}
           placeholder="Add title"
           onChange={updateTitle('title')} />
-        <FormLabel>Add members</FormLabel>
+        {team && <FormLabel>Privacy</FormLabel>}
+        <Stack mb={5} w={'500px'}> 
+        {team &&
+        (<Select defaultValue="Private" onClick={(e: React.MouseEvent<HTMLSelectElement>)=> privacyChange(e.target.value)} >
+        <option value='Standard'>Standard-Everyone on the team has access</option>
+        <option value='Private'>Private-Specific teammates have access</option>
+        </Select>)}
+        </Stack>  
+        {(isPrivate === '' || isPrivate === 'Private') && <FormLabel>Add members</FormLabel>}
         <Stack mb={5} w={'500px'}>
-          {team ? (
+          {(team && isPrivate === 'Private') ? (
             <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />
-          ) : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
+          ) : (team && isPrivate ==='Standard') ? null :(<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
         </Stack>
-        <Stack h={'31vh'}
+        {(isPrivate === 'Private') && (<Stack h={'31vh'}
           overflowY={'scroll'}
         >
-          <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
-        </Stack>
+        <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
+        </Stack>)}
         <Stack alignItems={'center'}>
           <Button
             bg={'green.400'}
