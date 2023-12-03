@@ -21,7 +21,7 @@ export const createUserHandle = (
     lastName,
     phoneNumber,
     myTeams: '',
-    profilePhoto: 'https://cdn.iconscout.com/icon/free/png-256/free-user-1851010-1568997.png',
+    profilePhoto: '',
     myChannels: {}
   })
 };
@@ -97,7 +97,7 @@ export const getUserChannelsLive = (handle: string, listener: ChannelsListener) 
 }
 
 export const addUserReactionToMessage = (messageId: string, reaction: string, handle: string) => {
-  const updateUserReactionToMessage: {[key: string]: boolean} = {};
+  const updateUserReactionToMessage: { [key: string]: boolean } = {};
   updateUserReactionToMessage[`/users/${handle}/myReactions/${reaction}/${messageId}`] = true;
 
   return update(ref(db), updateUserReactionToMessage);
