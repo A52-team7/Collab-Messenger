@@ -72,8 +72,6 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     
   }, [message.id, userData]);  
 
-  console.log(reactions);
-
 
   if (userData === null) return;
   const flexAlignment = message.author === userData.handle ? 'flex-end' : 'flex-start';

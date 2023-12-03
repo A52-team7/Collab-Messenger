@@ -91,7 +91,7 @@ const NewChat = (): JSX.Element => {
           return result;
         })
         .then(res => {
-          navigate('/chat', { state: { channelId: res.id, team: team } });
+          navigate(`/chat/${res.id}`, { state: { team: team } });
         })
         .catch(e => console.log(e));
     } else {
@@ -104,7 +104,7 @@ const NewChat = (): JSX.Element => {
           return result;
         })
         .then(res => {
-          navigate('/chat', { state: { channelId: res.id } });
+          navigate(`/chat/${res.id}`);
         })
         .catch(e => console.log(e));
     }
@@ -123,20 +123,20 @@ const NewChat = (): JSX.Element => {
 
   return (
     <Flex
-    maxH={'fit-content'} 
-    align={'center'} 
-    justify={'center'} 
-    mt={{ base: 2, sm: 5 }} 
-    bg={'lightBlue'}
-      // align={'center'}
-      // direction={'center'}
-      // justify={'center'}
-      // py={12}
-      // maxW={'600px'}
-      >
+      maxH={'fit-content'}
+      align={'center'}
+      justify={'center'}
+      mt={{ base: 2, sm: 5 }}
+      bg={'lightBlue'}
+    // align={'center'}
+    // direction={'center'}
+    // justify={'center'}
+    // py={12}
+    // maxW={'600px'}
+    >
 
       <Flex
-      
+
         direction={'column'}
         boxShadow={'2xl'}
         bg={useColorModeValue('white', 'gray.700')}
@@ -168,13 +168,13 @@ const NewChat = (): JSX.Element => {
         >
         <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
         </Stack>)}
-        <Stack  alignItems={'center'}>
+        <Stack alignItems={'center'}>
           <Button
-         bg={'green.400'}
-         maxW={'100px'}
-         variant={'primaryButton'} w='full'
-         _hover={{ opacity: 0.8 }}
-          onClick={onAddNewChannel}>
+            bg={'green.400'}
+            maxW={'100px'}
+            variant={'primaryButton'} w='full'
+            _hover={{ opacity: 0.8 }}
+            onClick={onAddNewChannel}>
             Add chat
           </Button>
         </Stack>

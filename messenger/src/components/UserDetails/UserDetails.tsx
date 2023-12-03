@@ -112,7 +112,7 @@ const UserDetails = (): JSX.Element => {
       let errors = { ...formErrors };
       const file: File = fileInput.current.files[0];
 
-      if (file.type.startsWith('image/') || file.type === '') {
+      if (file.type.startsWith('image/')) {
         errors = { ...errors, invalidImageFormat: false, error: false }
       } else {
         errors = { ...errors, invalidImageFormat: true, error: true }
@@ -221,11 +221,11 @@ const UserDetails = (): JSX.Element => {
   }, [submitChange, setSubmitChange, setFormErrors]);
 
   return (
-    <Flex maxH={'fit-content'} 
-    align={'center'} 
-    justify={'center'} 
-    mt={{ base: 2, sm: 5 }} 
-    bg={'lightBlue'}>
+    <Flex maxH={'fit-content'}
+      align={'center'}
+      justify={'center'}
+      mt={{ base: 2, sm: 5 }}
+      bg={'lightBlue'}>
       <Stack
         spacing={4}
         maxW={'fit-content'}
@@ -265,7 +265,8 @@ const UserDetails = (): JSX.Element => {
               </Box>
               <Input
                 hidden
-                type='file'
+                type={'file'}
+                accept={'.jpeg,.png,.JPG,.PNG'}
                 ref={fileInput}
                 onChange={onLocallyUploadImage}
               />

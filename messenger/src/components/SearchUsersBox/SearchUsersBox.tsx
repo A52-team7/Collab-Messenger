@@ -44,7 +44,7 @@ const SearchUsersBox = ({
         userChannel(result.id, userName);
         return result;
       })
-      .then(result => navigate('/chat', { state: { channelId: result.id } }))
+      .then(result => navigate(`/chat/${result.id}`))
       .catch((error: Error) => console.log(error))
       .finally(() => {
         setOpen(false);

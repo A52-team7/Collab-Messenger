@@ -2,9 +2,10 @@ import { createContext } from 'react';
 import { User } from "firebase/auth";
 
 export interface UserState {
-  user: User | null,
-  userData: UserData | null,
-  setContext: React.Dispatch<React.SetStateAction<UserState>>,
+  user: User | null;
+  userData: UserData | null;
+  loading: boolean;
+  setContext: React.Dispatch<React.SetStateAction<UserState>>;
 }
 
 export interface UserData {
@@ -22,6 +23,7 @@ export interface UserData {
 const AppContext = createContext<UserState>({
   user: null,
   userData: null,
+  loading: true,
   setContext: () => { }
 });
 

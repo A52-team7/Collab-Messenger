@@ -6,9 +6,11 @@ import {
   Heading,
   Textarea,
   Box,
-  Text
+  Text,
+  Input,
+  IconButton
 } from '@chakra-ui/react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
 import {
   addMemberToChannel,
@@ -23,19 +25,26 @@ import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
-import { ADDED, ADD_PERSON, ADMIN, TO, USER_MESSAGE } from '../../common/constants';
+import { ADDED, ADD_PERSON, ADMIN, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
-import TeamInfo from '../TeamInfo/TeamInfo'
+import TeamInfo from '../TeamInfo/TeamInfo';
+import { GrEdit } from "react-icons/gr";
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 
 const Chat = (): JSX.Element => {
 
   const location = useLocation();
 
-  const channelId = location.state?.channelId;
+  // const channelId = location.state?.channelId;
+  const params = useParams();
+  
+  
+  const [channelId, setChannelId] = useState<string>();
+  
   const team = location.state?.team;
   
   const { userData } = useContext(AppContext);
@@ -49,11 +58,17 @@ const Chat = (): JSX.Element => {
   const [messageToReply, setMessageToReply] = useState<Message>({});
 
   const [ifIsLeftIsSet, setIfIsLeftIsSet] = useState(false);
-  const [isLeft, setIsLeft] = useState<boolean>();
+  const [isLeft, setIsLeft] = useState<boolean>(false);
   const [dateOfLeaving, setDateOfLeaving] = useState('');
 
+  const [editTitle, setEditTitle] = useState<boolean>(false);
+
   useEffect(() => {
-    if(userData === null) return;
+    setChannelId(params.id);
+  }, [params.id, params])
+
+  useEffect(() => {
+    if(userData === null || !channelId) return;
     getIfChannelIsLeft(userData.handle, channelId)
     .then((result) => {
       setIsLeft(result);
@@ -81,6 +96,7 @@ const Chat = (): JSX.Element => {
 
 
   useEffect(() => {
+    if(!channelId) return;
     getChannelById(channelId)
       .then(result => {
         setTitle(result.title);
@@ -89,11 +105,11 @@ const Chat = (): JSX.Element => {
   }, [channelId]);
 
   useEffect(() => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
 
     setMessages([]); 
 
-    getChannelMessagesLive(channelId, (data: string[]) => {
+    const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
         data.map((message) => {
           return getMessageById(message)
@@ -112,12 +128,15 @@ const Chat = (): JSX.Element => {
       })
         .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
-    })
+    });
+    return () => {
+      removeListener();
+    };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
 
   useEffect(() => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
 
     getChannelMembersLive(channelId, (data: string[]) => {
       return setMembers([...data]);
@@ -128,7 +147,7 @@ const Chat = (): JSX.Element => {
     if (userData === null) return;
     if (event.key === 'Enter') {
       const message = (event.target as HTMLTextAreaElement).value.trim();
-      if (message) {
+      if (message && channelId) {
         addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
             channelMessage(channelId, result.id);
@@ -147,7 +166,7 @@ const Chat = (): JSX.Element => {
   }
 
   const onSendMessage = () => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
     addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
       .then(result => {
         channelMessage(channelId, result.id);
@@ -158,6 +177,7 @@ const Chat = (): JSX.Element => {
   }
 
   const onAddMember = (user: string): void => {
+    if(!channelId) return;
     getIfChannelIsLeft(user, channelId)
     .then(result => {
       if(result){
@@ -186,6 +206,10 @@ const Chat = (): JSX.Element => {
     setEmoji(emoji);
   }
 
+  const onEditTitle = () => {
+    setEditTitle(true);
+  }
+
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
@@ -204,11 +228,20 @@ const Chat = (): JSX.Element => {
       py={12}>
       {!isLeft && 
         <Flex w={'inherit'} mb={10} mt={-10}>
+          {!editTitle ? (
           <Flex flex={1}>
             <Heading>{title}</Heading>
+            <Button bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
           </Flex>
+          ) : (
+            <Flex flex={1}>
+              <Input/>
+              <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
+              <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+            </Flex>
+          )}
           {team && <TeamInfo {...team}/> }
-        {members.length > 0 &&
+          {members.length > 0 &&
             <UsersDrawer {...UserDrawerProps} />
           }
           <Button colorScheme='teal'>
@@ -233,7 +266,7 @@ const Chat = (): JSX.Element => {
       </Stack>
       {isLeft ? (
         <Box>
-          <Text>You are not able to write in this chat any more!</Text>
+          <Text>{LEFT_CHAT_MESSAGE}</Text>
         </Box>
       ): (
         <>
@@ -278,7 +311,9 @@ const Chat = (): JSX.Element => {
             </Stack>
           </Stack>
           ) : (
-            <Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} />
+            <>
+              {channelId && (<Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} />)}
+            </>
           )}
         </>
       )}

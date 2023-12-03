@@ -11,7 +11,7 @@ const MyChat = ({ channel }: { channel: Channel }) => {
   const navigate = useNavigate();
 
   const onOpenChat = () => {
-    navigate('/chat', { state: { channelId: channel.id } });
+    navigate(`/chat/${channel.id}`);
     if (userData)
       setChannelToSeen(channel.id, userData?.handle);
   }
