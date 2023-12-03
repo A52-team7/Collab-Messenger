@@ -62,7 +62,7 @@ function App(): JSX.Element {
           <Route path='/register' element={!appState.user && <Register />} />
           <Route path='/login' element={!appState.user && <Login />} />
           <Route path='/new-chat' element={<AuthenticatedRoute><NewChat /></AuthenticatedRoute>} />
-          <Route path='/chat' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
+          <Route path='/chat/:id' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} />
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />

@@ -46,7 +46,7 @@ const TeamChannels = ({ id }: Id) => {
 
   const handleOpenChannel = (id: string) => {
     if (userData) {
-      navigate('/chat', { state: { channelId: id, team: team } })
+      navigate(`/chat/${id}`, { state: { team: team } })
       setChannelToSeen(id, userData?.handle);
     }
   };
