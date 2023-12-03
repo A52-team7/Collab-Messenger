@@ -46,6 +46,8 @@ export const REMOVED = 'removed ';
 export const FROM = ' from ';
 export const LEFT = 'left ';
 export const LEFT_CHAT_MESSAGE = 'You are not able to write in this chat any more!'
+export const CHANGED = ' changed chat title to ';
+export const CHANGE_TITLE = 'change title';
 
 //more option menu
 export const TEAM_MORE_OPTIONS = [

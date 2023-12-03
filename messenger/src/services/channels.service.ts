@@ -165,7 +165,6 @@ export const getChannelMessagesLive = (channelId: string, listener: MessagesList
   return onValue(ref(db, `channels/${channelId}/messages`), (snapshot) => {
     if (!snapshot.exists()) return [];
 
-
     const messages = Object.keys(snapshot.val());
 
     return listener(messages);

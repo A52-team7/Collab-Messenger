@@ -8,7 +8,6 @@ import {
   Box,
   Text,
   Input,
-  IconButton
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
@@ -19,29 +18,29 @@ import {
   getChannelMembersLive,
   getChannelMessagesLive, getDateOfLeftChannel, getIfChannelIsLeft, removeLeftChannel,
   setChannelToSeen,
-  setAllInChannelToUnseen
+  setAllInChannelToUnseen,
+  addTitleToChannel
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
-import { ADDED, ADD_PERSON, ADMIN, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
+import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
 import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
 import TeamInfo from '../TeamInfo/TeamInfo';
 import { GrEdit } from "react-icons/gr";
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { FaCheck } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
 
 
 const Chat = (): JSX.Element => {
 
   const location = useLocation();
 
-  // const channelId = location.state?.channelId;
-  const params = useParams();
-  
+  const params = useParams();  
   
   const [channelId, setChannelId] = useState<string>();
   
@@ -58,10 +57,11 @@ const Chat = (): JSX.Element => {
   const [messageToReply, setMessageToReply] = useState<Message>({});
 
   const [ifIsLeftIsSet, setIfIsLeftIsSet] = useState(false);
-  const [isLeft, setIsLeft] = useState<boolean>(false);
+  const [isLeft, setIsLeft] = useState<boolean>();
   const [dateOfLeaving, setDateOfLeaving] = useState('');
 
   const [editTitle, setEditTitle] = useState<boolean>(false);
+  const [newTitle, setNewTitle] = useState<string>('');
 
   useEffect(() => {
     setChannelId(params.id);
@@ -100,6 +100,7 @@ const Chat = (): JSX.Element => {
     getChannelById(channelId)
       .then(result => {
         setTitle(result.title);
+        setNewTitle(result.title);
         setMembers(Object.keys(result.members));
       }).catch(e => console.error(e));
   }, [channelId]);
@@ -206,9 +207,51 @@ const Chat = (): JSX.Element => {
     setEmoji(emoji);
   }
 
+  const updateNewTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTitle(e.target.value);
+  }
+
   const onEditTitle = () => {
     setEditTitle(true);
   }
+
+  const onExitEditTitle = () => {
+    setEditTitle(false);
+  }
+
+  const onUpdateTitle = () => {
+    if(!channelId) return;
+    addTitleToChannel(channelId, newTitle)
+    .then(() => {
+      addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+      .then(message => {
+        channelMessage(channelId, message.id);
+      })
+      .catch(error => console.error(error.message));
+    })
+    .catch(error => console.error(error.message));
+    setTitle(newTitle);
+    setEditTitle(false);
+  }
+
+  const handleKeyDownForTitle = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      if(!channelId) return;
+      const title = (event.target as HTMLInputElement).value.trim();
+      addTitleToChannel(channelId, title)
+      .then(() => {
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+        .then(message => {
+          channelMessage(channelId, message.id);
+        })
+        .catch(error => console.error(error.message));
+      })
+      .catch(error => console.error(error.message));
+      setTitle(newTitle);
+      setEditTitle(false);
+    }
+  }
+
 
   const UserDrawerProps = {
     members: members,
@@ -235,9 +278,9 @@ const Chat = (): JSX.Element => {
           </Flex>
           ) : (
             <Flex flex={1}>
-              <Input/>
-              <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
-              <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle}/>              
+              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20}/></Button>
+              <Button p={1} onClick={onExitEditTitle}><IoClose size={25}/></Button>
             </Flex>
           )}
           {team && <TeamInfo {...team}/> }

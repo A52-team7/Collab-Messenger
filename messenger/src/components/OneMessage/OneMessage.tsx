@@ -7,12 +7,13 @@ import { GoReply } from "react-icons/go";
 import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineEdit } from "react-icons/ai";
-import { ADD_PERSON, REMOVE_PERSON, REPLY } from "../../common/constants";
+import { ADD_PERSON, CHANGE_TITLE, REMOVE_PERSON, REPLY } from "../../common/constants";
 import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive, removeReactionFromMessage } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import ReactionItem from "../ReactionItem/ReactionItem";
 import RemoveMessage from "../RemoveMessage/RemoveMessage";
+import { GrEdit } from "react-icons/gr";
 export interface Author {
   handle: string;
   uid: string;
@@ -110,6 +111,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
       <Flex position={'relative'} w={'100%'} justifyContent={'center'} alignItems={'center'}>
         {message.typeOfMessage===ADD_PERSON && <IoPersonAddSharp />}
         {message.typeOfMessage===REMOVE_PERSON && <IoPersonRemoveOutline />}
+        {message.typeOfMessage===CHANGE_TITLE && <GrEdit />}
         <Text ml={2}>{message.content}</Text>
       </Flex>
     ) : (
