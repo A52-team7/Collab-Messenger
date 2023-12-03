@@ -6,7 +6,9 @@ import {
   Heading,
   Textarea,
   Box,
-  Text
+  Text,
+  Input,
+  IconButton
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
@@ -30,6 +32,7 @@ import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
 import TeamInfo from '../TeamInfo/TeamInfo';
 import { GrEdit } from "react-icons/gr";
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 
 const Chat = (): JSX.Element => {
@@ -38,7 +41,9 @@ const Chat = (): JSX.Element => {
 
   // const channelId = location.state?.channelId;
   const params = useParams();
-  const channelId = params.id;
+  
+  
+  const [channelId, setChannelId] = useState<string>();
   
   const team = location.state?.team;
   
@@ -53,10 +58,14 @@ const Chat = (): JSX.Element => {
   const [messageToReply, setMessageToReply] = useState<Message>({});
 
   const [ifIsLeftIsSet, setIfIsLeftIsSet] = useState(false);
-  const [isLeft, setIsLeft] = useState<boolean>();
+  const [isLeft, setIsLeft] = useState<boolean>(false);
   const [dateOfLeaving, setDateOfLeaving] = useState('');
 
   const [editTitle, setEditTitle] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChannelId(params.id);
+  }, [params.id, params])
 
   useEffect(() => {
     if(userData === null || !channelId) return;
@@ -87,6 +96,7 @@ const Chat = (): JSX.Element => {
 
 
   useEffect(() => {
+    if(!channelId) return;
     getChannelById(channelId)
       .then(result => {
         setTitle(result.title);
@@ -95,11 +105,11 @@ const Chat = (): JSX.Element => {
   }, [channelId]);
 
   useEffect(() => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
 
     setMessages([]); 
 
-    getChannelMessagesLive(channelId, (data: string[]) => {
+    const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
         data.map((message) => {
           return getMessageById(message)
@@ -118,12 +128,15 @@ const Chat = (): JSX.Element => {
       })
         .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
-    })
+    });
+    return () => {
+      removeListener();
+    };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
 
   useEffect(() => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
 
     getChannelMembersLive(channelId, (data: string[]) => {
       return setMembers([...data]);
@@ -134,7 +147,7 @@ const Chat = (): JSX.Element => {
     if (userData === null) return;
     if (event.key === 'Enter') {
       const message = (event.target as HTMLTextAreaElement).value.trim();
-      if (message) {
+      if (message && channelId) {
         addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
             channelMessage(channelId, result.id);
@@ -153,7 +166,7 @@ const Chat = (): JSX.Element => {
   }
 
   const onSendMessage = () => {
-    if (userData === null) return;
+    if (userData === null || !channelId) return;
     addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
       .then(result => {
         channelMessage(channelId, result.id);
@@ -164,6 +177,7 @@ const Chat = (): JSX.Element => {
   }
 
   const onAddMember = (user: string): void => {
+    if(!channelId) return;
     getIfChannelIsLeft(user, channelId)
     .then(result => {
       if(result){
@@ -192,6 +206,10 @@ const Chat = (): JSX.Element => {
     setEmoji(emoji);
   }
 
+  const onEditTitle = () => {
+    setEditTitle(true);
+  }
+
   const UserDrawerProps = {
     members: members,
     updateNewMember: onAddMember,
@@ -210,10 +228,18 @@ const Chat = (): JSX.Element => {
       py={12}>
       {!isLeft && 
         <Flex w={'inherit'} mb={10} mt={-10}>
+          {!editTitle ? (
           <Flex flex={1}>
             <Heading>{title}</Heading>
-            <Button bg={'none'}><GrEdit size={20}/></Button>
+            <Button bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
           </Flex>
+          ) : (
+            <Flex flex={1}>
+              <Input/>
+              <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
+              <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+            </Flex>
+          )}
           {team && <TeamInfo {...team}/> }
           {members.length > 0 &&
             <UsersDrawer {...UserDrawerProps} />
@@ -285,7 +311,9 @@ const Chat = (): JSX.Element => {
             </Stack>
           </Stack>
           ) : (
-            <Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} />
+            <>
+              {channelId && (<Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} />)}
+            </>
           )}
         </>
       )}
