@@ -7,6 +7,8 @@ import { REPLY } from "../../common/constants";
 import { channelMessage } from "../../services/channels.service";
 import { userMessage } from "../../services/users.service";
 import { Message } from "../MessagesList/MessagesList";
+import { BsSend } from "react-icons/bs";
+import { BsFillSendFill } from "react-icons/bs";
 
 export interface ReplyProps {
     channelId: string;
@@ -21,6 +23,8 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
 
     const [emoji, setEmoji] = useState<string>('');
 
+    const [visibleColor, setVisibleColor] = useState(false);
+
 
   useEffect(() => {
     if(emoji){
@@ -32,7 +36,9 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
         if(userData === null) return;
         if (event.key === 'Enter') {
             const message = (event.target as HTMLInputElement).value.trim();
-            if (message) {
+            if (!message) {
+              return alert(`Enter message first`)
+            } else {
               addReply(message, userData.handle, channelId, messageToReply.id, false, REPLY)
               .then(result => {
                   addReplyToMessage(messageToReply.id, result.id);
@@ -53,6 +59,9 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
     
       const onSendMessage = () => {
         if(userData === null) return;
+        if (!newMessage) {
+          return alert(`Enter message first`)
+        }
         addReply(newMessage, userData.handle, channelId, messageToReply.id, false, REPLY)
               .then(result => {
                 addReplyToMessage(messageToReply.id, result.id);
@@ -72,6 +81,13 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
         setReplyIsVisible(false);
       }
 
+      const onSeeColor = () => {
+        setVisibleColor(true);
+      }
+    
+      const onHideColor = () => {
+        setVisibleColor(false);
+      }
 
     return(
         <Stack
@@ -107,16 +123,17 @@ const Reply = ({channelId, messageToReply, setReplyIsVisible} : ReplyProps) => {
           />
           <EmojiPopover onGetEmoji={onGetEmoji}/>
           <Button
-            bg={'blue'}
-            rounded={'full'}
+            ml={-5}
+            bg={'none'}
             color={'white'}
             flex={'1 0 auto'}
-            _hover={{ bg: 'blue.500' }}
-            _focus={{ bg: 'blue.500' }}
-            onClick={onSendMessage}
-            >
-            Send
-          </Button>
+            onMouseEnter={onSeeColor} 
+            onMouseLeave={onHideColor}
+            _hover={{ bg: 'none' }}
+            _focus={{ bg: 'none' }}
+            onClick={onSendMessage}>
+            {!visibleColor ? (<BsSend size={35}/>) : (<BsFillSendFill size={35}/>)}
+            </Button>
         </Stack>
       </Stack>
     )

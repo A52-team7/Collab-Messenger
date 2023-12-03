@@ -34,6 +34,8 @@ import TeamInfo from '../TeamInfo/TeamInfo';
 import { GrEdit } from "react-icons/gr";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
+import { BsSend } from "react-icons/bs";
+import { BsFillSendFill } from "react-icons/bs";
 
 
 const Chat = (): JSX.Element => {
@@ -62,6 +64,8 @@ const Chat = (): JSX.Element => {
 
   const [editTitle, setEditTitle] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>('');
+
+  const [visibleColor, setVisibleColor] = useState(false);
 
   useEffect(() => {
     setChannelId(params.id);
@@ -148,7 +152,10 @@ const Chat = (): JSX.Element => {
     if (userData === null) return;
     if (event.key === 'Enter') {
       const message = (event.target as HTMLTextAreaElement).value.trim();
-      if (message && channelId) {
+      if (!message) {
+        return alert(`Enter message first`)
+      }
+      if (channelId) {
         addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
             channelMessage(channelId, result.id);
@@ -168,6 +175,9 @@ const Chat = (): JSX.Element => {
 
   const onSendMessage = () => {
     if (userData === null || !channelId) return;
+    if (!newMessage) {
+      return alert(`Enter message first`)
+    }
     addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
       .then(result => {
         channelMessage(channelId, result.id);
@@ -250,6 +260,14 @@ const Chat = (): JSX.Element => {
       setTitle(newTitle);
       setEditTitle(false);
     }
+  }
+
+  const onSeeColor = () => {
+    setVisibleColor(true);
+  }
+
+  const onHideColor = () => {
+    setVisibleColor(false);
   }
 
 
@@ -342,14 +360,16 @@ const Chat = (): JSX.Element => {
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
               <Button
-                bg={'blue'}
-                rounded={'full'}
+                ml={-5}
+                bg={'none'}
                 color={'white'}
                 flex={'1 0 auto'}
-                _hover={{ bg: 'blue.500' }}
-                _focus={{ bg: 'blue.500' }}
+                onMouseEnter={onSeeColor} 
+                onMouseLeave={onHideColor}
+                _hover={{ bg: 'none' }}
+                _focus={{ bg: 'none' }}
                 onClick={onSendMessage}>
-                Send
+                {!visibleColor ? (<BsSend size={35}/>) : (<BsFillSendFill size={35}/>)}
               </Button>
             </Stack>
           </Stack>
