@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
 import { Text } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
-import { setChannelToSeen, getChannelSeenLive } from "../../services/channels.service";
+import { setChannelToSeen, getChannelSeenLive, getChannelTitleLive } from "../../services/channels.service";
 
 const MyChat = ({ channel }: { channel: Channel }) => {
   const { userData } = useContext(AppContext);
   const [seenState, setSeenState] = useState<boolean | null>(null);
   const navigate = useNavigate();
+  const [title, setTitle] = useState('');
 
   const onOpenChat = () => {
     navigate(`/chat/${channel.id}`);
@@ -22,6 +23,12 @@ const MyChat = ({ channel }: { channel: Channel }) => {
     }));
   }, []);
 
+  useEffect(() => {
+  getChannelTitleLive(channel.id, (data: string) => {
+    return setTitle(data);
+  })
+  }, [])
+  
   return (
     <Text
       _hover={{ cursor: "pointer" }}
@@ -29,7 +36,7 @@ const MyChat = ({ channel }: { channel: Channel }) => {
       bg={'gray'}
       w={'100%'}
       onClick={onOpenChat}>
-      {channel.title} ({seenState === true || seenState === null ? 'seen' : 'not seen'})
+      {title} ({seenState === true || seenState === null ? 'seen' : 'not seen'})
     </Text>
   )
 }

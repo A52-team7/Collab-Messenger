@@ -214,3 +214,16 @@ export const getChannelSeenLive = (channelId: string, user: string, listener: Se
     listener(snapshot.val());
   })
 }
+
+export interface TitleListener { (title: string): void }
+
+export const getChannelTitleLive = (channelId: string, listener: TitleListener) => {
+
+  return onValue(ref(db, `channels/${channelId}/title`), (snapshot) => {
+    if (!snapshot.exists()) return '';
+
+    const title = snapshot.val();
+
+    return listener(title);
+  })
+}
