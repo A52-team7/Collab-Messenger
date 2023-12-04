@@ -5,7 +5,7 @@ import { ChakraBaseProvider } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
 
 // 1. Import the extendTheme function
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react'
 
 // 2. Extend the theme to include custom colors, fonts, etc
 const colors = {
@@ -54,7 +54,15 @@ const components = {
   },
 }
 
-const theme = extendTheme({ colors }, { components });
+const config: ThemeConfig = {
+  initialColorMode: 'light',
+  useSystemColorMode: false,
+}
+
+const theme = extendTheme({ config, colors, components  })
+
+export default theme
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
