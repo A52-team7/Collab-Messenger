@@ -62,9 +62,9 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
       </HStack>
       <Stack>
         {channels.map((channel: Channel) => (
-          <Box onClick={() => onClose()} key={channel.id}>
+          <Flex justifyContent={'center'} onClick={() => onClose()} key={channel.id}>
             <MyChat channel={channel} />
-          </Box>
+          </Flex>
         ))}
       </Stack>
     </Flex>
