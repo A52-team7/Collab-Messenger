@@ -45,7 +45,7 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
         .catch(error => console.error(error.message));
     });
 
-  }, [userData, channels]);
+  }, [userData]);
 
 
 
@@ -55,11 +55,11 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
 
   return (
     <Flex direction={'column'}>
-      
+
       <HStack justify="space-between">
-          <Heading as='h2' size='lg' textAlign="left">My chats</Heading>
-          <Button variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
-        </HStack>
+        <Heading as='h2' size='lg' textAlign="left">My chats</Heading>
+        <Button variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
+      </HStack>
       <Stack>
         {channels.map((channel: Channel) => (
           <Box onClick={() => onClose()} key={channel.id}>
