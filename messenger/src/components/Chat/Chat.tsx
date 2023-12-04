@@ -69,7 +69,15 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     setChannelId(params.id);
-  }, [params.id, params])
+  }, [params.id, params]);
+
+  // useEffect(() => {
+  //   if (!userData) return;
+  //   if(Object.keys(channel).includes('isBetweenTwo')){
+  //     const titleToShow = channel.title.split(',').findIndex((user) => user !== userData.handle);
+  //     setTitle(channel.title[titleToShow]);    
+  //   }
+  // }, []);
 
   useEffect(() => {
     if(userData === null || !channelId) return;
@@ -106,6 +114,13 @@ const Chat = (): JSX.Element => {
         setTitle(result.title);
         setNewTitle(result.title);
         setMembers(Object.keys(result.members));
+        
+        if(Object.keys(result).includes('isBetweenTwo')){
+          const usersInChat = result.title.split(',');
+          const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
+                  
+          setTitle(usersInChat[titleToShow]); 
+        }   
       }).catch(e => console.error(e));
   }, [channelId]);
 

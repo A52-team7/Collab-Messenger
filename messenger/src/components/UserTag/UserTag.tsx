@@ -57,7 +57,7 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     return(
         <>
         {userInfo && (
-            <Tag size='lg' w={'205px'} h={'45px'} colorScheme='red' borderRadius='full'>
+            <Tag size='lg' w={'fit-content'} h={'45px'} colorScheme='red' borderRadius='full'>
                 <Avatar
                     size='xs'
                     name={displayName}
