@@ -74,7 +74,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
                       <Avatar size='sm' name={team.name} src={team.teamPhoto} />{' '}
                     </WrapItem>
                   </Wrap>
-                  <Text fontSize="md">{team.name}</Text>
+                  <Text color={'white'} fontSize="md">{team.name}</Text>
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>
                 <Tooltip hasArrow label='More options' bg='gray.300' color='black'>
