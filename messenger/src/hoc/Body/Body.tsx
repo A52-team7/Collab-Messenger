@@ -11,7 +11,11 @@ const Body = ({ children }: BodyProps): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box minH='100vh' bg={'lightBlue'}>
+    <Box minH='100vh'
+    backgroundImage="url('/abstract-background-wallpaper-grey-geometric-circle-pattern-vector_53876-140223.jpg')"
+    backgroundPosition="center"
+    backgroundRepeat="no-repeat"
+    backgroundSize='cover' >
       <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         isOpen={isOpen}

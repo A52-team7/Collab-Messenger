@@ -355,6 +355,8 @@ const Chat = (): JSX.Element => {
                   bg: useColorModeValue('gray.200', 'gray.800'),
                   outline: 'none',
                 }}
+                white-space='nowrap'
+                overflow-wrap='break-word'
                 onKeyDown={handleKeyDownForMessage}
                 onChange={updateNewMessage}
               />
@@ -362,7 +364,7 @@ const Chat = (): JSX.Element => {
               <Button
                 ml={-5}
                 bg={'none'}
-                color={'white'}
+                color={'black'}
                 flex={'1 0 auto'}
                 onMouseEnter={onSeeColor} 
                 onMouseLeave={onHideColor}

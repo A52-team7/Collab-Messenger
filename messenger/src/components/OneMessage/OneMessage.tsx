@@ -171,10 +171,11 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
         </Flex>
       )}
       {authorOfMessage && <Flex>
-        <Text pl='7px' pr='7px' mr='10px' rounded='md' bg='teal.400'>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
+        <Text pl='7px' pr='7px' mr='10px' rounded='md' 
+        bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(249,211,46)'}>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
         <Text fontSize='sm' pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
       </Flex>
-      }
+      } 
       <Flex alignItems={'center'}>
         {!editMessage ? (
         <Box
@@ -184,7 +185,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           pr='20px'
           color='white'
           mb='4'
-          bg='teal.500'
+          bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
           rounded='md'
           shadow='md'
           minW={'230px'}
