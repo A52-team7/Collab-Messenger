@@ -13,7 +13,7 @@ const RemoveMessage = ({onDeleteMessage} : RemoveMessageProps) => {
     return (
       <>
         {/* <Button onClick={onOpen}>Discard</Button> */}
-        <Button p={1} size={'xs'} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
+        <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
         <AlertDialog
           motionPreset='slideInBottom'
           leastDestructiveRef={cancelRef}

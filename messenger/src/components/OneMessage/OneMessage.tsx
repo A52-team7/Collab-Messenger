@@ -166,13 +166,15 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     >
       {isReply && (
         <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
-          <Text><GoReply size={20} /></Text>
+          <Text color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} ><GoReply size={20} /></Text>
           <Text pr={2} noOfLines={1}>{authorOfToMessage}: {toMessage.content}</Text>
         </Flex>
       )}
       {authorOfMessage && <Flex>
         <Text pl='7px' pr='7px' mr='10px' rounded='md' 
-        bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(249,211,46)'}>{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
+        bg ='teal.400'
+        // bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(249,211,46)'}
+        >{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
         <Text fontSize='sm' pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
       </Flex>
       } 
@@ -185,7 +187,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           pr='20px'
           color='white'
           mb='4'
-          bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
+          //bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
+          bg={message.author === userData?.handle ? 'teal.500' : 'teal.500'}
+          opacity={message.author === userData?.handle ? 'none' : '0.7'}
+          //border={'2px solid teal'}
           rounded='md'
           shadow='md'
           minW={'230px'}
@@ -206,8 +211,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
               left={'-111px'}
               transform={'translateY(-50%)'}>
               <ReactionPopover onAddReaction={onAddReaction}/>
-              <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
-              <Button p={1} size={'xs'} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
+              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
               <RemoveMessage onDeleteMessage={onDeleteMessage}/>
             </Flex>
           }
@@ -216,9 +221,11 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
             <Flex position={'absolute'}
               top={'48%'}
               right={'-48px'}
-              transform={'translateY(-50%)'}>
+              transform={'translateY(-50%)'}
+              bg={'none'}
+              >
               <ReactionPopover onAddReaction={onAddReaction}/>
-              <Button p={1} size={'xs'} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
             </Flex>
           }
         </Box>
@@ -226,8 +233,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           <Flex mb={8}>
             <Input value={contentOfMessage} bg={'grey'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage}/>
             <EmojiPopover onGetEmoji={onGetEmoji}/>
-            <Button p={1} onClick={onUpdateMessage}><FaCheck size={20}/></Button>
-            <Button p={1} onClick={onExitEditMessage}><IoClose size={25}/></Button>
+            <Button p={1} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onUpdateMessage}><FaCheck size={20}/></Button>
+            <Button p={1} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onExitEditMessage}><IoClose size={25}/></Button>
           </Flex>
         )}
       </Flex>

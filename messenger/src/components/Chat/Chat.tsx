@@ -291,8 +291,8 @@ const Chat = (): JSX.Element => {
         <Flex w={'inherit'} mb={10} mt={-10}>
           {!editTitle ? (
           <Flex flex={1}>
-            <Heading>{title}</Heading>
-            <Button bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            <Heading color={'white'}>{title}</Heading>
+            <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
           </Flex>
           ) : (
             <Flex flex={1}>
@@ -364,7 +364,7 @@ const Chat = (): JSX.Element => {
               <Button
                 ml={-5}
                 bg={'none'}
-                color={'black'}
+                color={'white'}
                 flex={'1 0 auto'}
                 onMouseEnter={onSeeColor} 
                 onMouseLeave={onHideColor}
