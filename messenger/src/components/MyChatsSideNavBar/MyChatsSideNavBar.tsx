@@ -14,7 +14,8 @@ export interface Channel {
   members: [];
   messages: [];
   createdOn: Date;
-  seenBy: []
+  seenBy: [];
+  isBetweenTwo?: boolean;
 }
 
 interface MyChatsSideNavBarProps {

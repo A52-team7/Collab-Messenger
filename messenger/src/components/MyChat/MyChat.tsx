@@ -24,10 +24,22 @@ const MyChat = ({ channel }: { channel: Channel }) => {
   }, []);
 
   useEffect(() => {
-  getChannelTitleLive(channel.id, (data: string) => {
-    return setTitle(data);
-  })
-  }, [])
+    if (!userData) return;
+    if(Object.keys(channel).includes('isBetweenTwo')){
+      const usersInChat = channel.title.split(',');
+      const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
+                  
+      setTitle(usersInChat[titleToShow]); 
+    }
+  }, []);
+
+  useEffect(() => {
+  if(!Object.keys(channel).includes('isBetweenTwo')){
+    getChannelTitleLive(channel.id, (data: string) => {
+      return setTitle(data);
+    })
+  }
+  }, []);
   
   return (
     <Text

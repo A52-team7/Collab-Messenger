@@ -227,3 +227,10 @@ export const getChannelTitleLive = (channelId: string, listener: TitleListener) 
     return listener(title);
   })
 }
+
+export const chatBetweenTwo = (channelId: string) => {
+  const updateChaTIsBetweenTwo: { [key: string]: boolean } = {};
+  updateChaTIsBetweenTwo[`/channels/${channelId}/isBetweenTwo`] = true;
+
+  return update(ref(db), updateChaTIsBetweenTwo);
+}
