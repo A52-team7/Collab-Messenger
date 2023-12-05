@@ -5,6 +5,7 @@ import { Box } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 import { setChannelToSeen, getChannelSeenLive, getChannelTitleLive } from "../../services/channels.service";
 import SingleChatAvatar from "../SingleChatAvatar/SingleChatAvatar";
+import GroupChatAvatar from "../GroupChatAvatar/GroupChatAvatar";
 
 const MyChat = ({ channel }: { channel: Channel }) => {
   const { userData } = useContext(AppContext);
@@ -44,7 +45,11 @@ const MyChat = ({ channel }: { channel: Channel }) => {
 
   return (
     <Box w={'80%'} onClick={onOpenChat}>
-      <SingleChatAvatar channel={channel} seenState={seenState} title={title} />
+      {Object.keys(channel.members).length > 2 ?
+        <GroupChatAvatar channel={channel} seenState={seenState} title={title} />
+        :
+        <SingleChatAvatar channel={channel} seenState={seenState} title={title} />
+      }
     </Box>
   );
 }

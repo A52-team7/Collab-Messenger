@@ -5,6 +5,7 @@ const SingleChatAvatar = ({ channel, seenState, title }: { channel: Channel, see
   return (
     <Flex
       w={'100%'}
+      p={'1px'}
       alignItems={'center'}
       border={'1px solid'}
       borderColor={'rgb(187,125,217)'}
