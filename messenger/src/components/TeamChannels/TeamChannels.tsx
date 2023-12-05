@@ -12,7 +12,7 @@ export interface Id {
 }
 
 const TeamChannels = ({ id }: Id) => {
-  const [channels, setChannels] = useState<Channel[]>([])
+  const [channels, setChannels] = useState<Channel[]>([]);
 
   const [team, setTeam] = useState<Team>({
     id: '',
@@ -21,7 +21,8 @@ const TeamChannels = ({ id }: Id) => {
     members: {},
     description: '',
     generalChannel: '',
-  })
+  });
+  const [activeBtn, setActiveBtn] = useState('');
 
   useEffect(() => {
 
@@ -42,8 +43,10 @@ const TeamChannels = ({ id }: Id) => {
       .then(res => setTeam(res))
   }, [])
 
-  return channels.map((channel: Channel) => <Box key={channel.id}>
-    <TeamChannel channelId={channel.id} channelTitle={channel.title} team={team} />
+  return channels.map((channel: Channel) => <Box
+    key={channel.id}
+    onClick={() => setActiveBtn(channel.id)}>
+    <TeamChannel channelId={channel.id} channelTitle={channel.title} team={team} activeBtn={activeBtn} />
   </Box>)
 }
 
