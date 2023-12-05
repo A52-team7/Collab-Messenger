@@ -59,7 +59,8 @@ const MoreOptions = ({id}: IdTeam) => {
         <PopoverTrigger>
           <IconButton
             aria-label="More server options"
-            variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }}
+            color={'white'}
+            variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'white' }}
             icon={<BsThreeDotsVertical size={25}  />}
             w="fit-content"
             justifyContent="space-between"

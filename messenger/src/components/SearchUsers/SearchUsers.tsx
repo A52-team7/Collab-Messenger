@@ -100,6 +100,7 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
       <Input pr={10} bg={searchType === ADD_USERS ? 'white' : 'grey'}
         placeholder={'Search by username / names / email'}
         _placeholder={{ color: 'gray.500' }}
+        rounded="md"
         value={searchValue}
         onChange={(e) => searchAllUsers(e.target.value)}
       />

@@ -225,7 +225,7 @@ const UserDetails = (): JSX.Element => {
       align={'center'}
       justify={'center'}
       mt={{ base: 2, sm: 5 }}
-      bg={'lightBlue'}>
+      bg={'none'}>
       <Stack
         spacing={4}
         maxW={'fit-content'}
@@ -266,6 +266,7 @@ const UserDetails = (): JSX.Element => {
               <Input
                 hidden
                 type={'file'}
+                rounded="md"
                 accept={'.jpeg,.png,.JPG,.PNG'}
                 ref={fileInput}
                 onChange={onLocallyUploadImage}
@@ -281,7 +282,7 @@ const UserDetails = (): JSX.Element => {
             <FormControl isRequired id='firstName'
               isInvalid={formErrors.firstNameLengthErr}>
               <FormLabel textAlign={'center'}>First name</FormLabel>
-              <Input type='text' textAlign={'center'} bg={'white'} value={form.firstName} onChange={updateForm('firstName')} />
+              <Input type='text' textAlign={'center'} bg={'white'} rounded="md" value={form.firstName} onChange={updateForm('firstName')} />
               {
                 formErrors.firstNameLengthErr &&
                 <Center>
@@ -292,7 +293,7 @@ const UserDetails = (): JSX.Element => {
             <FormControl isRequired id='lastName'
               isInvalid={formErrors.lastNameLengthErr}>
               <FormLabel textAlign={'center'}>Last name</FormLabel>
-              <Input type='text' textAlign={'center'} bg={'white'} value={form.lastName} onChange={updateForm('lastName')} />
+              <Input type='text' textAlign={'center'} bg={'white'} rounded="md" value={form.lastName} onChange={updateForm('lastName')} />
               {
                 formErrors.lastNameLengthErr &&
                 <Center>
@@ -303,7 +304,7 @@ const UserDetails = (): JSX.Element => {
             <FormControl id='phoneNumber'
             >
               <FormLabel textAlign={'center'}>Phone number</FormLabel>
-              <Input type='text' textAlign={'center'} bg={'white'} value={form.phoneNumber} onChange={updateForm('phoneNumber')} />
+              <Input type='text' textAlign={'center'} bg={'white'} rounded="md" value={form.phoneNumber} onChange={updateForm('phoneNumber')} />
               {
                 formErrors.firstNameLengthErr &&
                 <Center>
@@ -318,11 +319,11 @@ const UserDetails = (): JSX.Element => {
             <Stack flexDirection={'row'}>
               <FormControl id='password' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
                 <FormLabel textAlign={'center'}>New Password</FormLabel>
-                <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.password} onChange={updateForm('password')} />
+                <Input type='password' textAlign={'center'} bg={'white'} rounded="md" placeholder='********' value={form.password} onChange={updateForm('password')} />
               </FormControl>
               <FormControl id='password-confirm' isInvalid={formErrors.passwordLengthErr || formErrors.passwordMatchErr}>
                 <FormLabel textAlign={'center'}>Confirm password</FormLabel>
-                <Input type='password' textAlign={'center'} bg={'white'} placeholder='********' value={form.confirmPassword} onChange={updateForm('confirmPassword')} />
+                <Input type='password' textAlign={'center'} bg={'white'} rounded="md" placeholder='********' value={form.confirmPassword} onChange={updateForm('confirmPassword')} />
               </FormControl>
             </Stack>
           </Flex>

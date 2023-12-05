@@ -126,34 +126,38 @@ const CreateTeam = () => {
 
   return (
     <Flex
-      minH={'100vh'}
+      maxH={'fit-content'}
       align={'center'}
       justify={'center'}
+      mt={{ base: 2, sm: 5 }}
+      bg={'none'}
       >
       <Stack
         spacing={4}
         w={'full'}
-        maxW={'md'}
-        bg={useColorModeValue('white', 'gray.700')}
+        maxW={'fit-content'}
+        bg={'grey'}
         rounded={'xl'}
         boxShadow={'lg'}
-        p={6}
-        my={12}>
-        <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+        p={{ base: 1, sm: 6 }}
+        >
+        <Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           Create your new team
         </Heading>
         <FormControl id="userName" isRequired>
-          <FormLabel>Team name</FormLabel>
+          <FormLabel textAlign={'center'}>Team name</FormLabel>
           <Input
             placeholder="Write your team name..."
             _placeholder={{ color: 'gray.500' }}
             type="text"
+            bg={'white'}
+            rounded="md"
             value={teamForm.name}
             onChange={updateNewTeam('name')}
           />
         </FormControl>
         <FormControl id="addMembers" isRequired>
-          <FormLabel>Add members</FormLabel>
+          <FormLabel textAlign={'center'}>Add members</FormLabel>
           {/*HERE IS THE INPUT FOR ADDING USERS!*/}
           <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
           <Stack h={'15vh'}
@@ -163,11 +167,13 @@ const CreateTeam = () => {
           </Stack>
         </FormControl>
         <FormControl id="description">
-          <FormLabel>Description</FormLabel>
+          <FormLabel textAlign={'center'}>Description</FormLabel>
           <Input
             placeholder="Describe your team or write your motto..."
             _placeholder={{ color: 'gray.500' }}
             type="text"
+            bg={'white'}
+            rounded="md"
             value={teamForm.description}
             onChange={updateNewTeam('description')}
           />

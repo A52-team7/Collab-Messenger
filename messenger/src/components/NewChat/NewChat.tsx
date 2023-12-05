@@ -3,9 +3,10 @@ import {
   Stack,
   Input,
   Button,
-  useColorModeValue,
   FormLabel,
   Select,
+  Heading,
+  FormControl
 } from '@chakra-ui/react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userChannel } from '../../services/users.service';
@@ -166,41 +167,51 @@ const NewChat = (): JSX.Element => {
       align={'center'}
       justify={'center'}
       mt={{ base: 2, sm: 5 }}
-      bg={'lightBlue'}
+      bg={'none'}
     // align={'center'}
     // direction={'center'}
     // justify={'center'}
     // py={12}
     // maxW={'600px'}
     >
-
+      
       <Flex
-
         direction={'column'}
         boxShadow={'2xl'}
-        bg={useColorModeValue('white', 'gray.700')}
+        bg={'grey'}
         rounded={'xl'}
         //w={'60vw'}
-        p={10}>
-        <FormLabel>Add title</FormLabel>
+        p={{ base: 1, sm: 6 }}>
+        {team ? (<Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }} mb={'4'}>
+          Add new channel
+        </Heading>) : (<Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+          Add new chat
+        </Heading>)}
+        <FormControl id="addTitle" isRequired>
+        <FormLabel textAlign={'center'}>Add title</FormLabel>
         <Input
-          bg={'grey'}
+          bg={'white'}
           mb={5}
+          rounded="md"
           placeholder="Add title"
           onChange={updateTitle('title')} />
-        {team && <FormLabel>Privacy</FormLabel>}
+          </FormControl>
         <Stack mb={5} w={'500px'}> 
-        {team &&
-        (<Select defaultValue="Private" onClick={(e: React.MouseEvent<HTMLSelectElement>)=> privacyChange(e.target.value)} >
+        {team && (<FormControl id="privacy" isRequired><FormLabel textAlign={'center'}>Privacy</FormLabel>
+        <Select defaultValue="Private" bg={'white'} onClick={(e: React.MouseEvent<HTMLSelectElement>)=> privacyChange(e.target.value)} >
         <option value='Standard'>Standard-Everyone on the team has access</option>
         <option value='Private'>Private-Specific teammates have access</option>
-        </Select>)}
+        </Select>
+        </FormControl>)}
         </Stack>  
-        {(isPrivate === '' || isPrivate === 'Private') && <FormLabel>Add members</FormLabel>}
+        {(isPrivate === '' || isPrivate === 'Private') && 
+        (<FormControl id="addMembers" isRequired>
+          <FormLabel textAlign={'center'}>Add members</FormLabel>
+          </FormControl>)}
         <Stack mb={5} w={'500px'}>
-          {(team && isPrivate === 'Private') ? (
-            <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />
-          ) : (team && isPrivate ==='Standard') ? null :(<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
+          {(team && isPrivate === 'Private') ? 
+          (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />)
+           : (team && (isPrivate ==='Standard')) ? null :(<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
         </Stack>
         {(isPrivate === 'Private') && (<Stack h={'31vh'}
           overflowY={'scroll'}
