@@ -69,7 +69,15 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     setChannelId(params.id);
-  }, [params.id, params])
+  }, [params.id, params]);
+
+  // useEffect(() => {
+  //   if (!userData) return;
+  //   if(Object.keys(channel).includes('isBetweenTwo')){
+  //     const titleToShow = channel.title.split(',').findIndex((user) => user !== userData.handle);
+  //     setTitle(channel.title[titleToShow]);    
+  //   }
+  // }, []);
 
   useEffect(() => {
     if(userData === null || !channelId) return;
@@ -106,6 +114,13 @@ const Chat = (): JSX.Element => {
         setTitle(result.title);
         setNewTitle(result.title);
         setMembers(Object.keys(result.members));
+        
+        if(Object.keys(result).includes('isBetweenTwo')){
+          const usersInChat = result.title.split(',');
+          const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
+                  
+          setTitle(usersInChat[titleToShow]); 
+        }   
       }).catch(e => console.error(e));
   }, [channelId]);
 
@@ -291,8 +306,8 @@ const Chat = (): JSX.Element => {
         <Flex w={'inherit'} mb={10} mt={-10}>
           {!editTitle ? (
           <Flex flex={1}>
-            <Heading>{title}</Heading>
-            <Button bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            <Heading color={'white'}>{title}</Heading>
+            <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
           </Flex>
           ) : (
             <Flex flex={1}>
@@ -364,7 +379,7 @@ const Chat = (): JSX.Element => {
               <Button
                 ml={-5}
                 bg={'none'}
-                color={'black'}
+                color={'white'}
                 flex={'1 0 auto'}
                 onMouseEnter={onSeeColor} 
                 onMouseLeave={onHideColor}

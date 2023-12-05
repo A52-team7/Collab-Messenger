@@ -12,10 +12,11 @@ const Body = ({ children }: BodyProps): JSX.Element => {
 
   return (
     <Box minH='100vh'
-    backgroundImage="url('/abstract-background-wallpaper-grey-geometric-circle-pattern-vector_53876-140223.jpg')"
+    backgroundImage="url('/5137894.jpg')"
     backgroundPosition="center"
     backgroundRepeat="no-repeat"
-    backgroundSize='cover' >
+    backgroundSize='cover' 
+    opacity={'0.9'}>
       <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         isOpen={isOpen}

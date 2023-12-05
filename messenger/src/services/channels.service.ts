@@ -69,27 +69,7 @@ export const getChannelById = (id: string) => {
     .catch(e => console.log(e));
 };
 
-export const getChannelsByCreator = (handle: string): Promise<Channel[]> => {
-
-  return get(query(ref(db, 'channels'), orderByChild('creator'), equalTo(handle)))
-    .then(snapshot => {
-      if (!snapshot.exists()) return [];
-
-      return fromChannelsDocument(snapshot);
-    });
-};
-
-export const getChannelsByTeam = (teamId: string): Promise<Channel[]> => {
-
-  return get(query(ref(db, 'channels'), orderByChild('toTeam'), equalTo(teamId)))
-    .then(snapshot => {
-      if (!snapshot.exists()) return [];
-
-      return fromChannelsDocument(snapshot);
-    });
-};
-
-export const getAllChannels = (): Promise<Channel[]> => {
+export const getAllChannels = () => {
 
   return get(ref(db, 'channels'))
     .then(snapshot => {
@@ -226,4 +206,11 @@ export const getChannelTitleLive = (channelId: string, listener: TitleListener) 
 
     return listener(title);
   })
+}
+
+export const chatBetweenTwo = (channelId: string) => {
+  const updateChaTIsBetweenTwo: { [key: string]: boolean } = {};
+  updateChaTIsBetweenTwo[`/channels/${channelId}/isBetweenTwo`] = true;
+
+  return update(ref(db), updateChaTIsBetweenTwo);
 }

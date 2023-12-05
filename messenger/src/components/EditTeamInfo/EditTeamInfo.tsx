@@ -171,7 +171,7 @@ const EditTeamInfo = () => {
           minH={'fit-content'}
           align={'center'}
           justify={'center'}
-          mt={{ base: 2, sm: 5 }} bg={'lightBlue'}>
+          mt={{ base: 2, sm: 5 }} bg={'none'}>
           <Stack
             spacing={4}
             maxW={'fit-content'}
@@ -218,18 +218,19 @@ const EditTeamInfo = () => {
           </Stack>
             <Stack right={0} top={'-29%'}>
             <FormControl id="userName" isRequired>
-              <FormLabel>Team name</FormLabel>
+              <FormLabel textAlign={'center'}>Team name</FormLabel>
               <Input
                 placeholder="Write your team name..."
                 _placeholder={{ color: 'gray.500' }}
                 type="text"
                 bg={'white'}
+                rounded="md"
                 value={teamForm.name}
                 onChange={updateTeamInfo('name')}
               />
             </FormControl>
             <FormControl id="addMembers" isRequired>
-              <FormLabel>Add members</FormLabel>
+              <FormLabel textAlign={'center'}>Add members</FormLabel>
               <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
               <Stack h={'15vh'}
                overflowY={'scroll'}
@@ -238,12 +239,13 @@ const EditTeamInfo = () => {
               </Stack>
             </FormControl>
             <FormControl id="description">
-              <FormLabel>Description</FormLabel>
+              <FormLabel textAlign={'center'}>Description</FormLabel>
               <Input
                 placeholder="Describe your team or write your motto..."
                 _placeholder={{ color: 'gray.500' }}
                 type="text"
                 bg={'white'}
+                rounded="md"
                 value={teamForm.description}
                 onChange={updateTeamInfo('description')}
               />

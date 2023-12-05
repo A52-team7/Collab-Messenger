@@ -53,7 +53,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
   return (
     <Box
       transition={'3s ease'}
-      bg={'blue'}
+      bg={'RGB(29, 29, 29)'}
       borderRight={'1px'}
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: '220px', md: 80 }}

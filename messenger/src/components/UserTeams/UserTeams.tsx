@@ -57,8 +57,8 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
     >
       <Container>
         <HStack justify="space-between">
-          <Heading as='h2' size='lg' textAlign="left">My Teams</Heading>
-          <Button variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={() => navigate('/new-team')}><FiPlusSquare size={20} /></Button>
+          <Heading color={'white'} as='h2' size='lg' textAlign="left">My Teams</Heading>
+          <Button variant='unstyled'color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={() => navigate('/new-team')}><FiPlusSquare size={20} /></Button>
         </HStack>
         <Accordion allowMultiple width="100%" maxW="lg" rounded="lg">
           {myTeam.length > 0 ? myTeam.map((team: Team) => {
@@ -74,7 +74,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
                       <Avatar size='sm' name={team.name} src={team.teamPhoto} />{' '}
                     </WrapItem>
                   </Wrap>
-                  <Text fontSize="md">{team.name}</Text>
+                  <Text color={'white'} fontSize="md">{team.name}</Text>
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>
                 <Tooltip hasArrow label='More options' bg='gray.300' color='black'>
