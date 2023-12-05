@@ -54,12 +54,15 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
   }
 
   return (
-    <Flex direction={'column'}>
+    <Flex direction={'column'} justifyContent={'center'}>
 
-      <HStack justify="space-between">
-        <Heading as='h2' size='lg' color={'white'} textAlign="left">My chats</Heading>
-        <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
-      </HStack>
+      <Flex justify={'center'}>
+        <HStack w={'80%'} justify="space-between">
+          <Heading as={'h2'} size={'lg'} color={'white'}>My chats</Heading>
+          <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
+        </HStack>
+      </Flex>
+
       <Stack
         w={'inherit'}
         maxH={'60vh'}

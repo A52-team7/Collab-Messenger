@@ -46,7 +46,7 @@ const MyChat = ({ channel }: { channel: Channel }) => {
     <Box w={'80%'} onClick={onOpenChat}>
       <SingleChatAvatar channel={channel} seenState={seenState} title={title} />
     </Box>
-  )
+  );
 }
 
 export default MyChat;

@@ -87,7 +87,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                 onClick={(e) => showContentHandle(e)}>
                 <BsChatTextFill size={30} />
               </Button>
-              <FormLabel htmlFor={'messages-btn'}>CHATS</FormLabel>
+              <FormLabel color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
             </Box>
             <Box>
               <Button borderRadius={'50%'} px={3} py={6}
@@ -97,7 +97,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                 onClick={(e) => showContentHandle(e)}>
                 <RiTeamFill size={30} />
               </Button>
-              <FormLabel htmlFor={'teams-btn'}>TEAMS</FormLabel>
+              <FormLabel color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
             </Box>
           </Flex>
           <Box minW={'210px'}>
