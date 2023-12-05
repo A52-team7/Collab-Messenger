@@ -61,7 +61,10 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
         <Heading as='h2' size='lg' textAlign="left">My chats</Heading>
         <Button variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
       </HStack>
-      <Stack>
+      <Stack
+       maxH={'60vh'}
+       w={'inherit'}
+       overflowY={'scroll'}>
         {channels.map((channel: Channel) => (
           <Box onClick={() => onClose()} key={channel.id}>
             <MyChat channel={channel} />

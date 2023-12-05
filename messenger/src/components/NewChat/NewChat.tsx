@@ -9,15 +9,14 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userChannel } from '../../services/users.service';
-import { addChannel, addMemberToChannel } from '../../services/channels.service';
-import { useState, useEffect } from 'react';
+import { addChannel, getAllChannels } from '../../services/channels.service';
+import { useState } from 'react';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS, TITLE_NAME_LENGTH_MAX, TITLE_NAME_LENGTH_MIN } from '../../common/constants';
 import { useContext } from 'react';
 import AppContext, { UserState } from '../../context/AppContext';
 import UsersList from '../UsersList/UsersList';
-import { Team } from '../CreateTeam/CreateTeam';
-import { getTeamById, updateTeamChannel } from '../../services/teams.service';
+import { updateTeamChannel } from '../../services/teams.service';
 
 interface ChannelForm {
   title: string;
@@ -37,7 +36,7 @@ const NewChat = (): JSX.Element => {
 
   const [channelForm, setChannelForm] = useState<ChannelForm>({ title: '', members: {} });
 
-  const [isPrivate, setIsPrivate] = useState<string>('Private')
+  const [isPrivate, setIsPrivate] = useState<string>('Private');
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -78,37 +77,77 @@ const NewChat = (): JSX.Element => {
     }
     const members = { ...channelForm.members, [userData.handle]: true };
     if (team) {
-      addChannel(userData.handle, channelForm.title, members, team.id)
-        .then(result => {
-          Object.keys(result.members).forEach(member => {
-            userChannel(result.id, member);
-          })
-          userChannel(result.id, userData.handle);
-          if (team.id !== null) {
-            updateTeamChannel(team.id, result.id)
+      getAllChannels()
+      .then(allChannels => {
+        const onlyChannels = allChannels.filter(channel => Object.keys(channel).includes('toTeam'));
+        const existingChat = onlyChannels.map(channel => {
+          const set1 = new Set(channel.members);
+          const set2 = new Set(Object.keys(members));
+
+          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
+          return areEqual;      
+        });
+
+        if(!existingChat.includes(true)){
+          addChannel(userData.handle, channelForm.title, members, team.id)
+            .then(result => {
+              Object.keys(result.members).forEach(member => {
+                userChannel(result.id, member);
+              })
+              userChannel(result.id, userData.handle);
+              if (team.id !== null) {
+                updateTeamChannel(team.id, result.id)
+              }
+
+              return result;
+            })
+            .then(res => {
+              navigate(`/chat/${res.id}`, { state: { team: team } });
+            })
+            .catch(e => console.log(e));
+          }else{
+            const index = existingChat.findIndex(el => el === true);
+            const chatToNavigate = (onlyChannels[index]);
+            
+            navigate(`/chat/${chatToNavigate.id}`);
           }
-
-          return result;
         })
-        .then(res => {
-          navigate(`/chat/${res.id}`, { state: { team: team } });
-        })
-        .catch(e => console.log(e));
+        .catch(error => console.error(error.message));
     } else {
-      addChannel(userData.handle, channelForm.title, members)
-        .then(result => {
-          Object.keys(result.members).forEach(member => {
-            userChannel(result.id, member);
-          })
-          userChannel(result.id, userData.handle);
-          return result;
-        })
-        .then(res => {
-          navigate(`/chat/${res.id}`);
-        })
-        .catch(e => console.log(e));
-    }
+      getAllChannels()
+      .then(allChannels => {
+        const onlyChats = allChannels.filter(channel => !Object.keys(channel).includes('toTeam'));
+        const existingChat = onlyChats.map(channel => {
+          const set1 = new Set(channel.members);
+          const set2 = new Set(Object.keys(members));
 
+          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
+          return areEqual;      
+        });
+
+        if(!existingChat.includes(true)){
+    
+          addChannel(userData.handle, channelForm.title, members)
+            .then(result => {
+              Object.keys(result.members).forEach(member => {
+                userChannel(result.id, member);
+              })
+              userChannel(result.id, userData.handle);
+              return result;
+            })
+            .then(res => {
+              navigate(`/chat/${res.id}`);
+            })
+            .catch(e => console.log(e));
+        }else{
+          const index = existingChat.findIndex(el => el === true);
+          const chatToNavigate = (onlyChats[index]);
+          
+          navigate(`/chat/${chatToNavigate.id}`);
+        }
+      })
+      .catch(error => console.error(error.message));
+    }
   }
 
   const privacyChange =(privacyValue: string) =>{

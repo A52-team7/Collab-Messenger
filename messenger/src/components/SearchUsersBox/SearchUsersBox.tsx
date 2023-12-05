@@ -2,7 +2,7 @@ import { Text, Box } from "@chakra-ui/react";
 import { ADD_USERS } from "../../common/constants";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { addChannel, addMemberToChannel, chatBetweenTwo, setChannelToSeen } from '../../services/channels.service';
+import { addChannel, addMemberToChannel, chatBetweenTwo, getAllChannels, setChannelToSeen } from '../../services/channels.service';
 import { userChannel } from "../../services/users.service";
 import { useNavigate } from "react-router-dom";
 
@@ -37,20 +37,40 @@ const SearchUsersBox = ({
 
   const createChat = () => {
     if (userData === null) return;
-    const members = { [userData.handle]: true, [userName]: true }
-    addChannel(userData.handle, firstName + ' ' + lastName + ', ' + userData.firstName + ' ' + userData.lastName, members)
-      .then(result => {
-        userChannel(result.id, userData.handle);
-        userChannel(result.id, userName);
-        chatBetweenTwo(result.id);
-        return result;
-      })
-      .then(result => navigate(`/chat/${result.id}`))
-      .catch((error: Error) => console.log(error))
-      .finally(() => {
-        setOpen(false);
-        setSearchValue('');
-      });
+    getAllChannels()
+      .then(allChannels => {
+        const onlyChats = allChannels.filter(channel => !Object.keys(channel).includes('toTeam'));
+        const existingChat = onlyChats.map(channel => {
+          const set1 = new Set(channel.members);
+          const set2 = new Set([userName, userData.handle]);
+
+          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
+          return areEqual;      
+        });
+
+        if(!existingChat.includes(true)){
+          const members = { [userData.handle]: true, [userName]: true }
+          addChannel(userData.handle, firstName + ' ' + lastName + ', ' + userData.firstName + ' ' + userData.lastName, members)
+            .then(result => {
+              userChannel(result.id, userData.handle);
+              userChannel(result.id, userName);
+              chatBetweenTwo(result.id);
+              return result;
+            })
+            .then(result => navigate(`/chat/${result.id}`))
+            .catch((error: Error) => console.log(error))
+            .finally(() => {
+              setOpen(false);
+              setSearchValue('');
+            });
+          }else{
+            const index = existingChat.findIndex(el => el === true);
+            const chatToNavigate = (onlyChats[index]);
+            
+            navigate(`/chat/${chatToNavigate.id}`);
+          }
+        })
+        .catch(error => console.error(error.message));
   };
 
   const handleClick = () => {
