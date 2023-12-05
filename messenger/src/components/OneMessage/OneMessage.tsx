@@ -183,18 +183,15 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           <Flex alignItems={'center'}>
             {!editMessage ? (
               <Box
-                pt='10px'
-                pb='10px'
-                pl='20px'
-                pr='20px'
-                color='white'
-                mb='4'
-                //bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
-                bg={message.author === userData?.handle ? 'teal.500' : 'rgb(105,90,121)'}
-                // opacity={message.author === userData?.handle ? 'none' : '0.7'}
-                //border={'2px solid teal'}
-                rounded='md'
-                shadow='md'
+                pt={'10px'}
+                pb={'10px'}
+                pl={'20px'}
+                pr={'20px'}
+                color={'white'}
+                mb={'4'}
+                bg={message.author === userData?.handle ? 'rgb(105,90,121)' : 'teal.500'}
+                rounded={'md'}
+                shadow={'md'}
                 minW={'230px'}
                 maxW={'40vw'}
                 w={'fit-content'}
