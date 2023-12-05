@@ -42,8 +42,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
-  const [reactions, setReactions] = useState<ReactionArray | null>(null); 
-  
+  const [reactions, setReactions] = useState<ReactionArray | null>(null);
+
   const [editMessage, setEditMessage] = useState<boolean>(false);
   const [contentOfMessage, setContentOfMessage] = useState<string>('');
 
@@ -87,8 +87,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     getMessageReactionsLive(message.id, (data: ReactionArray) => {
       setReactions(data);
     })
-    
-  }, [message.id, userData]);  
+
+  }, [message.id, userData]);
 
 
   if (userData === null) return;
@@ -153,102 +153,104 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
 
   return (
     <>
-    {message.techMessage ? (
-      <Flex position={'relative'} w={'100%'} justifyContent={'center'} alignItems={'center'}>
-        {message.typeOfMessage===ADD_PERSON && <IoPersonAddSharp />}
-        {message.typeOfMessage===REMOVE_PERSON && <IoPersonRemoveOutline />}
-        {message.typeOfMessage===CHANGE_TITLE && <GrEdit />}
-        <Text ml={2}>{message.content}</Text>
-      </Flex>
-    ) : (
-    <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={5}
-    // onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}
-    >
-      {isReply && (
-        <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
-          <Text color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} ><GoReply size={20} /></Text>
-          <Text pr={2} noOfLines={1}>{authorOfToMessage}: {toMessage.content}</Text>
+      {message.techMessage ? (
+        <Flex position={'relative'} w={'100%'} justifyContent={'center'} alignItems={'center'}>
+          {message.typeOfMessage === ADD_PERSON && <IoPersonAddSharp />}
+          {message.typeOfMessage === REMOVE_PERSON && <IoPersonRemoveOutline />}
+          {message.typeOfMessage === CHANGE_TITLE && <GrEdit />}
+          <Text ml={2}>{message.content}</Text>
+        </Flex>
+      ) : (
+        <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={5}
+        // onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}
+        >
+          {isReply && (
+            <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
+              <Text color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} ><GoReply size={20} /></Text>
+              <Text pr={2} noOfLines={1}>{authorOfToMessage}: {toMessage.content}</Text>
+            </Flex>
+          )}
+          {authorOfMessage && <Flex>
+            <Text pl='7px' pr='7px' mr='10px' rounded='md'
+              // bg='white'
+              // bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(180,125,211)'}
+              color={'white'}
+              fontWeight={'bold'}
+            >{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
+            <Text fontSize='sm' color={'white'} pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
+          </Flex>
+          }
+          <Flex alignItems={'center'}>
+            {!editMessage ? (
+              <Box
+                pt='10px'
+                pb='10px'
+                pl='20px'
+                pr='20px'
+                color='white'
+                mb='4'
+                //bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
+                bg={message.author === userData?.handle ? 'teal.500' : 'rgb(105,90,121)'}
+                // opacity={message.author === userData?.handle ? 'none' : '0.7'}
+                //border={'2px solid teal'}
+                rounded='md'
+                shadow='md'
+                minW={'230px'}
+                maxW={'40vw'}
+                w={'fit-content'}
+              >
+                <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+                  <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+                    {decoratedText}
+                  </a>
+                )}>
+                  {contentOfMessage}
+                </Linkify>
+                {/* {visibleOptions &&  */}
+                {message.author === userData.handle &&
+                  <Flex position={'absolute'}
+                    top={'50%'}
+                    left={'-111px'}
+                    transform={'translateY(-50%)'}>
+                    <ReactionPopover onAddReaction={onAddReaction} />
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
+                    <RemoveMessage onDeleteMessage={onDeleteMessage} />
+                  </Flex>
+                }
+                {/* {visibleOptions &&  */}
+                {message.author !== userData.handle &&
+                  <Flex position={'absolute'}
+                    top={'48%'}
+                    right={'-48px'}
+                    transform={'translateY(-50%)'}
+                    bg={'none'}
+                  >
+                    <ReactionPopover onAddReaction={onAddReaction} />
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+                  </Flex>
+                }
+              </Box>
+            ) : (
+              <Flex mb={8}>
+                <Input value={contentOfMessage} bg={'grey'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage} />
+                <EmojiPopover onGetEmoji={onGetEmoji} />
+                <Button p={1} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onUpdateMessage}><FaCheck size={20} /></Button>
+                <Button p={1} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onExitEditMessage}><IoClose size={25} /></Button>
+              </Flex>
+            )}
+          </Flex>
+          {reactions &&
+            <Flex mt={'-28px'}>
+              {reactions.reactions !== null && reactions.reactions.map((reaction) => (
+                <Box key={reaction[0]}>
+                  <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction} />
+                </Box>
+              ))}
+            </Flex>
+          }
         </Flex>
       )}
-      {authorOfMessage && <Flex>
-        <Text pl='7px' pr='7px' mr='10px' rounded='md' 
-        bg ='teal.400'
-        // bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(249,211,46)'}
-        >{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
-        <Text fontSize='sm' pr={5}>{message.createdOn.toLocaleString("en-GB").slice(0, 17)}</Text>
-      </Flex>
-      } 
-      <Flex alignItems={'center'}>
-        {!editMessage ? (
-        <Box
-          pt='10px'
-          pb='10px'
-          pl='20px'
-          pr='20px'
-          color='white'
-          mb='4'
-          //bg={message.author === userData?.handle ? 'rgb(1,206,230)' : 'rgb(251,157,37)'}
-          bg={message.author === userData?.handle ? 'teal.500' : 'teal.500'}
-          opacity={message.author === userData?.handle ? 'none' : '0.7'}
-          //border={'2px solid teal'}
-          rounded='md'
-          shadow='md'
-          minW={'230px'}
-          maxW={'40vw'}
-          w={'fit-content'}
-        >
-          <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-            <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
-              {decoratedText}
-            </a>
-          )}>
-            {contentOfMessage}
-          </Linkify>
-          {/* {visibleOptions &&  */}
-          {message.author === userData.handle &&
-            <Flex position={'absolute'}
-              top={'50%'}
-              left={'-111px'}
-              transform={'translateY(-50%)'}>
-              <ReactionPopover onAddReaction={onAddReaction}/>
-              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
-              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
-              <RemoveMessage onDeleteMessage={onDeleteMessage}/>
-            </Flex>
-          }
-          {/* {visibleOptions &&  */}
-          {message.author !== userData.handle &&
-            <Flex position={'absolute'}
-              top={'48%'}
-              right={'-48px'}
-              transform={'translateY(-50%)'}
-              bg={'none'}
-              >
-              <ReactionPopover onAddReaction={onAddReaction}/>
-              <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
-            </Flex>
-          }
-        </Box>
-        ) : (
-          <Flex mb={8}>
-            <Input value={contentOfMessage} bg={'grey'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage}/>
-            <EmojiPopover onGetEmoji={onGetEmoji}/>
-            <Button p={1} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onUpdateMessage}><FaCheck size={20}/></Button>
-            <Button p={1} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onExitEditMessage}><IoClose size={25}/></Button>
-          </Flex>
-        )}
-      </Flex>
-        {reactions && 
-            <Flex mt={'-28px'}>
-            {reactions.reactions !== null && reactions.reactions.map((reaction) => (
-                  <Box key={reaction[0]}>
-                      <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction}/>
-                  </Box>
-            ))}
-            </Flex>
-        }   
-    </Flex>
-    )}
     </>
   )
 }

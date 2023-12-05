@@ -97,7 +97,7 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
       }}
       position={'relative'}
     >
-      <Input pr={10} bg={searchType === ADD_USERS ? 'white' : 'grey'}
+      <Input pr={10} bg={searchType === ADD_USERS ? 'white' : 'rgb(237,254,253)'}
         placeholder={'Search by username / names / email'}
         _placeholder={{ color: 'gray.500' }}
         rounded="md"
