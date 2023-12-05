@@ -78,42 +78,22 @@ const NewChat = (): JSX.Element => {
     }
     const members = { ...channelForm.members, [userData.handle]: true };
     if (team) {
-      getAllChannels()
-      .then(allChannels => {
-        const onlyChannels = allChannels.filter(channel => Object.keys(channel).includes('toTeam'));
-        const existingChat = onlyChannels.map(channel => {
-          const set1 = new Set(channel.members);
-          const set2 = new Set(Object.keys(members));
-
-          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
-          return areEqual;      
-        });
-
-        if(!existingChat.includes(true)){
-          addChannel(userData.handle, channelForm.title, members, team.id)
-            .then(result => {
-              Object.keys(result.members).forEach(member => {
-                userChannel(result.id, member);
-              })
-              userChannel(result.id, userData.handle);
-              if (team.id !== null) {
-                updateTeamChannel(team.id, result.id)
-              }
-
-              return result;
-            })
-            .then(res => {
-              navigate(`/chat/${res.id}`, { state: { team: team } });
-            })
-            .catch(e => console.log(e));
-          }else{
-            const index = existingChat.findIndex(el => el === true);
-            const chatToNavigate = (onlyChannels[index]);
-            
-            navigate(`/chat/${chatToNavigate.id}`);
+      addChannel(userData.handle, channelForm.title, members, team.id)
+        .then(result => {
+          Object.keys(result.members).forEach(member => {
+            userChannel(result.id, member);
+          })
+          userChannel(result.id, userData.handle);
+          if (team.id !== null) {
+            updateTeamChannel(team.id, result.id)
           }
+
+          return result;
         })
-        .catch(error => console.error(error.message));
+        .then(res => {
+          navigate(`/chat/${res.id}`, { state: { team: team } });
+        })
+        .catch(e => console.log(e));
     } else {
       getAllChannels()
       .then(allChannels => {
