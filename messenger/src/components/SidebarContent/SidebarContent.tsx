@@ -63,7 +63,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         justifyContent={'center'}>
         <Image
           _hover={{ cursor: 'pointer' }}
-          src={'/logo-removebg-preview.png'}
+          src={'/final_logo.jpg'}
           alt={'logo'}
           boxSize='125px'
           borderRadius="full"
