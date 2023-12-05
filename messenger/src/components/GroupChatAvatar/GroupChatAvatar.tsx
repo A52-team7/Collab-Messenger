@@ -22,7 +22,7 @@ const GroupChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsIn
       _hover={{ cursor: "pointer", bg: 'teal.600' }}>
       <Tooltip hasArrow label={members.join(', ')} bg={'rgb(237,254,253)'} color='black'>
         <AvatarGroup size='sm' max={3}>
-          {members.map((member) => <Avatar border={'none'} mr={-4} size={'sm'} name={member} src='https://bit.ly/broken-link' />)}
+          {members.map((member) => <Avatar key={member + channel.id} border={'none'} mr={-4} size={'sm'} name={member} src='https://bit.ly/broken-link' />)}
         </AvatarGroup>
       </Tooltip>
       <Flex
