@@ -114,3 +114,28 @@ export const getTeamInfoLife = (listener: Listener)=>{
       return listener(team)
     })
   }
+
+  export interface TitleListener { (title: string): void }
+
+  export const getTeamTitleLive = (teamId: string, listener: TitleListener) => {
+  
+    return onValue(ref(db, `teams/${teamId}/name`), (snapshot) => {
+      if (!snapshot.exists()) return listener('');
+  
+      const title = snapshot.val();
+      console.log(title)
+  
+      return listener(title);
+    })
+  }
+
+  export const getTeamPhotoLive = (teamId: string, listener: TitleListener) => {
+  
+    return onValue(ref(db, `teams/${teamId}/teamPhoto`), (snapshot) => {
+      if (!snapshot.exists()) return listener('');
+  
+      const photo = snapshot.val();
+  
+      return listener(photo);
+    })
+  }
