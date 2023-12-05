@@ -23,7 +23,6 @@ interface MyChatsSideNavBarProps {
 }
 
 const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
-
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -59,12 +58,14 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
 
       <HStack justify="space-between">
         <Heading as='h2' size='lg' color={'white'} textAlign="left">My chats</Heading>
-        <Button variant='unstyled' color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
+        <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
       </HStack>
       <Stack
-       maxH={'60vh'}
-       w={'inherit'}
-       overflowY={'scroll'}>
+        w={'inherit'}
+        maxH={'60vh'}
+        mt={5}
+        overflowY={'scroll'}
+      >
         {channels.map((channel: Channel) => (
           <Flex justifyContent={'center'} onClick={() => onClose()} key={channel.id}>
             <MyChat channel={channel} />

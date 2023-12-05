@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
-import { Box, Text, Avatar, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 import { setChannelToSeen, getChannelSeenLive, getChannelTitleLive } from "../../services/channels.service";
 import SingleChatAvatar from "../SingleChatAvatar/SingleChatAvatar";
@@ -26,31 +26,26 @@ const MyChat = ({ channel }: { channel: Channel }) => {
 
   useEffect(() => {
     if (!userData) return;
-    if(Object.keys(channel).includes('isBetweenTwo')){
+    if (Object.keys(channel).includes('isBetweenTwo')) {
       const usersInChat = channel.title.split(',');
       const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
-                  
-      setTitle(usersInChat[titleToShow]); 
+
+      setTitle(usersInChat[titleToShow]);
     }
   }, []);
 
   useEffect(() => {
-  if(!Object.keys(channel).includes('isBetweenTwo')){
-    getChannelTitleLive(channel.id, (data: string) => {
-      return setTitle(data);
-    })
-  }
+    if (!Object.keys(channel).includes('isBetweenTwo')) {
+      getChannelTitleLive(channel.id, (data: string) => {
+        return setTitle(data);
+      })
+    }
   }, []);
-  
+
   return (
-    <Text
-      _hover={{ cursor: "pointer" }}
-      color={seenState === true || seenState === null ? 'green' : 'red'}
-      bg={'gray'}
-      w={'100%'}
-      onClick={onOpenChat}>
-      {title} ({seenState === true || seenState === null ? 'seen' : 'not seen'})
-    </Text>
+    <Box w={'80%'} onClick={onOpenChat}>
+      <SingleChatAvatar channel={channel} seenState={seenState} title={title} />
+    </Box>
   )
 }
 

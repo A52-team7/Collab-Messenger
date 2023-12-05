@@ -1,27 +1,27 @@
 import { Box, Text, Avatar, Flex } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 
-const SingleChatAvatar = ({ channel, seenState }: { channel: Channel, seenState: boolean | null }) => {
+const SingleChatAvatar = ({ channel, seenState, title }: { channel: Channel, seenState: boolean | null, title: string }) => {
   return (
     <Flex
       w={'100%'}
       alignItems={'center'}
-      _hover={{ cursor: "pointer" }}>
-      <Avatar mr={-7} size={'sm'} name={channel.title} src='https://bit.ly/broken-link' />
+      border={'1px solid'}
+      borderColor={'black'}
+      borderRadius={'25px 5px 5px 25px'}
+      _hover={{ cursor: "pointer", bg: 'gray.800' }}>
+      <Avatar mr={-4} size={'sm'} name={channel.title} src='https://bit.ly/broken-link' />
       <Flex
         w={'100%'}
         alignItems={'center'}
-        bg={'rgb(238,242,247)'}
-        opacity={0.5}
-        zIndex={-1}
         alignSelf="stretch"
-        borderRadius={'0 5px 5px 0'}
       >
-        <Box ml={9}>
+        <Box ml={7}>
           <Text
-            color={seenState === true || seenState === null ? 'green' : 'red'}
+            color={'white'}
+            fontSize={seenState === true || seenState === null ? '' : 'bold'}
           >
-            {channel.title} ({seenState === true || seenState === null ? 'seen' : 'not seen'})
+            {title}
           </Text>
         </Box>
       </Flex>
