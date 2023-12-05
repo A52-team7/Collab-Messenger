@@ -1,16 +1,17 @@
 import { Box, Text, Avatar, Flex } from "@chakra-ui/react";
-import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
+import { AvatarChatsInterface } from "../GroupChatAvatar/GroupChatAvatar";
 
-const SingleChatAvatar = ({ channel, seenState, title }: { channel: Channel, seenState: boolean | null, title: string }) => {
+const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsInterface) => {
   return (
     <Flex
       w={'100%'}
       p={'1px'}
       alignItems={'center'}
+      bg={activeBtn === channel.id ? 'teal.600' : 'none'}
       border={'1px solid'}
       borderColor={'rgb(187,125,217)'}
       borderRadius={'25px 5px 5px 25px'}
-      _hover={{ cursor: "pointer", bg: 'gray.800' }}>
+      _hover={{ cursor: "pointer", bg: 'teal.600' }}>
       <Avatar mr={-4} size={'sm'} name={channel.title} src='https://bit.ly/broken-link' />
       <Flex
         w={'100%'}

@@ -24,9 +24,9 @@ interface MyChatsSideNavBarProps {
 
 const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
   const { userData } = useContext(AppContext);
-  const navigate = useNavigate();
-
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [activeBtn, setActiveBtn] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userData === null) return;
@@ -70,8 +70,14 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
         overflowY={'scroll'}
       >
         {channels.map((channel: Channel) => (
-          <Flex justifyContent={'center'} onClick={() => onClose()} key={channel.id}>
-            <MyChat channel={channel} />
+          <Flex
+            key={channel.id}
+            justifyContent={'center'}
+            onClick={() => {
+              setActiveBtn(channel.id);
+              onClose();
+            }} >
+            <MyChat channel={channel} activeBtn={activeBtn} />
           </Flex>
         ))}
       </Stack>
