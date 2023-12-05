@@ -7,7 +7,7 @@ const SingleChatAvatar = ({ channel, seenState, title }: { channel: Channel, see
       w={'100%'}
       alignItems={'center'}
       border={'1px solid'}
-      borderColor={'black'}
+      borderColor={'rgb(72,161,159)'}
       borderRadius={'25px 5px 5px 25px'}
       _hover={{ cursor: "pointer", bg: 'gray.800' }}>
       <Avatar mr={-4} size={'sm'} name={channel.title} src='https://bit.ly/broken-link' />

@@ -76,7 +76,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
             <Box>
               <Button borderRadius={'50%'} px={3} py={6}
                 id={'messages-btn'}
-                bg={activeBtn === 'messages-btn' ? 'green.300' : 'gray.100'}
+                bg={activeBtn === 'messages-btn' ? 'rgb(72,161,159)' : 'gray.100'}
                 _hover={{ opacity: 0.5 }}
                 onClick={(e) => showContentHandle(e)}>
                 <BsChatTextFill size={30} />
@@ -86,7 +86,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
             <Box>
               <Button borderRadius={'50%'} px={3} py={6}
                 id={'teams-btn'}
-                bg={activeBtn === 'teams-btn' ? 'green.300' : 'gray.100'}
+                bg={activeBtn === 'teams-btn' ? 'rgb(72,161,159)' : 'gray.100'}
                 _hover={{ opacity: 0.5 }}
                 onClick={(e) => showContentHandle(e)}>
                 <RiTeamFill size={30} />
