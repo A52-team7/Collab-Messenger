@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppContext from '../../context/AppContext';
 // import NavItem from '../NavItem/NavItem';
 import {
@@ -23,12 +23,6 @@ import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constant
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
 
-// const LinkItems = [
-//   { name: 'Home', icon: FiHome, path: '/' },
-//   { name: 'Team', icon: FiHome, path: '/new-team' },
-//   { name: 'Create new chat', icon: FiHome, path: '/create-new-chat' },
-// ];
-
 interface SidebarContentProps {
   onClose: () => void
   display?: object
@@ -46,8 +40,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       navigate('/');
     } else {
       setShow(targetId === 'messages-btn' ? SIDEBAR_SHOW_MESSAGES : SIDEBAR_SHOW_TEAMS);
+      setActiveBtn(targetId);
     }
-    setActiveBtn(targetId);
   }
 
   return (
