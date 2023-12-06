@@ -6,7 +6,6 @@ import {
   Heading,
   Textarea,
   Box,
-  Text,
   Input,
   Alert,
   AlertIcon,
@@ -70,6 +69,9 @@ const Chat = (): JSX.Element => {
 
   const [visibleColor, setVisibleColor] = useState(false);
 
+  const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
+  const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
+
   useEffect(() => {
     setChannelId(params.id);
   }, [params.id, params, isLeft]);
@@ -88,19 +90,6 @@ const Chat = (): JSX.Element => {
         .catch(e => console.error(e));
       }
     })
-    // getIfChannelIsLeft(userData.handle, channelId)
-    // .then((result) => {
-    //   setIsLeft(result);
-    //   setIfIsLeftIsSet(true);
-    //   if(result){
-    //     getDateOfLeftChannel(userData.handle, channelId)
-    //     .then((res) => {
-    //       setDateOfLeaving(res);
-    //     })
-    //     .catch(e => console.error(e));
-    //   }
-    // })
-    // .catch(e => console.error(e));
   }, [channelId, userData, isLeft]);
   
 
@@ -123,10 +112,15 @@ const Chat = (): JSX.Element => {
         setMembers(Object.keys(result.members));       
 
         if(Object.keys(result).includes('isBetweenTwo')){
+          setChatBetweenTwo(true);
+          setIfChatBetweenTwoIsSet(true);
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
                   
           setTitle(usersInChat[titleToShow]); 
+        }else{
+          setChatBetweenTwo(false);
+          setIfChatBetweenTwoIsSet(true);
         }   
       }).catch(e => console.error(e));
   }, [channelId]);
@@ -319,7 +313,9 @@ const Chat = (): JSX.Element => {
           {!editTitle ? (
           <Flex flex={1}>
             <Heading color={'white'}>{title}</Heading>
-            <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            {!chatBetweenTwo &&
+              <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            }
           </Flex>
           ) : (
             <Flex flex={1}>
@@ -329,9 +325,13 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team}/> }
-          {members.length > 0 &&
-            <UsersDrawer {...UserDrawerProps} />
-          }
+          {ifChatBetweenTwoIsSet && (
+            <>
+              {members.length > 0 && !chatBetweenTwo &&
+                <UsersDrawer {...UserDrawerProps} />
+              }
+            </>
+          )}
           <Button colorScheme='teal'>
             <MdMoreHoriz size={30} />
           </Button>
