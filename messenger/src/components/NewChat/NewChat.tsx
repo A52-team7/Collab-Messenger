@@ -200,7 +200,7 @@ const NewChat = (): JSX.Element => {
         </Stack>)}
         <Stack alignItems={'center'}>
           <Button
-            bg={'green.400'}
+            bg={'teal.500'}
             maxW={'100px'}
             variant={'primaryButton'} w='full'
             _hover={{ opacity: 0.8 }}

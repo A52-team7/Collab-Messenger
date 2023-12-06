@@ -64,14 +64,17 @@ const Login = () => {
     <Flex
       maxH={'fit-content'}
       justify={'center'}
-      bg={'lightBlue'}>
-      <Stack spacing={8} mx={'auto'} minW={'28vw'} maxW={'lg'} backgroundColor={'gray.300'} rounded={'lg'}>
+      bg={'none'}>
+      <Stack spacing={8} 
+      mx={'auto'} 
+      minW={'28vw'} 
+      maxW={'lg'} 
+      backgroundColor={'grey'} rounded={'lg'}>
         <Box justifyContent={'center'} textAlign={'center'} mt={5} p={0}>
           <Heading m={0} p={0} fontSize={'4xl'}>Login</Heading>
         </Box>
         <Box
           rounded={'lg'}
-          bg={'grey'}
           boxShadow={'lg'}
           p={10}>
           <Stack spacing={4}>
@@ -80,10 +83,10 @@ const Login = () => {
                 <FormLabel mb={1} mr={0} fontSize={'lg'}>Email</FormLabel>
               </Center>
               <Input
-                borderColor={'black'}
-                focusBorderColor={'focusBorder'}
+                borderColor={'grey'}
+                bg={'white'} 
+                rounded="md"
                 type='text'
-                rounded={'lg'}
                 placeholder={formErrors.fieldErr && !form.email ? MSG_FIELD_REQUIRED : ''}
                 textAlign={'center'}
                 onChange={updateForm('email')} />
@@ -93,10 +96,10 @@ const Login = () => {
                 <FormLabel mb={1} mr={0} fontSize={'lg'}>Password</FormLabel>
               </Center>
               <Input
-                borderColor={'black'}
-                focusBorderColor={'focusBorder'}
+                borderColor={'grey'}
                 type={'password'}
-                rounded={'lg'}
+                bg={'white'} 
+                rounded="md"
                 placeholder={formErrors.fieldErr && !form.password ? MSG_FIELD_REQUIRED : ''}
                 textAlign={'center'}
                 onChange={updateForm('password')} />
@@ -126,7 +129,7 @@ const Login = () => {
               </Stack>
               <Button
                 onClick={onLogin}
-                bg={'lightBlue'}
+                bg={'teal.500'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',

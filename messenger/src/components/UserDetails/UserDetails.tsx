@@ -227,13 +227,17 @@ const UserDetails = (): JSX.Element => {
       mt={{ base: 2, sm: 5 }}
       bg={'none'}>
       <Stack
-        spacing={4}
+        spacing={5}
         maxW={'fit-content'}
         bg={'grey'}
-        rounded={'xl'}
+        rounded={'lg'}
         boxShadow={'lg'}
-        p={{ base: 1, sm: 6 }}>
-        <Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+        p={{ base: 1, sm: 6 }}
+        >
+        <Heading textAlign={'center'} 
+        lineHeight={1.1} 
+        fontSize={{ base: '2xl', sm: '3xl' }}
+        mb={4}>
           User Details
         </Heading>
         <Flex justifyContent={'space-between'}>
@@ -253,12 +257,12 @@ const UserDetails = (): JSX.Element => {
                   right={-15}
                   transform={'translateX(-50%)'}
                   p={0}
-                  bg={'green.100'}
+                  bg={'teal.100'}
                   opacity={0.9}
-                  _hover={{ bg: 'green.100' }}
+                  _hover={{ bg: 'teal.100' }}
                   border={'1px solid'}
-                  borderColor={'green.200'}
-                  color={'green.500'}
+                  borderColor={'teal'}
+                  color={'teal'}
                 >
                   <FaCamera size={30} />
                 </Button>
@@ -351,15 +355,15 @@ const UserDetails = (): JSX.Element => {
           <Button
             w='full'
             border={'2px solid'}
-            borderColor={'green.400'}
+            borderColor={'teal.500'}
             bg={'none'}
-            color={'green.400'}
+            color={'teal.500'}
             _hover={{ opacity: 0.8 }}
             onClick={onNavigate}>
             Cancel
           </Button>
           <Button
-            bg={hasFormChanged ? 'green.400' : 'gray'}
+            bg={hasFormChanged ? 'teal.500' : 'gray'}
             isLoading={formSubmissionLoading}
             variant={'primaryButton'} w='full'
             _hover={{ opacity: 0.8 }}

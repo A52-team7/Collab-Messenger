@@ -182,7 +182,7 @@ const CreateTeam = () => {
           <Button
             w='full'
             border={'2px solid'}
-            borderColor={'green.400'}
+            borderColor={'teal.500'}
             bg={'none'}
             color={'green.400'}
             _hover={{ opacity: 0.8 }}
@@ -190,7 +190,7 @@ const CreateTeam = () => {
             Cancel
           </Button>
           <Button
-            bg={'green.400'}
+            bg={'teal.500'}
             variant={'primaryButton'} w='full'
             _hover={{ opacity: 0.8 }}
             onClick={saveNewTeam}>

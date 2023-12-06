@@ -120,8 +120,8 @@ const Register = () => {
     <Flex
       maxH={'fit-content'}
       justify={'center'}
-      bg={'lightBlue'}>
-      <Stack spacing={8} mx={'auto'} maxW={'lg'} backgroundColor={'gray.300'} rounded={'lg'}>
+      bg={'none'}>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} backgroundColor={'grey'} rounded={'lg'}>
         <Box align={'center'} mt={5}>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Register
@@ -144,13 +144,12 @@ const Register = () => {
                   </Center>
                   <Input type='text'
                     placeholder={formErrors.fieldErr && !form.firstName ? `${MSG_FIELD_REQUIRED}` : ''}
-                    boxShadow={'lg'}
-                    border={'1px solid black'}
-                    textAlign={'center'}
-                    rounded={'lg'}
+                    textAlign={'center'} 
+                    bg={'white'} 
+                    rounded="md" 
                     value={form.firstName}
                     onChange={updateForm('firstName')}
-                    focusBorderColor={'focusBorder'}
+                    
                   />
                   {
                     formErrors.firstNameLengthErr &&
@@ -171,11 +170,9 @@ const Register = () => {
                   <Input
                     type='text'
                     placeholder={formErrors.fieldErr && !form.lastName ? `${MSG_FIELD_REQUIRED}` : ''}
-                    boxShadow={'lg'}
-                    focusBorderColor={'focusBorder'}
-                    border={'1px solid black'}
-                    textAlign={'center'}
-                    rounded={'lg'}
+                    textAlign={'center'} 
+                    bg={'white'} 
+                    rounded="md"
                     value={form.lastName}
                     onChange={updateForm('lastName')} />
                   {
@@ -201,9 +198,12 @@ const Register = () => {
                   max={32}
                   min={0}
                   borderColor={'gray.500'}
-                  focusBorderColor={'focusBorder'}>
+                  >
                   <NumberInputField
                     placeholder={'Phone number'}
+                    textAlign={'center'} 
+                    bg={'white'} 
+                    rounded="md"
                     value={form.phoneNumber}
                     onChange={updateForm('phoneNumber')} />
                 </NumberInput>
@@ -217,11 +217,9 @@ const Register = () => {
                 </Center>
                 <Input type='email'
                   placeholder={formErrors.fieldErr && !form.email ? `${MSG_FIELD_REQUIRED}` : 'example@email.com'}
-                  boxShadow={'lg'}
-                  focusBorderColor={'focusBorder'}
-                  border={'1px solid black'}
-                  textAlign={'center'}
-                  rounded={'lg'}
+                  textAlign={'center'} 
+                  bg={'white'} 
+                  rounded="md"
                   value={form.email}
                   onChange={updateForm('email')} />
                 <Center>
@@ -238,11 +236,9 @@ const Register = () => {
                 </Center>
                 <Input type='text'
                   placeholder={formErrors.fieldErr && !form.handle ? `${MSG_FIELD_REQUIRED}` : ''}
-                  boxShadow={'lg'}
-                  focusBorderColor={'focusBorder'}
-                  border={'1px solid black'}
-                  textAlign={'center'}
-                  rounded={'lg'}
+                  textAlign={'center'} 
+                    bg={'white'} 
+                    rounded="md"
                   value={form.handle}
                   onChange={updateForm('handle')} />
                 <Center>
@@ -260,10 +256,9 @@ const Register = () => {
                   <Input type={'password'}
                     placeholder={formErrors.fieldErr && !form.password ? `${MSG_FIELD_REQUIRED}` : ''}
                     boxShadow={'lg'}
-                    focusBorderColor={'focusBorder'}
-                    border={'1px solid black'}
-                    textAlign={'center'}
-                    rounded={'lg'}
+                    textAlign={'center'} 
+                    bg={'white'} 
+                    rounded="md"
                     value={form.password}
                     onChange={updateForm('password')} />
                 </InputGroup>
@@ -273,10 +268,10 @@ const Register = () => {
             <Stack spacing={10} pt={2}>
               <Button
                 onClick={() => onRegister()}
-                bg={'lightBlue'}
+                bg={'teal.500'}
                 color={'white'}
                 _hover={{
-                  bg: 'blue.500',
+                  bg: 'tael.500',
                 }}>
                 Register
               </Button>
