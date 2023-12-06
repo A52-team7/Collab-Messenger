@@ -23,18 +23,18 @@ interface MessagesListProps {
 
 const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: MessagesListProps): JSX.Element => {
   const { userData } = useContext(AppContext);
-  const bottomRef = useRef<Element | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
-    <>
       <UnorderedList styleType='none'>
         {messages.map((message: Message) => (
           <Box
             display={'flex'}
+            ref={bottomRef}
             flexWrap={'wrap'}
             key={message.id}
             mr={message.author === userData?.handle ? 35 : 0}
@@ -43,8 +43,7 @@ const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: Messag
           </Box>
         ))}
       </UnorderedList>
-      <Stack ref={bottomRef} />
-    </>
+      // <Stack ref={bottomRef} />    
   );
 }
 

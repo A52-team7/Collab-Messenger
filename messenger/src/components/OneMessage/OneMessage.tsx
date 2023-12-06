@@ -218,9 +218,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 {/* {visibleOptions &&  */}
                 {message.author === userData.handle &&
                   <Flex position={'absolute'}
-                    top={'50%'}
+                    top={'60%'}
                     left={'-111px'}
-                    transform={'translateY(-50%)'}>
+                  // transform={'translateY(-50%)'}
+                  >
                     <ReactionPopover onAddReaction={onAddReaction} />
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
@@ -230,9 +231,9 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 {/* {visibleOptions &&  */}
                 {message.author !== userData.handle &&
                   <Flex position={'absolute'}
-                    top={'48%'}
-                    right={'-48px'}
-                    transform={'translateY(-50%)'}
+                    top={'60%'}
+                    right={'-55px'}
+                    // transform={'translateY(-50%)'}
                     bg={'none'}
                   >
                     <ReactionPopover onAddReaction={onAddReaction} />
