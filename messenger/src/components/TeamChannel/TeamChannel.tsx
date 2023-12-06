@@ -47,7 +47,8 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
       <Text
         m={1}
         color={'white'}
-        // bg={userHasSeen ? 'green' : 'red'}
+        bg={userHasSeen ? 'green' : 'red'}
+        fontWeight={userHasSeen ? '' : 'bold'}
         onClick={() => handleOpenChannel(channelId)}>
         {channelTitle} ({userHasSeen ? 'seen' : 'not seen'})
       </Text>
