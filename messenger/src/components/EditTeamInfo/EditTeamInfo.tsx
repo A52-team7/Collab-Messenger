@@ -199,10 +199,10 @@ const EditTeamInfo = () => {
                   p={0}
                   bg={'green.100'}
                   opacity={0.9}
-                  _hover={{ bg: 'green.100' }}
+                  _hover={{ bg: 'teal.100' }}
                   border={'1px solid'}
-                  borderColor={'green.200'}
-                  color={'green.500'}
+                  borderColor={'teal.200'}
+                  color={'teal.500'}
                   onClick={onOpenFileManager}
                 >
                    <FaCamera size={30} />
@@ -272,15 +272,15 @@ const EditTeamInfo = () => {
               <Button
                  w='full'
                  border={'2px solid'}
-                 borderColor={'green.400'}
+                 borderColor={'teal.500'}
                  bg={'none'}
-                 color={'green.400'}
+                 color={'teal.500'}
                  _hover={{ opacity: 0.8 }}
                 onClick={() => navigate(-1)}>
                 Cancel
               </Button>
               <Button
-                bg={'green.400'}
+                bg={'teal.500'}
                 variant={'primaryButton'} 
                 w='full'
                 _hover={{ opacity: 0.8 }}

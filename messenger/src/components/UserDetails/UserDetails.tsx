@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   Button, Flex, FormControl, FormLabel, Heading,
   Input, Stack, Avatar, Center, Box, AlertTitle,
-  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton
+  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton,
+  Tooltip
 } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
 import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
@@ -17,8 +18,9 @@ import {
   PHONE_NUMBER_LENGTH_MAX,
   MSG_PASSWORD_NOT_MATCH,
   MSG_PASSWORD_LENGTH,
-  MSG_INVALID_IMAGE_FORMAT
+  MSG_INVALID_IMAGE_FORMAT,
 } from '../../common/constants';
+import { MdCancelPresentation } from "react-icons/md";
 import { FaCamera } from "react-icons/fa";
 
 interface formErrorsInitialStateInterface {
@@ -53,6 +55,7 @@ const UserDetails = (): JSX.Element => {
     confirmPassword: '',
   });
   const [formErrors, setFormErrors] = useState({ ...formErrorsInitialState });
+  const [profilePicture, setProfilePicture] = useState<string | ArrayBuffer>('');
   const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | null>(null);
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [submitChange, setSubmitChange] = useState(false);
@@ -67,7 +70,7 @@ const UserDetails = (): JSX.Element => {
     isOpen: isVisible,
     onClose,
     onOpen,
-  } = useDisclosure({ defaultIsOpen: false })
+  } = useDisclosure({ defaultIsOpen: false });
 
   const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>): void => {
     setHasFormChanged(true);
@@ -108,9 +111,12 @@ const UserDetails = (): JSX.Element => {
   };
 
   const onLocallyUploadImage = (): void => {
+    console.log('here!');
+
     if (fileInput.current && fileInput.current.files) {
       let errors = { ...formErrors };
       const file: File = fileInput.current.files[0];
+      if (!file) return;
 
       if (file.type.startsWith('image/')) {
         errors = { ...errors, invalidImageFormat: false, error: false }
@@ -122,6 +128,17 @@ const UserDetails = (): JSX.Element => {
       if (errors.error) return;
 
       setProfilePhotoSrc(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setProfilePicture(reader.result);
+        }
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
       setHasFormChanged(true);
     }
   };
@@ -205,15 +222,34 @@ const UserDetails = (): JSX.Element => {
     }
   };
 
+  const removeFilePhoto = () => {
+    if (fileInput.current) {
+      fileInput.current.value = '';
+    }
+    setProfilePhotoSrc(null);
+    setHasFormChanged(false);
+  }
+
+  useEffect(() => {
+    if (userData?.profilePhoto) {
+      setProfilePicture(userData?.profilePhoto);
+    }
+    console.log(profilePhotoSrc);
+
+  }, [profilePhotoSrc, setProfilePhotoSrc]);
+
   useEffect(() => {
     if (!userData) return;
     getUserData(userData.uid)
       .then(snapshot => {
+        const data = snapshot.val()[Object.keys(snapshot.val())[0]];
         setContext((prevState) => ({
           ...prevState,
-          userData: snapshot.val()[Object.keys(snapshot.val())[0]]
+          userData: data
         }));
+        return data;
       })
+      .then((data) => setProfilePicture(data.profilePhoto))
       .then(() => setFormSubmissionLoading(false))
       .catch((error) => {
         console.error(error.message);
@@ -227,13 +263,17 @@ const UserDetails = (): JSX.Element => {
       mt={{ base: 2, sm: 5 }}
       bg={'none'}>
       <Stack
-        spacing={4}
+        spacing={5}
         maxW={'fit-content'}
         bg={'grey'}
-        rounded={'xl'}
+        rounded={'lg'}
         boxShadow={'lg'}
-        p={{ base: 1, sm: 6 }}>
-        <Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
+        p={{ base: 1, sm: 6 }}
+        >
+        <Heading textAlign={'center'} 
+        lineHeight={1.1} 
+        fontSize={{ base: '2xl', sm: '3xl' }}
+        mb={4}>
           User Details
         </Heading>
         <Flex justifyContent={'space-between'}>
@@ -245,7 +285,7 @@ const UserDetails = (): JSX.Element => {
                 <Avatar
                   borderRadius='full'
                   boxSize='150px'
-                  src={userData?.profilePhoto}
+                  src={profilePicture}
                 />
                 <Button
                   position={'absolute'}
@@ -253,12 +293,12 @@ const UserDetails = (): JSX.Element => {
                   right={-15}
                   transform={'translateX(-50%)'}
                   p={0}
-                  bg={'green.100'}
+                  bg={'teal.100'}
                   opacity={0.9}
-                  _hover={{ bg: 'green.100' }}
+                  _hover={{ bg: 'teal.100' }}
                   border={'1px solid'}
-                  borderColor={'green.200'}
-                  color={'green.500'}
+                  borderColor={'teal'}
+                  color={'teal'}
                 >
                   <FaCamera size={30} />
                 </Button>
@@ -276,6 +316,22 @@ const UserDetails = (): JSX.Element => {
               <Box textAlign={'center'}>
                 <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>
               </Box>
+            }
+            {profilePhotoSrc &&
+              <Flex ml={2} mt={-5} textAlign={'center'} justifyContent={'center'} alignItems={'center'}>
+                <Text fontWeight={'bold'} fontSize={'sm'} color={'black'} isTruncated>{profilePhotoSrc.name}</Text>
+                <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
+                  <Button
+                    bg={'none'}
+                    size={'sm'}
+                    color={'green.400'}
+                    p={0}
+                    _hover={{ opacity: 0.7 }}
+                    onClick={removeFilePhoto}>
+                    <MdCancelPresentation size={23} />
+                  </Button>
+                </Tooltip>
+              </Flex>
             }
           </Stack>
           <Stack className='form' right={0} top={'-29%'}>
@@ -351,15 +407,15 @@ const UserDetails = (): JSX.Element => {
           <Button
             w='full'
             border={'2px solid'}
-            borderColor={'green.400'}
+            borderColor={'teal.500'}
             bg={'none'}
-            color={'green.400'}
+            color={'teal.500'}
             _hover={{ opacity: 0.8 }}
             onClick={onNavigate}>
             Cancel
           </Button>
           <Button
-            bg={hasFormChanged ? 'green.400' : 'gray'}
+            bg={hasFormChanged ? 'teal.500' : 'gray'}
             isLoading={formSubmissionLoading}
             variant={'primaryButton'} w='full'
             _hover={{ opacity: 0.8 }}

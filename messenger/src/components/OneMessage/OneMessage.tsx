@@ -155,10 +155,10 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     <>
       {message.techMessage ? (
         <Flex position={'relative'} w={'100%'} justifyContent={'center'} alignItems={'center'}>
-          {message.typeOfMessage === ADD_PERSON && <IoPersonAddSharp />}
-          {message.typeOfMessage === REMOVE_PERSON && <IoPersonRemoveOutline />}
-          {message.typeOfMessage === CHANGE_TITLE && <GrEdit />}
-          <Text ml={2}>{message.content}</Text>
+          {message.typeOfMessage === ADD_PERSON && <IoPersonAddSharp color={'white'} />}
+          {message.typeOfMessage === REMOVE_PERSON && <IoPersonRemoveOutline color={'white'} />}
+          {message.typeOfMessage === CHANGE_TITLE && <GrEdit color={'white'} />}
+          <Text ml={2} color={'white'}>{message.content}</Text>
         </Flex>
       ) : (
         <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={5}

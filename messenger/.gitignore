@@ -2,6 +2,7 @@
 /package-lock.json
 /docs/
 /src/config/
+/src/components/SearchMassage/
 # Logs
 logs
 *.log

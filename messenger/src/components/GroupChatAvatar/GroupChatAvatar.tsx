@@ -1,5 +1,7 @@
 import { Box, Text, Avatar, AvatarGroup, Flex, Tooltip } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
+import { FaExclamationCircle } from "react-icons/fa";
+
 
 export interface AvatarChatsInterface {
   channel: Channel;
@@ -30,15 +32,23 @@ const GroupChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsIn
         alignItems={'center'}
         justifyContent={'space-between'}
       >
-        <Box ml={1}
+        <Flex position={'relative'} w={'100%'} justifyContent={'space-between'} alignItems={'center'} ml={1}
           textAlign={'center'}>
           <Text
             color={'white'}
-            fontSize={seenState === true || seenState === null ? '' : 'bold'}
+            bg={seenState === true || seenState === null ? 'green' : 'red'}
+            fontWeight={seenState === true || seenState === null ? '' : 'bold'}
           >
             {title}
           </Text>
-        </Box>
+          {seenState === false && <Box
+            position={'absolute'}
+            top={'-6px'}
+            right={'-7px'}
+          >
+            <FaExclamationCircle size={20} color={'yellow'} />
+          </Box>}
+        </Flex>
       </Flex>
     </Flex>
   )

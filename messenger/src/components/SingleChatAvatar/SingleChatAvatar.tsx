@@ -1,9 +1,11 @@
 import { Box, Text, Avatar, Flex } from "@chakra-ui/react";
 import { AvatarChatsInterface } from "../GroupChatAvatar/GroupChatAvatar";
+import { FaExclamationCircle } from "react-icons/fa";
 
 const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsInterface) => {
   return (
     <Flex
+      position={'relative'}
       w={'100%'}
       p={'1px'}
       alignItems={'center'}
@@ -21,10 +23,18 @@ const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsI
         <Box ml={7}>
           <Text
             color={'white'}
-            fontSize={seenState === true || seenState === null ? '' : 'bold'}
+            bg={seenState === true || seenState === null ? 'green' : 'red'}
+            fontWeight={seenState === true || seenState === null ? '' : 'bold'}
           >
             {title}
           </Text>
+          {seenState === false && <Box
+            position={'absolute'}
+            top={'-6px'}
+            right={'-7px'}
+          >
+            <FaExclamationCircle size={20} color={'yellow'} />
+          </Box>}
         </Box>
       </Flex>
     </Flex>

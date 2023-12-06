@@ -39,7 +39,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
-
+//import SearchMassage from '../SearchMassage/SearchMassage'
 
 const Chat = (): JSX.Element => {
 
@@ -335,6 +335,7 @@ const Chat = (): JSX.Element => {
           <Button colorScheme='teal'>
             <MdMoreHoriz size={30} />
           </Button>
+          {/* <SearchMassage messages={messages}/> */}
         </Flex>
       }
       <Stack

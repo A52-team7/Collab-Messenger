@@ -12,7 +12,7 @@ const NavLink = ({ name, path }: NavLinkProps) => {
   return (
     <Box
       h={'100%'}
-      bg={'#0059cb'}
+      bg={'teal.500'}
       color={'grey'}
       as='a'
       px={3}
@@ -22,7 +22,7 @@ const NavLink = ({ name, path }: NavLinkProps) => {
       _hover={{
         cursor: '',
         textDecoration: 'none',
-        bg: 'lightBlue',
+        bg: 'teal',
       }}
       onClick={() => navigate(path)}>
       {name}
