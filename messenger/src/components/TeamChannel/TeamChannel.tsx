@@ -41,13 +41,14 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
       border={'1px solid'}
       borderColor={'white'}
       borderRadius={'5px'}
-      textAlign={'center'}
       fontWeight={'bold'}
       bg={activeBtn === channelId ? 'teal.600' : 'none'}
       _hover={{ cursor: 'pointer', bg: 'teal.600' }}
     >
       <Text
-        m={1}
+        p={1}
+        textAlign={'center'}
+        m={'auto'}
         color={'white'}
         bg={userHasSeen ? 'green' : 'red'}
         fontWeight={userHasSeen ? '' : 'bold'}
