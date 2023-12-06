@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   Button, Flex, FormControl, FormLabel, Heading,
   Input, Stack, Avatar, Center, Box, AlertTitle,
-  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton
+  FormErrorMessage, Text, useDisclosure, Alert, AlertIcon, CloseButton,
+  Tooltip
 } from '@chakra-ui/react';
 import AppContext from '../../context/AppContext';
 import { getDatabase, ref as dbRef, Database, DatabaseReference, update } from "firebase/database";
@@ -19,6 +20,7 @@ import {
   MSG_PASSWORD_LENGTH,
   MSG_INVALID_IMAGE_FORMAT,
 } from '../../common/constants';
+import { MdCancelPresentation } from "react-icons/md";
 import { FaCamera } from "react-icons/fa";
 
 interface formErrorsInitialStateInterface {
@@ -108,17 +110,13 @@ const UserDetails = (): JSX.Element => {
     }
   };
 
-  const removeFilePhoto = () => {
-    setProfilePhotoSrc(null);
-    if (userData?.profilePhoto) {
-      setProfilePicture(userData?.profilePhoto)
-    }
-  }
-
   const onLocallyUploadImage = (): void => {
+    console.log('here!');
+
     if (fileInput.current && fileInput.current.files) {
       let errors = { ...formErrors };
       const file: File = fileInput.current.files[0];
+      if (!file) return;
 
       if (file.type.startsWith('image/')) {
         errors = { ...errors, invalidImageFormat: false, error: false }
@@ -128,6 +126,8 @@ const UserDetails = (): JSX.Element => {
       }
       setFormErrors({ ...errors });
       if (errors.error) return;
+
+      setProfilePhotoSrc(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -139,8 +139,6 @@ const UserDetails = (): JSX.Element => {
       if (file) {
         reader.readAsDataURL(file);
       }
-
-      setProfilePhotoSrc(file);
       setHasFormChanged(true);
     }
   };
@@ -224,6 +222,22 @@ const UserDetails = (): JSX.Element => {
     }
   };
 
+  const removeFilePhoto = () => {
+    if (fileInput.current) {
+      fileInput.current.value = '';
+    }
+    setProfilePhotoSrc(null);
+    setHasFormChanged(false);
+  }
+
+  useEffect(() => {
+    if (userData?.profilePhoto) {
+      setProfilePicture(userData?.profilePhoto);
+    }
+    console.log(profilePhotoSrc);
+
+  }, [profilePhotoSrc, setProfilePhotoSrc]);
+
   useEffect(() => {
     if (!userData) return;
     getUserData(userData.uid)
@@ -300,20 +314,20 @@ const UserDetails = (): JSX.Element => {
               </Box>
             }
             {profilePhotoSrc &&
-              <Box mt={-5} textAlign={'center'}>
-                <Text fontWeight={'bold'} fontSize={'sm'} color={'green.500'} isTruncated>{profilePhotoSrc.name}</Text>
-                <Button
-                  size={'sm'}
-                  mt={1}
-                  color={'green.400'}
-                  border={'2px solid'}
-                  borderColor={'green.400'}
-                  fontSize={'sm'}
-                  px={1}
-                  onClick={removeFilePhoto}>
-                  Remove file
-                </Button>
-              </Box>
+              <Flex ml={2} mt={-5} textAlign={'center'} justifyContent={'center'} alignItems={'center'}>
+                <Text fontWeight={'bold'} fontSize={'sm'} color={'black'} isTruncated>{profilePhotoSrc.name}</Text>
+                <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
+                  <Button
+                    bg={'none'}
+                    size={'sm'}
+                    color={'green.400'}
+                    p={0}
+                    _hover={{ opacity: 0.7 }}
+                    onClick={removeFilePhoto}>
+                    <MdCancelPresentation size={23} />
+                  </Button>
+                </Tooltip>
+              </Flex>
             }
           </Stack>
           <Stack className='form' right={0} top={'-29%'}>
