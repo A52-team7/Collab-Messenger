@@ -24,6 +24,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { FiPlusSquare } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 import TeamChannels from '../TeamChannels/TeamChannels'
+import TeamTitle from '../TeamTitle/TeamTitle';
 
 interface UserTeamsProps {
   onClose: () => void;
@@ -49,7 +50,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
         .catch(e => console.log(e))
     })
 
-  }, [userData, myTeam])
+  }, [userData])
 
   return (
     <Flex
@@ -69,12 +70,13 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
                   alignItems="center"
                   justifyContent="space-between"
                   p={2}>
-                  <Wrap>
+                    <TeamTitle id={team.id} teamName={team.name} />
+                  {/* <Wrap>
                     <WrapItem>
                       <Avatar size='sm' name={team.name} src={team.teamPhoto} />{' '}
                     </WrapItem>
-                  </Wrap>
-                  <Text color={'white'} fontSize="md">{team.name}</Text>
+                  </Wrap> 
+                  <Text color={'white'} fontSize="md">{team.name}</Text> */}
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>
                 <Tooltip hasArrow label='More options' bg='gray.300' color='black'>
