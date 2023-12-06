@@ -49,7 +49,7 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
   }, []);
 
   return (
-    <Box w={'80%'} onClick={onOpenChat}>
+    <Box w={'80%'} mt={2} onClick={onOpenChat}>
       {Object.keys(channel.members).length > 2 ?
         <GroupChatAvatar channel={channel} seenState={seenState} title={title} activeBtn={activeBtn} />
         :

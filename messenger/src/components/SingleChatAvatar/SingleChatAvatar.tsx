@@ -5,6 +5,7 @@ import { FaExclamationCircle } from "react-icons/fa";
 const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsInterface) => {
   return (
     <Flex
+      position={'relative'}
       w={'100%'}
       p={'1px'}
       alignItems={'center'}
