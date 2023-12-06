@@ -1,10 +1,11 @@
 import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import AppContext from '../../context/AppContext';
-import { Box, Text } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { setChannelToSeen, getChannelSeenLive } from '../../services/channels.service';
 import { UserState } from '../../context/AppContext';
 import { Team } from '../CreateTeam/CreateTeam';
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface TeamChannelProps {
   channelId: string;
@@ -33,7 +34,8 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
   }, []);
 
   return (
-    <Box
+    <Flex
+      position={'relative'}
       w={'100%'}
       mt={2}
       border={'1px solid'}
@@ -52,7 +54,16 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
         onClick={() => handleOpenChannel(channelId)}>
         {channelTitle} ({userHasSeen ? 'seen' : 'not seen'})
       </Text>
-    </Box>
+      {
+        !userHasSeen && <Box
+          position={'absolute'}
+          top={'-3px'}
+          right={'-7px'}
+        >
+          <FaExclamationCircle size={20} color={'yellow'} />
+        </Box>
+      }
+    </Flex>
   )
 }
 
