@@ -17,7 +17,7 @@ import {
   PHONE_NUMBER_LENGTH_MAX,
   MSG_PASSWORD_NOT_MATCH,
   MSG_PASSWORD_LENGTH,
-  MSG_INVALID_IMAGE_FORMAT
+  MSG_INVALID_IMAGE_FORMAT,
 } from '../../common/constants';
 import { FaCamera } from "react-icons/fa";
 
@@ -53,6 +53,7 @@ const UserDetails = (): JSX.Element => {
     confirmPassword: '',
   });
   const [formErrors, setFormErrors] = useState({ ...formErrorsInitialState });
+  const [profilePicture, setProfilePicture] = useState<string | ArrayBuffer>('');
   const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | null>(null);
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [submitChange, setSubmitChange] = useState(false);
@@ -67,7 +68,7 @@ const UserDetails = (): JSX.Element => {
     isOpen: isVisible,
     onClose,
     onOpen,
-  } = useDisclosure({ defaultIsOpen: false })
+  } = useDisclosure({ defaultIsOpen: false });
 
   const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>): void => {
     setHasFormChanged(true);
@@ -107,6 +108,13 @@ const UserDetails = (): JSX.Element => {
     }
   };
 
+  const removeFilePhoto = () => {
+    setProfilePhotoSrc(null);
+    if (userData?.profilePhoto) {
+      setProfilePicture(userData?.profilePhoto)
+    }
+  }
+
   const onLocallyUploadImage = (): void => {
     if (fileInput.current && fileInput.current.files) {
       let errors = { ...formErrors };
@@ -120,6 +128,17 @@ const UserDetails = (): JSX.Element => {
       }
       setFormErrors({ ...errors });
       if (errors.error) return;
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setProfilePicture(reader.result);
+        }
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
 
       setProfilePhotoSrc(file);
       setHasFormChanged(true);
@@ -209,11 +228,14 @@ const UserDetails = (): JSX.Element => {
     if (!userData) return;
     getUserData(userData.uid)
       .then(snapshot => {
+        const data = snapshot.val()[Object.keys(snapshot.val())[0]];
         setContext((prevState) => ({
           ...prevState,
-          userData: snapshot.val()[Object.keys(snapshot.val())[0]]
+          userData: data
         }));
+        return data;
       })
+      .then((data) => setProfilePicture(data.profilePhoto))
       .then(() => setFormSubmissionLoading(false))
       .catch((error) => {
         console.error(error.message);
@@ -245,7 +267,7 @@ const UserDetails = (): JSX.Element => {
                 <Avatar
                   borderRadius='full'
                   boxSize='150px'
-                  src={userData?.profilePhoto}
+                  src={profilePicture}
                 />
                 <Button
                   position={'absolute'}
@@ -275,6 +297,22 @@ const UserDetails = (): JSX.Element => {
             {formErrors.invalidImageFormat &&
               <Box textAlign={'center'}>
                 <Text fontSize={'sm'} color={'red'} >{MSG_INVALID_IMAGE_FORMAT}</Text>
+              </Box>
+            }
+            {profilePhotoSrc &&
+              <Box mt={-5} textAlign={'center'}>
+                <Text fontWeight={'bold'} fontSize={'sm'} color={'green.500'} isTruncated>{profilePhotoSrc.name}</Text>
+                <Button
+                  size={'sm'}
+                  mt={1}
+                  color={'green.400'}
+                  border={'2px solid'}
+                  borderColor={'green.400'}
+                  fontSize={'sm'}
+                  px={1}
+                  onClick={removeFilePhoto}>
+                  Remove file
+                </Button>
               </Box>
             }
           </Stack>
