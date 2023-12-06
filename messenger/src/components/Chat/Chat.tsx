@@ -8,6 +8,8 @@ import {
   Box,
   Text,
   Input,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
@@ -19,7 +21,8 @@ import {
   getChannelMessagesLive, getDateOfLeftChannel, getIfChannelIsLeft, removeLeftChannel,
   setChannelToSeen,
   setAllInChannelToUnseen,
-  addTitleToChannel
+  addTitleToChannel,
+  getLeftMembersLive
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
@@ -69,23 +72,15 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     setChannelId(params.id);
-  }, [params.id, params]);
-
-  // useEffect(() => {
-  //   if (!userData) return;
-  //   if(Object.keys(channel).includes('isBetweenTwo')){
-  //     const titleToShow = channel.title.split(',').findIndex((user) => user !== userData.handle);
-  //     setTitle(channel.title[titleToShow]);    
-  //   }
-  // }, []);
+  }, [params.id, params, isLeft]);
 
   useEffect(() => {
     if(userData === null || !channelId) return;
-    getIfChannelIsLeft(userData.handle, channelId)
-    .then((result) => {
-      setIsLeft(result);
-      setIfIsLeftIsSet(true);
-      if(result){
+    getLeftMembersLive(channelId, (data: string[]) => {
+      
+      if(Object.values(data).includes(userData.handle)){
+        setIsLeft(true);
+        setIfIsLeftIsSet(true);
         getDateOfLeftChannel(userData.handle, channelId)
         .then((res) => {
           setDateOfLeaving(res);
@@ -93,8 +88,20 @@ const Chat = (): JSX.Element => {
         .catch(e => console.error(e));
       }
     })
-    .catch(e => console.error(e));
-  }, [channelId, userData]);
+    // getIfChannelIsLeft(userData.handle, channelId)
+    // .then((result) => {
+    //   setIsLeft(result);
+    //   setIfIsLeftIsSet(true);
+    //   if(result){
+    //     getDateOfLeftChannel(userData.handle, channelId)
+    //     .then((res) => {
+    //       setDateOfLeaving(res);
+    //     })
+    //     .catch(e => console.error(e));
+    //   }
+    // })
+    // .catch(e => console.error(e));
+  }, [channelId, userData, isLeft]);
   
 
   const [emoji, setEmoji] = useState<string>('');
@@ -113,8 +120,8 @@ const Chat = (): JSX.Element => {
       .then(result => {
         setTitle(result.title);
         setNewTitle(result.title);
-        setMembers(Object.keys(result.members));
-        
+        setMembers(Object.keys(result.members));       
+
         if(Object.keys(result).includes('isBetweenTwo')){
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
@@ -159,7 +166,12 @@ const Chat = (): JSX.Element => {
     if (userData === null || !channelId) return;
 
     getChannelMembersLive(channelId, (data: string[]) => {
-      return setMembers([...data]);
+      setMembers([...data]);
+      if(userData === null) return;
+      if(data.includes(userData.handle)){
+        setIsLeft(false);
+        setIfIsLeftIsSet(true);
+      }
     })
   }, [channelId, userData]);
 
@@ -341,8 +353,11 @@ const Chat = (): JSX.Element => {
         }
       </Stack>
       {isLeft ? (
-        <Box>
-          <Text>{LEFT_CHAT_MESSAGE}</Text>
+        <Box mt={50}>
+          <Alert status='warning'>
+            <AlertIcon />
+            {LEFT_CHAT_MESSAGE}
+          </Alert>
         </Box>
       ): (
         <>
