@@ -21,6 +21,7 @@ const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsI
         <Box ml={7}>
           <Text
             color={'white'}
+            bg={seenState === true || seenState === null ? 'green' : 'red'}
             fontWeight={seenState === true || seenState === null ? '' : 'bold'}
           >
             {title}
