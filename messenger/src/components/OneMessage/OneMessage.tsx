@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Input, Text } from "@chakra-ui/react";
+import { AspectRatio, Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
@@ -193,13 +193,25 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 rounded={'md'}
                 shadow={'md'}
                 minW={'230px'}
-                maxW={'40vw'}
+                maxW={'660px'}
                 w={'fit-content'}
               >
                 <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
-                    {decoratedText}
-                  </a>
+                  <>
+                  {!decoratedHref.includes('youtube') ? (
+                    <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+                      {decoratedText}
+                    </a>
+            ) : (
+                    <AspectRatio w='640px' h={'360px'} ratio={1} ml={'-10px'} mr={'-10px'}>
+                    <iframe
+                      title={decoratedText}
+                      src={decoratedHref}
+                      allowFullScreen
+                      />
+                    </AspectRatio>
+                  )}
+                </>
                 )}>
                   {contentOfMessage}
                 </Linkify>
