@@ -26,7 +26,7 @@ import {
   addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
@@ -55,7 +55,6 @@ const Chat = (): JSX.Element => {
   const { userData } = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>('');
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 
@@ -73,6 +72,8 @@ const Chat = (): JSX.Element => {
 
   const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
   const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
+
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     setChannelId(params.id);
@@ -103,7 +104,9 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     if (emoji) {
-      setNewMessage(newMessage => newMessage + emoji.native);
+      if (!textAreaRef.current) return;
+      textAreaRef.current.value += emoji.native;
+      setEmoji('');
     }
   }, [emoji]);
 
@@ -132,6 +135,8 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     if (userData === null || !channelId) return;
+
+    setMembers([]); 
 
     const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
@@ -163,17 +168,7 @@ const Chat = (): JSX.Element => {
           if(isLeft){
           const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
           setMessages([...messagesBeforeLeaving]);
-          }else{
-            members.map(member => {
-                getIfUserHasChannel(member, channelId)
-              .then((result) => {
-                if(!result){
-                  addChannelToMyChannels(member, channelId);
-                }
-              })  
-              .catch(error => console.error(error.message));   
-            })
-          
+          }else{          
             setMessages([...channelMessages]);
           }
         }
@@ -186,44 +181,24 @@ const Chat = (): JSX.Element => {
     };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
-
-  const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (userData === null) return;
-    if (event.key === 'Enter') {
-      const message = (event.target as HTMLTextAreaElement).value.trim();
-      if (!message) {
+  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement>) => {
+    if (event.key === 'Enter' || event.type === 'click') {
+      if (!textAreaRef.current) return;
+      const messageFromArea = textAreaRef.current.value.trim();
+      if (!messageFromArea) {
         return alert(`Enter message first`)
       }
-      if (channelId) {
-        addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
+      if (channelId && userData) {
+        addMessage(messageFromArea, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
             channelMessage(channelId, result.id);
             userMessage(result.id, userData.handle);
             setAllInChannelToUnseen(channelId, userData.handle);
           })
           .catch(e => console.error(e));
-        (event.target as HTMLTextAreaElement).value = '';
-        setNewMessage('');
       }
+      textAreaRef.current.value = '';
     }
-  }
-
-  const updateNewMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewMessage(e.target.value)
-  }
-
-  const onSendMessage = () => {
-    if (userData === null || !channelId) return;
-    if (!newMessage) {
-      return alert(`Enter message first`)
-    }
-    addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
-      .then(result => {
-        channelMessage(channelId, result.id);
-        userMessage(result.id, userData.handle);
-      })
-      .catch(e => console.error(e));
-    setNewMessage('');
   }
 
   const onAddMember = (user: string): void => {
@@ -317,6 +292,9 @@ const Chat = (): JSX.Element => {
     team: team,
   }  
 
+  console.log('i am chat');
+  
+
   return (
     <Flex
       w={'100%'}
@@ -390,9 +368,9 @@ const Chat = (): JSX.Element => {
             bottom={'0'}>
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
               <Textarea
+                ref={textAreaRef}
                 mt={-3}
                 placeholder={'Write something...'}
-                value={newMessage}
                 color={useColorModeValue('gray.800', 'gray.200')}
                 bg={useColorModeValue('gray.100', 'gray.600')}
                 rounded={'xl'}
@@ -404,8 +382,7 @@ const Chat = (): JSX.Element => {
                 }}
                 white-space='nowrap'
                 overflow-wrap='break-word'
-                onKeyDown={handleKeyDownForMessage}
-                onChange={updateNewMessage}
+                onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
               <Button

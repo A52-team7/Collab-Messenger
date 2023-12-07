@@ -151,6 +151,9 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     setEmoji(emoji);
   }
 
+  console.log('i am one message');
+  
+
   return (
     <>
       {message.techMessage ? (

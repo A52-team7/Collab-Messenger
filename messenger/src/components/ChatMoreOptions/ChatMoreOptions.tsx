@@ -22,6 +22,7 @@ const ChatMoreOptions = ({ channelId }: ChatMoreOptionsProps) => {
             <PopoverBody justifyContent="center">
                 <Flex>
                     <RemoveMessageOrChat channelId={channelId} isFromChat={true}/>
+                    
                 </Flex>
             </PopoverBody>
         </PopoverContent>

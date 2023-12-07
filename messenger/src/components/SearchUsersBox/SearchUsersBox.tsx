@@ -66,14 +66,6 @@ const SearchUsersBox = ({
           }else{
             const index = existingChat.findIndex(el => el === true);
             const chatToNavigate = (onlyChats[index]);
-
-            getIfUserHasChannel(userData.handle, chatToNavigate.id)
-            .then((result) => {
-              if(!result){
-                addChannelToMyChannels(userData.handle, chatToNavigate.id);
-              }
-            })        
-            .catch(error => console.error(error.message));    
             
             navigate(`/chat/${chatToNavigate.id}`);
           }
