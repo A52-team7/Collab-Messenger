@@ -1,5 +1,6 @@
 import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
+import {MyEvent} from '../components/MyCalendar/MyCalendar'
 
 export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
   return get(ref(db, `users/${handle}`));
@@ -121,3 +122,21 @@ export const removeUserReactionFromMessage = (messageId: string, reaction: strin
 export const updateUserStatus = (handle: string, status: string) => {
   return update(ref(db), {[`/users/${handle}/status`]: status})
 }
+
+export const updateUserEvent = (handle: string, event: string) => {
+  return update(ref(db), {[`/users/${handle}/myEvent`]: event})
+}
+
+export interface EventListener { (events: string[]): void }
+
+export const getUserEventLive = (handle: string, listener: EventListener ) => {
+
+  return onValue(ref(db, `events/${handle}/myEvents`), (snapshot) => {
+    if (!snapshot.exists()) return [];
+
+    const events = Object.keys(snapshot.val());
+
+    return listener(events);
+  })
+}
+
