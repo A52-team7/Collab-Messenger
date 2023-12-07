@@ -12,11 +12,11 @@ import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, get
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import ReactionItem from "../ReactionItem/ReactionItem";
-import RemoveMessage from "../RemoveMessage/RemoveMessage";
 import { GrEdit } from "react-icons/gr";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import EmojiPopover from "../EmojiPopover/EmojiPopover";
+import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
 export interface Author {
   handle: string;
   uid: string;
@@ -225,7 +225,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                     <ReactionPopover onAddReaction={onAddReaction} />
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
-                    <RemoveMessage onDeleteMessage={onDeleteMessage} />
+                    <RemoveMessageOrChat onDeleteMessage={onDeleteMessage} />
                   </Flex>
                 }
                 {/* {visibleOptions &&  */}

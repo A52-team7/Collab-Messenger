@@ -79,7 +79,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
                   <Text color={'white'} fontSize="md">{team.name}</Text> */}
                   <ChevronDownIcon fontSize="24px" />
                 </AccordionButton>
-                <Tooltip hasArrow label='More options' bg='gray.300' color='black'>
+                <Tooltip hasArrow label='More options' bg='gray.300' color='white'>
                   <MoreOptions id={team.id} />
                 </Tooltip>
               </HStack>

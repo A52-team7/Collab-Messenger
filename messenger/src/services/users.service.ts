@@ -23,6 +23,7 @@ export const createUserHandle = (
     myTeams: '',
     profilePhoto: '',
     myChannels: {},
+    status:'Available',
     unseen: {
       chats: false,
       teams: false
@@ -75,6 +76,17 @@ export const getUserTeamsLive = (handle: string, listener: TeamsListener) => {
   })
 }
 
+export interface StatusListener { (status: string): void }
+
+export const getUserStatusLive = (handle: string, listener: StatusListener) => {
+
+  return onValue(ref(db, `users/${handle}/status`), (snapshot) => {
+    if (!snapshot.exists()) return [];
+    const status = snapshot.val();
+    return listener(status)
+  })
+}
+
 export const getAllUserTeams = (handle: string) => {
   return get(ref(db, `users/${handle}/myTeams`))
 }
@@ -116,4 +128,8 @@ export const addUserReactionToMessage = (messageId: string, reaction: string, ha
 
 export const removeUserReactionFromMessage = (messageId: string, reaction: string, handle: string) => {
   remove(ref(db, `users/${handle}/myReactions/${reaction}/${messageId}`));
+}
+
+export const updateUserStatus = (handle: string, status: string) => {
+  return update(ref(db), {[`/users/${handle}/status`]: status})
 }
