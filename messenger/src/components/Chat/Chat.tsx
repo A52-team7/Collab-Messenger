@@ -11,7 +11,7 @@ import {
   AlertIcon,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
-import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
+import { getUserByHandle, userChannel, userMessage, setAllUsersUnseen } from '../../services/users.service';
 import {
   addMemberToChannel,
   channelMessage,
@@ -46,12 +46,12 @@ const Chat = (): JSX.Element => {
 
   const location = useLocation();
 
-  const params = useParams();  
-  
+  const params = useParams();
+
   const [channelId, setChannelId] = useState<string>();
-  
+
   const team = location.state?.team;
-  
+
   const { userData } = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -80,24 +80,24 @@ const Chat = (): JSX.Element => {
   }, [params.id, params, isLeft]);
 
   useEffect(() => {
-    if(userData === null || !channelId) return;
+    if (userData === null || !channelId) return;
     const removeListener = getLeftMembersLive(channelId, (data: string[]) => {
-      
-      if(Object.values(data).includes(userData.handle)){
+
+      if (Object.values(data).includes(userData.handle)) {
         setIsLeft(true);
         setIfIsLeftIsSet(true);
         getDateOfLeftChannel(userData.handle, channelId)
-        .then((res) => {
-          setDateOfLeaving(res);
-        })
-        .catch(e => console.error(e));
+          .then((res) => {
+            setDateOfLeaving(res);
+          })
+          .catch(e => console.error(e));
       }
     });
     return () => {
       removeListener();
     };
   }, [channelId, userData, isLeft]);
-  
+
 
   const [emoji, setEmoji] = useState<string>('');
 
@@ -112,24 +112,24 @@ const Chat = (): JSX.Element => {
 
 
   useEffect(() => {
-    if(!channelId) return;
+    if (!channelId) return;
     getChannelById(channelId)
       .then(result => {
         setTitle(result.title);
         setNewTitle(result.title);
-        setMembers(Object.keys(result.members));       
+        setMembers(Object.keys(result.members));
 
-        if(Object.keys(result).includes('isBetweenTwo')){
+        if (Object.keys(result).includes('isBetweenTwo')) {
           setChatBetweenTwo(true);
           setIfChatBetweenTwoIsSet(true);
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
-                  
-          setTitle(usersInChat[titleToShow]); 
-        }else{
+
+          setTitle(usersInChat[titleToShow]);
+        } else {
           setChatBetweenTwo(false);
           setIfChatBetweenTwoIsSet(true);
-        }   
+        }
       }).catch(e => console.error(e));
   }, [channelId]);
 
@@ -140,8 +140,8 @@ const Chat = (): JSX.Element => {
 
     const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
-      if(userData === null) return;
-      if(data.includes(userData.handle)){
+      if (userData === null) return;
+      if (data.includes(userData.handle)) {
         setIsLeft(false);
         setIfIsLeftIsSet(true);
       }
@@ -154,7 +154,7 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (userData === null || !channelId) return;
 
-    setMessages([]); 
+    setMessages([]);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
@@ -195,6 +195,15 @@ const Chat = (): JSX.Element => {
             userMessage(result.id, userData.handle);
             setAllInChannelToUnseen(channelId, userData.handle);
           })
+          .then(() => {
+            if (userData) {
+              if (team) {
+                setAllUsersUnseen(members, userData.handle, 'teams');
+              } else {
+                setAllUsersUnseen(members, userData.handle, 'chats');
+              }
+            }
+          })
           .catch(e => console.error(e));
       }
       textAreaRef.current.value = '';
@@ -202,29 +211,29 @@ const Chat = (): JSX.Element => {
   }
 
   const onAddMember = (user: string): void => {
-    if(!channelId) return;
+    if (!channelId) return;
     getIfChannelIsLeft(user, channelId)
-    .then(result => {
-      if(result){
-        removeLeftChannel(channelId, user);
-      }
-      userChannel(channelId, user);
-      addMemberToChannel(channelId, user);
-      getUserByHandle(user)
-      .then(result => result.val())
-      .then(res => {
-        getChannelById(channelId)
-        .then(channel => {
-          addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + res.firstName + ' ' + res.lastName + TO + channel.title, ADMIN, channelId, true, ADD_PERSON)
-          .then(message => {
-            channelMessage(channelId, message.id);
+      .then(result => {
+        if (result) {
+          removeLeftChannel(channelId, user);
+        }
+        userChannel(channelId, user);
+        addMemberToChannel(channelId, user);
+        getUserByHandle(user)
+          .then(result => result.val())
+          .then(res => {
+            getChannelById(channelId)
+              .then(channel => {
+                addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + res.firstName + ' ' + res.lastName + TO + channel.title, ADMIN, channelId, true, ADD_PERSON)
+                  .then(message => {
+                    channelMessage(channelId, message.id);
+                  })
+                  .catch(error => console.error(error.message));
+              })
+              .catch(error => console.error(error.message));
           })
           .catch(error => console.error(error.message));
-        })
-        .catch(error => console.error(error.message));
       })
-      .catch(error => console.error(error.message));
-    })
   }
 
   const onGetEmoji = (emoji: string) => {
@@ -244,33 +253,33 @@ const Chat = (): JSX.Element => {
   }
 
   const onUpdateTitle = () => {
-    if(!channelId) return;
+    if (!channelId) return;
     addTitleToChannel(channelId, newTitle)
-    .then(() => {
-      addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
-      .then(message => {
-        channelMessage(channelId, message.id);
+      .then(() => {
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+          .then(message => {
+            channelMessage(channelId, message.id);
+          })
+          .catch(error => console.error(error.message));
       })
       .catch(error => console.error(error.message));
-    })
-    .catch(error => console.error(error.message));
     setTitle(newTitle);
     setEditTitle(false);
   }
 
   const handleKeyDownForTitle = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      if(!channelId) return;
+      if (!channelId) return;
       const title = (event.target as HTMLInputElement).value.trim();
       addTitleToChannel(channelId, title)
-      .then(() => {
-        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
-        .then(message => {
-          channelMessage(channelId, message.id);
+        .then(() => {
+          addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+            .then(message => {
+              channelMessage(channelId, message.id);
+            })
+            .catch(error => console.error(error.message));
         })
         .catch(error => console.error(error.message));
-      })
-      .catch(error => console.error(error.message));
       setTitle(newTitle);
       setEditTitle(false);
     }
@@ -290,10 +299,7 @@ const Chat = (): JSX.Element => {
     updateNewMember: onAddMember,
     channelId: channelId,
     team: team,
-  }  
-
-  console.log('i am chat');
-  
+  }
 
   return (
     <Flex
@@ -304,23 +310,23 @@ const Chat = (): JSX.Element => {
       justify={'center'}
       pl={30}
       py={12}>
-      {!isLeft && 
+      {!isLeft &&
         <Flex w={'inherit'} mb={10} mt={-10}>
           {!editTitle ? (
-          <Flex flex={1}>
-            <Heading color={'white'}>{title}</Heading>
-            {!chatBetweenTwo &&
-              <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
-            }
-          </Flex>
+            <Flex flex={1}>
+              <Heading color={'white'}>{title}</Heading>
+              {!chatBetweenTwo &&
+                <Button color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
+              }
+            </Flex>
           ) : (
             <Flex flex={1}>
-              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle}/>              
-              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20}/></Button>
-              <Button p={1} onClick={onExitEditTitle}><IoClose size={25}/></Button>
+              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
+              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20} /></Button>
+              <Button p={1} onClick={onExitEditTitle}><IoClose size={25} /></Button>
             </Flex>
           )}
-          {team && <TeamInfo {...team}/> }
+          {team && <TeamInfo {...team} />}
           {ifChatBetweenTwoIsSet && (
             <>
               {members.length > 0 && !chatBetweenTwo &&
@@ -328,7 +334,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-         {channelId && <ChatMoreOptions channelId={channelId}/>}
+          {channelId && <ChatMoreOptions channelId={channelId} />}
           {/* <SearchMassage messages={messages}/> */}
         </Flex>
       }
@@ -337,12 +343,12 @@ const Chat = (): JSX.Element => {
         w={'inherit'}
         overflowY={'scroll'}
       >
-        {ifIsLeftIsSet && 
+        {ifIsLeftIsSet &&
           <>
             {messages.length > 0 &&
-            <Box h={'100vh'}>
-              <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
-            </Box>
+              <Box h={'100vh'}>
+                <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
+              </Box>
             }
           </>
         }
@@ -354,7 +360,7 @@ const Chat = (): JSX.Element => {
             {LEFT_CHAT_MESSAGE}
           </Alert>
         </Box>
-      ): (
+      ) : (
         <>
           {!replyIsVisible ? (<Stack
             // boxShadow={'2xl'}
@@ -390,12 +396,12 @@ const Chat = (): JSX.Element => {
                 bg={'none'}
                 color={'white'}
                 flex={'1 0 auto'}
-                onMouseEnter={onSeeColor} 
+                onMouseEnter={onSeeColor}
                 onMouseLeave={onHideColor}
                 _hover={{ bg: 'none' }}
                 _focus={{ bg: 'none' }}
                 onClick={onSendMessage}>
-                {!visibleColor ? (<BsSend size={35}/>) : (<BsFillSendFill size={35}/>)}
+                {!visibleColor ? (<BsSend size={35} />) : (<BsFillSendFill size={35} />)}
               </Button>
             </Stack>
           </Stack>

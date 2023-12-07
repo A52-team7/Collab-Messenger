@@ -244,8 +244,16 @@ export const getChannelSeenLive = (channelId: string, user: string, listener: Se
   })
 }
 
-export interface TitleListener { (title: string): void }
 
+export interface unseenListener { (data: { chats: boolean, teams: boolean }): void }
+export const unseenTeamsChats = (handle: string, listener: unseenListener) => {
+  return onValue(ref(db, `users/${handle}/unseen`), (snapshot) => {
+    if (!snapshot.exists()) return;
+    listener(snapshot.val());
+  });
+}
+
+export interface TitleListener { (title: string): void }
 export const getChannelTitleLive = (channelId: string, listener: TitleListener) => {
 
   return onValue(ref(db, `channels/${channelId}/title`), (snapshot) => {
