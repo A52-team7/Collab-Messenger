@@ -80,7 +80,7 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     if(userData === null || !channelId) return;
-    getLeftMembersLive(channelId, (data: string[]) => {
+    const removeListener = getLeftMembersLive(channelId, (data: string[]) => {
       
       if(Object.values(data).includes(userData.handle)){
         setIsLeft(true);
@@ -91,7 +91,10 @@ const Chat = (): JSX.Element => {
         })
         .catch(e => console.error(e));
       }
-    })
+    });
+    return () => {
+      removeListener();
+    };
   }, [channelId, userData, isLeft]);
   
 
@@ -130,14 +133,17 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (userData === null || !channelId) return;
 
-    getChannelMembersLive(channelId, (data: string[]) => {
+    const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
       if(userData === null) return;
       if(data.includes(userData.handle)){
         setIsLeft(false);
         setIfIsLeftIsSet(true);
       }
-    })
+    });
+    return () => {
+      removeListener();
+    };
   }, [channelId, userData]);
 
   useEffect(() => {
