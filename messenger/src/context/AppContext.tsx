@@ -18,6 +18,7 @@ export interface UserData {
   myTeams?: object | null,
   profilePhoto: string,
   myChannels?: { [key: string]: string } | null,
+  status?: string,
 }
 
 const AppContext = createContext<UserState>({

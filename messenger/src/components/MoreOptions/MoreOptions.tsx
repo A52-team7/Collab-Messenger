@@ -60,7 +60,7 @@ const MoreOptions = ({id}: IdTeam) => {
           <IconButton
             aria-label="More server options"
             color={'white'}
-            variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'white' }}
+            variant='unstyled'
             icon={<BsThreeDotsVertical size={25}  />}
             w="fit-content"
             justifyContent="space-between"
