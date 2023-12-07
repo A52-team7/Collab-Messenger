@@ -1,12 +1,15 @@
 import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure } from "@chakra-ui/react";
 import { MdMoreHoriz } from "react-icons/md";
 import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
+import  { Message } from '../MessagesList/MessagesList.tsx';
+import SearchMessage from '../SearchMessage/SearchMessage';
 
 export interface ChatMoreOptionsProps {
-    channelId: string;
+  messages: Message[],  
+  channelId: string, 
 }
 
-const ChatMoreOptions = ({ channelId }: ChatMoreOptionsProps) => {
+const ChatMoreOptions = ({ messages, channelId }: ChatMoreOptionsProps) => {
 
     const { isOpen, onClose, onToggle } = useDisclosure();
   
@@ -22,6 +25,7 @@ const ChatMoreOptions = ({ channelId }: ChatMoreOptionsProps) => {
             <PopoverBody justifyContent="center">
                 <Flex>
                     <RemoveMessageOrChat channelId={channelId} isFromChat={true}/>
+                    <SearchMessage messages={messages} channelId={channelId} />
                 </Flex>
             </PopoverBody>
         </PopoverContent>

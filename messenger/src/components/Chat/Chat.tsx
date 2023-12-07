@@ -40,7 +40,6 @@ import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
-//import SearchMassage from '../SearchMassage/SearchMassage'
 
 const Chat = (): JSX.Element => {
 
@@ -350,8 +349,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-         {channelId && <ChatMoreOptions channelId={channelId}/>}
-          {/* <SearchMassage messages={messages}/> */}
+         {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack
