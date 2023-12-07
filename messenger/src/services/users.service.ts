@@ -22,7 +22,8 @@ export const createUserHandle = (
     phoneNumber,
     myTeams: '',
     profilePhoto: '',
-    myChannels: {}
+    myChannels: {},
+    status:'Available'
   })
 };
 
@@ -60,6 +61,17 @@ export const getUserTeamsLive = (handle: string, listener: TeamsListener) => {
     if (!snapshot.exists()) return [];
     const teams = Object.keys(snapshot.val());
     return listener(teams)
+  })
+}
+
+export interface StatusListener { (status: string): void }
+
+export const getUserStatusLive = (handle: string, listener: StatusListener) => {
+
+  return onValue(ref(db, `users/${handle}/status`), (snapshot) => {
+    if (!snapshot.exists()) return [];
+    const status = snapshot.val();
+    return listener(status)
   })
 }
 
@@ -104,4 +116,8 @@ export const addUserReactionToMessage = (messageId: string, reaction: string, ha
 
 export const removeUserReactionFromMessage = (messageId: string, reaction: string, handle: string) => {
   remove(ref(db, `users/${handle}/myReactions/${reaction}/${messageId}`));
+}
+
+export const updateUserStatus = (handle: string, status: string) => {
+  return update(ref(db), {[`/users/${handle}/status`]: status})
 }

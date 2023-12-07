@@ -24,6 +24,7 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { START_CHAT } from '../../common/constants';
+import UserStatus from '../UserStatus/UserStatus';
 
 interface LinksUserOptionsType {
   name: string,
@@ -90,24 +91,26 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
         <Flex alignItems={'center'} >
           <Menu>
             {userData ?
-              <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
-                <HStack>
+                (<HStack>
                   <Avatar
                     size={'md'}
-                    src={userData.profilePhoto} />
-                  <VStack
+                    src={userData.profilePhoto} >
+                      <UserStatus />
+                      </Avatar>
+                  <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
+                  <HStack
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='flex-start'
                     spacing='1px'>
                     <Text fontSize='sm' color={'grey'}>{userData.handle}</Text>
                     <Text fontSize='xs' color={'grey'}>
                     </Text>
-                  </VStack>
+                  </HStack>
                   <Box display={{ base: 'none', md: 'flex' }}>
                     <FiChevronDown color={'grey'} />
                   </Box>
-                </HStack>
               </MenuButton>
+              </HStack>)
               :
               <TopNavLinks links={LinksUserOptions} />
             }
