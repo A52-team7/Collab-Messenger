@@ -6,8 +6,9 @@ import {
   Heading,
   Textarea,
   Box,
-  Text,
   Input,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
@@ -19,7 +20,10 @@ import {
   getChannelMessagesLive, getDateOfLeftChannel, getIfChannelIsLeft, removeLeftChannel,
   setChannelToSeen,
   setAllInChannelToUnseen,
-  addTitleToChannel
+  addTitleToChannel,
+  getLeftMembersLive,
+  getIfUserHasChannel,
+  addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
@@ -27,7 +31,6 @@ import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
-import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
 import TeamInfo from '../TeamInfo/TeamInfo';
@@ -36,6 +39,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
+import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 //import SearchMassage from '../SearchMassage/SearchMassage'
 
 const Chat = (): JSX.Element => {
@@ -67,25 +71,20 @@ const Chat = (): JSX.Element => {
 
   const [visibleColor, setVisibleColor] = useState(false);
 
+  const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
+  const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
+
   useEffect(() => {
     setChannelId(params.id);
-  }, [params.id, params]);
-
-  // useEffect(() => {
-  //   if (!userData) return;
-  //   if(Object.keys(channel).includes('isBetweenTwo')){
-  //     const titleToShow = channel.title.split(',').findIndex((user) => user !== userData.handle);
-  //     setTitle(channel.title[titleToShow]);    
-  //   }
-  // }, []);
+  }, [params.id, params, isLeft]);
 
   useEffect(() => {
     if(userData === null || !channelId) return;
-    getIfChannelIsLeft(userData.handle, channelId)
-    .then((result) => {
-      setIsLeft(result);
-      setIfIsLeftIsSet(true);
-      if(result){
+    getLeftMembersLive(channelId, (data: string[]) => {
+      
+      if(Object.values(data).includes(userData.handle)){
+        setIsLeft(true);
+        setIfIsLeftIsSet(true);
         getDateOfLeftChannel(userData.handle, channelId)
         .then((res) => {
           setDateOfLeaving(res);
@@ -93,8 +92,7 @@ const Chat = (): JSX.Element => {
         .catch(e => console.error(e));
       }
     })
-    .catch(e => console.error(e));
-  }, [channelId, userData]);
+  }, [channelId, userData, isLeft]);
   
 
   const [emoji, setEmoji] = useState<string>('');
@@ -113,16 +111,34 @@ const Chat = (): JSX.Element => {
       .then(result => {
         setTitle(result.title);
         setNewTitle(result.title);
-        setMembers(Object.keys(result.members));
-        
+        setMembers(Object.keys(result.members));       
+
         if(Object.keys(result).includes('isBetweenTwo')){
+          setChatBetweenTwo(true);
+          setIfChatBetweenTwoIsSet(true);
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
                   
           setTitle(usersInChat[titleToShow]); 
+        }else{
+          setChatBetweenTwo(false);
+          setIfChatBetweenTwoIsSet(true);
         }   
       }).catch(e => console.error(e));
   }, [channelId]);
+
+  useEffect(() => {
+    if (userData === null || !channelId) return;
+
+    getChannelMembersLive(channelId, (data: string[]) => {
+      setMembers([...data]);
+      if(userData === null) return;
+      if(data.includes(userData.handle)){
+        setIsLeft(false);
+        setIfIsLeftIsSet(true);
+      }
+    })
+  }, [channelId, userData]);
 
   useEffect(() => {
     if (userData === null || !channelId) return;
@@ -142,6 +158,16 @@ const Chat = (): JSX.Element => {
           const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
           setMessages([...messagesBeforeLeaving]);
           }else{
+            members.map(member => {
+                getIfUserHasChannel(member, channelId)
+              .then((result) => {
+                if(!result){
+                  addChannelToMyChannels(member, channelId);
+                }
+              })  
+              .catch(error => console.error(error.message));   
+            })
+          
             setMessages([...channelMessages]);
           }
         }
@@ -154,14 +180,6 @@ const Chat = (): JSX.Element => {
     };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
-
-  useEffect(() => {
-    if (userData === null || !channelId) return;
-
-    getChannelMembersLive(channelId, (data: string[]) => {
-      return setMembers([...data]);
-    })
-  }, [channelId, userData]);
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (userData === null) return;
@@ -307,7 +325,9 @@ const Chat = (): JSX.Element => {
           {!editTitle ? (
           <Flex flex={1}>
             <Heading color={'white'}>{title}</Heading>
-            <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            {!chatBetweenTwo &&
+              <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
+            }
           </Flex>
           ) : (
             <Flex flex={1}>
@@ -317,12 +337,14 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team}/> }
-          {members.length > 0 &&
-            <UsersDrawer {...UserDrawerProps} />
-          }
-          <Button colorScheme='teal'>
-            <MdMoreHoriz size={30} />
-          </Button>
+          {ifChatBetweenTwoIsSet && (
+            <>
+              {members.length > 0 && !chatBetweenTwo &&
+                <UsersDrawer {...UserDrawerProps} />
+              }
+            </>
+          )}
+         {channelId && <ChatMoreOptions channelId={channelId}/>}
           {/* <SearchMassage messages={messages}/> */}
         </Flex>
       }
@@ -342,8 +364,11 @@ const Chat = (): JSX.Element => {
         }
       </Stack>
       {isLeft ? (
-        <Box>
-          <Text>{LEFT_CHAT_MESSAGE}</Text>
+        <Box mt={50}>
+          <Alert status='warning'>
+            <AlertIcon />
+            {LEFT_CHAT_MESSAGE}
+          </Alert>
         </Box>
       ): (
         <>
