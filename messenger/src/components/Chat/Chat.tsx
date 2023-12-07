@@ -80,7 +80,7 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     if (userData === null || !channelId) return;
-    getLeftMembersLive(channelId, (data: string[]) => {
+    const removeListener = getLeftMembersLive(channelId, (data: string[]) => {
 
       if (Object.values(data).includes(userData.handle)) {
         setIsLeft(true);
@@ -116,17 +116,17 @@ const Chat = (): JSX.Element => {
         setNewTitle(result.title);
         setMembers(Object.keys(result.members));
 
-        if(Object.keys(result).includes('isBetweenTwo')){
+        if (Object.keys(result).includes('isBetweenTwo')) {
           setChatBetweenTwo(true);
           setIfChatBetweenTwoIsSet(true);
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
-                  
-          setTitle(usersInChat[titleToShow]); 
-        }else{
+
+          setTitle(usersInChat[titleToShow]);
+        } else {
           setChatBetweenTwo(false);
           setIfChatBetweenTwoIsSet(true);
-        }   
+        }
       }).catch(e => console.error(e));
   }, [channelId]);
 
@@ -135,8 +135,8 @@ const Chat = (): JSX.Element => {
 
     const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
-      if(userData === null) return;
-      if(data.includes(userData.handle)){
+      if (userData === null) return;
+      if (data.includes(userData.handle)) {
         setIsLeft(false);
         setIfIsLeftIsSet(true);
       }
@@ -159,21 +159,21 @@ const Chat = (): JSX.Element => {
             .catch(e => console.error(e));
         })
       ).then(channelMessages => {
-        if(ifIsLeftIsSet){
-          if(isLeft){
-          const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
-          setMessages([...messagesBeforeLeaving]);
-          }else{
+        if (ifIsLeftIsSet) {
+          if (isLeft) {
+            const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
+            setMessages([...messagesBeforeLeaving]);
+          } else {
             members.map(member => {
-                getIfUserHasChannel(member, channelId)
-              .then((result) => {
-                if(!result){
-                  addChannelToMyChannels(member, channelId);
-                }
-              })  
-              .catch(error => console.error(error.message));   
+              getIfUserHasChannel(member, channelId)
+                .then((result) => {
+                  if (!result) {
+                    addChannelToMyChannels(member, channelId);
+                  }
+                })
+                .catch(error => console.error(error.message));
             })
-          
+
             setMessages([...channelMessages]);
           }
         }
@@ -347,12 +347,12 @@ const Chat = (): JSX.Element => {
       {!isLeft &&
         <Flex w={'inherit'} mb={10} mt={-10}>
           {!editTitle ? (
-          <Flex flex={1}>
-            <Heading color={'white'}>{title}</Heading>
-            {!chatBetweenTwo &&
-              <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
-            }
-          </Flex>
+            <Flex flex={1}>
+              <Heading color={'white'}>{title}</Heading>
+              {!chatBetweenTwo &&
+                <Button color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
+              }
+            </Flex>
           ) : (
             <Flex flex={1}>
               <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
@@ -360,7 +360,7 @@ const Chat = (): JSX.Element => {
               <Button p={1} onClick={onExitEditTitle}><IoClose size={25} /></Button>
             </Flex>
           )}
-          {team && <TeamInfo {...team}/> }
+          {team && <TeamInfo {...team} />}
           {ifChatBetweenTwoIsSet && (
             <>
               {members.length > 0 && !chatBetweenTwo &&
@@ -368,7 +368,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-         {channelId && <ChatMoreOptions channelId={channelId}/>}
+          {channelId && <ChatMoreOptions channelId={channelId} />}
           {/* <SearchMassage messages={messages}/> */}
         </Flex>
       }
