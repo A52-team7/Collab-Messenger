@@ -2,7 +2,7 @@ import { Text, Box } from "@chakra-ui/react";
 import { ADD_USERS } from "../../common/constants";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { addChannel, addChannelToMyChannels, addMemberToChannel, chatBetweenTwo, getAllChannels, getIfUserHasChannel, setChannelToSeen } from '../../services/channels.service';
+import { addChannel, chatBetweenTwo, getAllChannels, setChannelToSeen } from '../../services/channels.service';
 import { userChannel } from "../../services/users.service";
 import { useNavigate } from "react-router-dom";
 
@@ -66,14 +66,6 @@ const SearchUsersBox = ({
           }else{
             const index = existingChat.findIndex(el => el === true);
             const chatToNavigate = (onlyChats[index]);
-
-            getIfUserHasChannel(userData.handle, chatToNavigate.id)
-            .then((result) => {
-              if(!result){
-                addChannelToMyChannels(userData.handle, chatToNavigate.id);
-              }
-            })        
-            .catch(error => console.error(error.message));    
             
             navigate(`/chat/${chatToNavigate.id}`);
           }

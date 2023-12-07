@@ -29,6 +29,9 @@ const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: Messag
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  console.log('i am messages list');
+  
+
   return (
       <UnorderedList styleType='none'>
         {messages.map((message: Message) => (

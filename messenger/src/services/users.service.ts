@@ -24,7 +24,11 @@ export const createUserHandle = (
     myTeams: '',
     profilePhoto: '',
     myChannels: {},
-    status:'Available'
+    status:'Available',
+    unseen: {
+      chats: false,
+      teams: false
+    }
   })
 };
 
@@ -32,9 +36,17 @@ export const getUserData = (uid: string): Promise<DataSnapshot> => {
   return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
 };
 
-export const updateUserData = (handle: string, key: string, value: string): Promise<void> => {
-  return update(ref(db), { [`users/${handle}/${key}`]: `${value}` });
+export const updateUserData = (handle: string, key: string, value: string | boolean): Promise<void> => {
+  return update(ref(db), { [`users/${handle}/${key}`]: value });
 };
+
+export const setAllUsersUnseen = (members: string[], handle: string, key: string): void => {
+  members.forEach(member => {
+    if (member !== handle) {
+      updateUserData(member, `unseen/${key}`, true);
+    }
+  });
+}
 
 export const getAllUsersData = (): Promise<DataSnapshot> => {
   return get(query(ref(db, 'users')));

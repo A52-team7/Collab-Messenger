@@ -11,7 +11,7 @@ import {
   AlertIcon,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
-import { getUserByHandle, userChannel, userMessage } from '../../services/users.service';
+import { getUserByHandle, userChannel, userMessage, setAllUsersUnseen } from '../../services/users.service';
 import {
   addMemberToChannel,
   channelMessage,
@@ -22,11 +22,9 @@ import {
   setAllInChannelToUnseen,
   addTitleToChannel,
   getLeftMembersLive,
-  getIfUserHasChannel,
-  addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
@@ -45,16 +43,15 @@ const Chat = (): JSX.Element => {
 
   const location = useLocation();
 
-  const params = useParams();  
-  
+  const params = useParams();
+
   const [channelId, setChannelId] = useState<string>();
-  
+
   const team = location.state?.team;
-  
+
   const { userData } = useContext(AppContext);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>('');
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 
@@ -73,69 +70,75 @@ const Chat = (): JSX.Element => {
   const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
   const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
 
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
   useEffect(() => {
     setChannelId(params.id);
   }, [params.id, params, isLeft]);
 
   useEffect(() => {
-    if(userData === null || !channelId) return;
+    if (userData === null || !channelId) return;
     const removeListener = getLeftMembersLive(channelId, (data: string[]) => {
-      
-      if(Object.values(data).includes(userData.handle)){
+
+      if (Object.values(data).includes(userData.handle)) {
         setIsLeft(true);
         setIfIsLeftIsSet(true);
         getDateOfLeftChannel(userData.handle, channelId)
-        .then((res) => {
-          setDateOfLeaving(res);
-        })
-        .catch(e => console.error(e));
+          .then((res) => {
+            setDateOfLeaving(res);
+          })
+          .catch(e => console.error(e));
       }
     });
     return () => {
       removeListener();
     };
   }, [channelId, userData, isLeft]);
-  
+
 
   const [emoji, setEmoji] = useState<string>('');
 
 
   useEffect(() => {
     if (emoji) {
-      setNewMessage(newMessage => newMessage + emoji.native);
+      if (!textAreaRef.current) return;
+      textAreaRef.current.value += emoji.native;
+      setEmoji('');
     }
   }, [emoji]);
 
 
   useEffect(() => {
-    if(!channelId) return;
+    if (!channelId) return;
     getChannelById(channelId)
       .then(result => {
         setTitle(result.title);
         setNewTitle(result.title);
-        setMembers(Object.keys(result.members));       
+        setMembers(Object.keys(result.members));
 
-        if(Object.keys(result).includes('isBetweenTwo')){
+        if (Object.keys(result).includes('isBetweenTwo')) {
           setChatBetweenTwo(true);
           setIfChatBetweenTwoIsSet(true);
           const usersInChat = result.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
-                  
-          setTitle(usersInChat[titleToShow]); 
-        }else{
+
+          setTitle(usersInChat[titleToShow]);
+        } else {
           setChatBetweenTwo(false);
           setIfChatBetweenTwoIsSet(true);
-        }   
+        }
       }).catch(e => console.error(e));
   }, [channelId]);
 
   useEffect(() => {
     if (userData === null || !channelId) return;
 
+    setMembers([]); 
+
     const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
-      if(userData === null) return;
-      if(data.includes(userData.handle)){
+      if (userData === null) return;
+      if (data.includes(userData.handle)) {
         setIsLeft(false);
         setIfIsLeftIsSet(true);
       }
@@ -148,7 +151,7 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (userData === null || !channelId) return;
 
-    setMessages([]); 
+    setMessages([]);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
@@ -162,17 +165,7 @@ const Chat = (): JSX.Element => {
           if(isLeft){
           const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
           setMessages([...messagesBeforeLeaving]);
-          }else{
-            members.map(member => {
-                getIfUserHasChannel(member, channelId)
-              .then((result) => {
-                if(!result){
-                  addChannelToMyChannels(member, channelId);
-                }
-              })  
-              .catch(error => console.error(error.message));   
-            })
-          
+          }else{          
             setMessages([...channelMessages]);
           }
         }
@@ -185,70 +178,59 @@ const Chat = (): JSX.Element => {
     };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
-
-  const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (userData === null) return;
-    if (event.key === 'Enter') {
-      const message = (event.target as HTMLTextAreaElement).value.trim();
-      if (!message) {
+  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement>) => {
+    if (event.key === 'Enter' || event.type === 'click') {
+      if (!textAreaRef.current) return;
+      const messageFromArea = textAreaRef.current.value.trim();
+      if (!messageFromArea) {
         return alert(`Enter message first`)
       }
-      if (channelId) {
-        addMessage(message, userData.handle, channelId, false, USER_MESSAGE)
+      if (channelId && userData) {
+        addMessage(messageFromArea, userData.handle, channelId, false, USER_MESSAGE)
           .then(result => {
             channelMessage(channelId, result.id);
             userMessage(result.id, userData.handle);
             setAllInChannelToUnseen(channelId, userData.handle);
           })
+          .then(() => {
+            if (userData) {
+              if (team) {
+                setAllUsersUnseen(members, userData.handle, 'teams');
+              } else {
+                setAllUsersUnseen(members, userData.handle, 'chats');
+              }
+            }
+          })
           .catch(e => console.error(e));
-        (event.target as HTMLTextAreaElement).value = '';
-        setNewMessage('');
       }
+      textAreaRef.current.value = '';
     }
-  }
-
-  const updateNewMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewMessage(e.target.value)
-  }
-
-  const onSendMessage = () => {
-    if (userData === null || !channelId) return;
-    if (!newMessage) {
-      return alert(`Enter message first`)
-    }
-    addMessage(newMessage, userData.handle, channelId, false, USER_MESSAGE)
-      .then(result => {
-        channelMessage(channelId, result.id);
-        userMessage(result.id, userData.handle);
-      })
-      .catch(e => console.error(e));
-    setNewMessage('');
   }
 
   const onAddMember = (user: string): void => {
-    if(!channelId) return;
+    if (!channelId) return;
     getIfChannelIsLeft(user, channelId)
-    .then(result => {
-      if(result){
-        removeLeftChannel(channelId, user);
-      }
-      userChannel(channelId, user);
-      addMemberToChannel(channelId, user);
-      getUserByHandle(user)
-      .then(result => result.val())
-      .then(res => {
-        getChannelById(channelId)
-        .then(channel => {
-          addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + res.firstName + ' ' + res.lastName + TO + channel.title, ADMIN, channelId, true, ADD_PERSON)
-          .then(message => {
-            channelMessage(channelId, message.id);
+      .then(result => {
+        if (result) {
+          removeLeftChannel(channelId, user);
+        }
+        userChannel(channelId, user);
+        addMemberToChannel(channelId, user);
+        getUserByHandle(user)
+          .then(result => result.val())
+          .then(res => {
+            getChannelById(channelId)
+              .then(channel => {
+                addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + res.firstName + ' ' + res.lastName + TO + channel.title, ADMIN, channelId, true, ADD_PERSON)
+                  .then(message => {
+                    channelMessage(channelId, message.id);
+                  })
+                  .catch(error => console.error(error.message));
+              })
+              .catch(error => console.error(error.message));
           })
           .catch(error => console.error(error.message));
-        })
-        .catch(error => console.error(error.message));
       })
-      .catch(error => console.error(error.message));
-    })
   }
 
   const onGetEmoji = (emoji: string) => {
@@ -268,33 +250,33 @@ const Chat = (): JSX.Element => {
   }
 
   const onUpdateTitle = () => {
-    if(!channelId) return;
+    if (!channelId) return;
     addTitleToChannel(channelId, newTitle)
-    .then(() => {
-      addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
-      .then(message => {
-        channelMessage(channelId, message.id);
+      .then(() => {
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+          .then(message => {
+            channelMessage(channelId, message.id);
+          })
+          .catch(error => console.error(error.message));
       })
       .catch(error => console.error(error.message));
-    })
-    .catch(error => console.error(error.message));
     setTitle(newTitle);
     setEditTitle(false);
   }
 
   const handleKeyDownForTitle = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      if(!channelId) return;
+      if (!channelId) return;
       const title = (event.target as HTMLInputElement).value.trim();
       addTitleToChannel(channelId, title)
-      .then(() => {
-        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
-        .then(message => {
-          channelMessage(channelId, message.id);
+        .then(() => {
+          addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + CHANGED + newTitle, ADMIN, channelId, true, CHANGE_TITLE)
+            .then(message => {
+              channelMessage(channelId, message.id);
+            })
+            .catch(error => console.error(error.message));
         })
         .catch(error => console.error(error.message));
-      })
-      .catch(error => console.error(error.message));
       setTitle(newTitle);
       setEditTitle(false);
     }
@@ -314,7 +296,7 @@ const Chat = (): JSX.Element => {
     updateNewMember: onAddMember,
     channelId: channelId,
     team: team,
-  }  
+  }
 
   return (
     <Flex
@@ -325,23 +307,23 @@ const Chat = (): JSX.Element => {
       justify={'center'}
       pl={30}
       py={12}>
-      {!isLeft && 
-        <Flex w={'inherit'} mb={10} mt={-10}>
+      {!isLeft &&
+        <Flex w={'inherit'} h={'50px'} mb={8} mt={-10}>
           {!editTitle ? (
-          <Flex flex={1}>
-            <Heading color={'white'}>{title}</Heading>
-            {!chatBetweenTwo &&
-              <Button  color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20}/></Button>
-            }
-          </Flex>
+            <Flex flex={1}>
+              <Heading color={'white'}>{title}</Heading>
+              {!chatBetweenTwo &&
+                <Button color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
+              }
+            </Flex>
           ) : (
             <Flex flex={1}>
-              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle}/>              
-              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20}/></Button>
-              <Button p={1} onClick={onExitEditTitle}><IoClose size={25}/></Button>
+              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
+              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20} /></Button>
+              <Button p={1} onClick={onExitEditTitle}><IoClose size={25} /></Button>
             </Flex>
           )}
-          {team && <TeamInfo {...team}/> }
+          {team && <TeamInfo {...team} />}
           {ifChatBetweenTwoIsSet && (
             <>
               {members.length > 0 && !chatBetweenTwo &&
@@ -355,14 +337,26 @@ const Chat = (): JSX.Element => {
       <Stack
         maxH={'60vh'}
         w={'inherit'}
-        overflowY={'scroll'}
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'black',
+            borderRadius: '24px',
+          },
+        }}
       >
-        {ifIsLeftIsSet && 
+        {ifIsLeftIsSet &&
           <>
             {messages.length > 0 &&
-            <Box h={'100vh'}>
-              <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
-            </Box>
+              <Box h={'auto'}>
+                <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
+              </Box>
             }
           </>
         }
@@ -374,23 +368,22 @@ const Chat = (): JSX.Element => {
             {LEFT_CHAT_MESSAGE}
           </Alert>
         </Box>
-      ): (
+      ) : (
         <>
           {!replyIsVisible ? (<Stack
             // boxShadow={'2xl'}
             // bg={useColorModeValue('white', 'gray.700')}
+            h={'100px'}
             rounded={'xl'}
             w={'60vw'}
-            p={10}
             spacing={8}
             align={'center'}
             position={'fixed'}
             bottom={'0'}>
-            <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
+            <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
               <Textarea
-                mt={-3}
+                ref={textAreaRef}
                 placeholder={'Write something...'}
-                value={newMessage}
                 color={useColorModeValue('gray.800', 'gray.200')}
                 bg={useColorModeValue('gray.100', 'gray.600')}
                 rounded={'xl'}
@@ -402,8 +395,7 @@ const Chat = (): JSX.Element => {
                 }}
                 white-space='nowrap'
                 overflow-wrap='break-word'
-                onKeyDown={handleKeyDownForMessage}
-                onChange={updateNewMessage}
+                onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
               <Button
@@ -411,12 +403,12 @@ const Chat = (): JSX.Element => {
                 bg={'none'}
                 color={'white'}
                 flex={'1 0 auto'}
-                onMouseEnter={onSeeColor} 
+                onMouseEnter={onSeeColor}
                 onMouseLeave={onHideColor}
                 _hover={{ bg: 'none' }}
                 _focus={{ bg: 'none' }}
                 onClick={onSendMessage}>
-                {!visibleColor ? (<BsSend size={35}/>) : (<BsFillSendFill size={35}/>)}
+                {!visibleColor ? (<BsSend size={35} />) : (<BsFillSendFill size={35} />)}
               </Button>
             </Stack>
           </Stack>
