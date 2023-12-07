@@ -1,7 +1,7 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
-import { channelMessage, getChannelById, removeChat, removeChatForYourself } from "../../services/channels.service";
+import { channelMessage, getChannelById, removeChat, removeChatForBothUsers } from "../../services/channels.service";
 import AppContext from '../../context/AppContext';
 import { addMessage } from "../../services/messages";
 import { ADMIN, LEFT, REMOVE_PERSON } from "../../common/constants";
@@ -26,7 +26,7 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
             getChannelById(channelId)
             .then(channel => {
                 if(Object.keys(channel).includes('isBetweenTwo')){                    
-                    removeChatForYourself(channelId, userData.handle)
+                    removeChatForBothUsers(channelId);
                     navigate('/');
                 }else{
                     removeChat(channelId, userData.handle);

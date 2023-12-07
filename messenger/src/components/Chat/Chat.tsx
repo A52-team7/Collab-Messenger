@@ -22,8 +22,6 @@ import {
   setAllInChannelToUnseen,
   addTitleToChannel,
   getLeftMembersLive,
-  getIfUserHasChannel,
-  addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState, useRef } from 'react';
