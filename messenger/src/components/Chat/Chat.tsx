@@ -21,7 +21,9 @@ import {
   setChannelToSeen,
   setAllInChannelToUnseen,
   addTitleToChannel,
-  getLeftMembersLive
+  getLeftMembersLive,
+  getIfUserHasChannel,
+  addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState } from 'react';
@@ -29,7 +31,6 @@ import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
 import UsersDrawer from '../UsersDrawer/UsersDrawer';
-import { MdMoreHoriz } from "react-icons/md";
 import EmojiPopover from '../EmojiPopover/EmojiPopover';
 import Reply from '../Reply/Reply';
 import TeamInfo from '../TeamInfo/TeamInfo';
@@ -38,6 +39,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
+import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 //import SearchMassage from '../SearchMassage/SearchMassage'
 
 const Chat = (): JSX.Element => {
@@ -128,6 +130,19 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (userData === null || !channelId) return;
 
+    getChannelMembersLive(channelId, (data: string[]) => {
+      setMembers([...data]);
+      if(userData === null) return;
+      if(data.includes(userData.handle)){
+        setIsLeft(false);
+        setIfIsLeftIsSet(true);
+      }
+    })
+  }, [channelId, userData]);
+
+  useEffect(() => {
+    if (userData === null || !channelId) return;
+
     setMessages([]); 
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
@@ -143,6 +158,16 @@ const Chat = (): JSX.Element => {
           const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
           setMessages([...messagesBeforeLeaving]);
           }else{
+            members.map(member => {
+                getIfUserHasChannel(member, channelId)
+              .then((result) => {
+                if(!result){
+                  addChannelToMyChannels(member, channelId);
+                }
+              })  
+              .catch(error => console.error(error.message));   
+            })
+          
             setMessages([...channelMessages]);
           }
         }
@@ -155,19 +180,6 @@ const Chat = (): JSX.Element => {
     };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
-
-  useEffect(() => {
-    if (userData === null || !channelId) return;
-
-    getChannelMembersLive(channelId, (data: string[]) => {
-      setMembers([...data]);
-      if(userData === null) return;
-      if(data.includes(userData.handle)){
-        setIsLeft(false);
-        setIfIsLeftIsSet(true);
-      }
-    })
-  }, [channelId, userData]);
 
   const handleKeyDownForMessage = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (userData === null) return;
@@ -332,9 +344,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-          <Button colorScheme='teal'>
-            <MdMoreHoriz size={30} />
-          </Button>
+         {channelId && <ChatMoreOptions channelId={channelId}/>}
           {/* <SearchMassage messages={messages}/> */}
         </Flex>
       }

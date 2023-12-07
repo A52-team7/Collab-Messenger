@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Channel } from "../MyChatsSideNavBar/MyChatsSideNavBar";
 import { setChannelToSeen, getChannelSeenLive, getChannelTitleLive } from "../../services/channels.service";
 import SingleChatAvatar from "../SingleChatAvatar/SingleChatAvatar";
 import GroupChatAvatar from "../GroupChatAvatar/GroupChatAvatar";
+import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
 
 interface MyChatProps {
   channel: Channel;
@@ -49,13 +50,14 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
   }, []);
 
   return (
-    <Box w={'80%'} mt={2} onClick={onOpenChat}>
+    <Flex w={'80%'} mt={2} onClick={onOpenChat}>
+      <RemoveMessageOrChat channelId={channel.id} isFromChat={false}/>
       {Object.keys(channel.members).length > 2 ?
         <GroupChatAvatar channel={channel} seenState={seenState} title={title} activeBtn={activeBtn} />
         :
         <SingleChatAvatar channel={channel} seenState={seenState} title={title} activeBtn={activeBtn} />
       }
-    </Box>
+    </Flex>
   );
 }
 

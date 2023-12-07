@@ -113,6 +113,15 @@ const addMemberToLeftTheChannel = (channelId: string, handle: string) => {
   return update(ref(db), updateLeftTheChannel);
 }
 
+export const removeChat = (channelId: string, handle: string) => {
+  remove(ref(db, `/users/${handle}/myChannels/${channelId}`));
+  deleteMemberFromChannel(channelId, handle);
+}
+
+export const removeChatForYourself = (channelId: string, handle: string) => {
+  remove(ref(db, `/users/${handle}/myChannels/${channelId}`));
+}
+
 //used when you want to add user who has been removed from that chat
 export const removeLeftChannel = (channelId: string, handle: string) => {
   remove(ref(db, `/users/${handle}/leftChannels/${channelId}`));
@@ -142,6 +151,24 @@ export const getIfChannelIsLeft = (handle: string, channelId: string) => {
       return false;
     });
 };
+
+export const getIfUserHasChannel = (handle: string, channelId: string) => {
+
+  return get(query(ref(db, `users/${handle}/myChannels`)))
+    .then(snapshot => {
+      if (snapshot.exists() && Object.keys(snapshot.val()).includes(channelId)) {
+        return true;
+      }
+      return false;
+    });
+};
+
+export const addChannelToMyChannels = (handle: string, channelId: string) => {
+  const updateMyChannels: { [key: string]: boolean } = {};
+  updateMyChannels[`/users/${handle}/myChannels/${channelId}`] = true;
+
+  return update(ref(db), updateMyChannels);
+}
 
 export const getDateOfLeftChannel = (handle: string, channelId: string) => {
 
