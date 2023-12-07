@@ -195,7 +195,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 bg={message.author === userData?.handle ? 'rgb(105,90,121)' : 'teal.500'}
                 rounded={'md'}
                 shadow={'md'}
-                minW={'230px'}
+                minW={'270px'}
                 maxW={'660px'}
                 w={'fit-content'}
               >
@@ -228,7 +228,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                     <ReactionPopover onAddReaction={onAddReaction} />
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
                     <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
-                    <RemoveMessageOrChat onDeleteMessage={onDeleteMessage} />
+                    <RemoveMessageOrChat onDeleteMessage={onDeleteMessage} isFromChat={false}/>
                   </Flex>
                 }
                 {/* {visibleOptions &&  */}
