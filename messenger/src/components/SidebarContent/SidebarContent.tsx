@@ -1,48 +1,88 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppContext from '../../context/AppContext';
-// import NavItem from '../NavItem/NavItem';
+import { updateUserData } from '../../services/users.service';
 import {
   Box,
   Flex,
   Button,
   CloseButton,
   useColorModeValue,
-  Heading,
   FormLabel,
   Image,
 } from '@chakra-ui/react';
-import {
-  FiHome,
-} from 'react-icons/fi';
 import { BsChatTextFill } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
 import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constants';
-
-
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
+import { unseenTeamsChats } from '../../services/channels.service';
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface SidebarContentProps {
   onClose: () => void
   display?: object
 }
 
+interface unseenChatTeamBtnState {
+  chats: boolean;
+  teams: boolean;
+}
+
+
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
-  const { user } = useContext(AppContext);
-  const [show, setShow] = useState(SIDEBAR_SHOW_MESSAGES);
-  const [activeBtn, setActiveBtn] = useState('messages-btn');
+  const { user, userData } = useContext(AppContext);
+  const [activeBtn, setActiveBtn] = useState(() => {
+    const storedValue = window.localStorage.getItem('activeBtn');
+    return (storedValue && storedValue !== "undefined") ? storedValue : 'messages-btn';
+  });
+
+  const [show, setShow] = useState(activeBtn === 'messages-btn' ? SIDEBAR_SHOW_MESSAGES : SIDEBAR_SHOW_TEAMS);
+  // const [unseenChatTeamBtn, setUnseenChatTeamBtn] = useState<unseenChatTeamBtnState>({ chats: false, teams: false });
+
+  useEffect(() => {
+    if (activeBtn !== undefined) {
+      window.localStorage.setItem('activeBtn', activeBtn);
+    }
+  }, [activeBtn]);
+
   const navigate = useNavigate();
 
   const showContentHandle = (e: React.MouseEvent<HTMLElement>) => {
-    const targetId = e.currentTarget.id;
-    if (targetId === 'home-btn') {
-      navigate('/');
-    } else {
-      setShow(targetId === 'messages-btn' ? SIDEBAR_SHOW_MESSAGES : SIDEBAR_SHOW_TEAMS);
-      setActiveBtn(targetId);
+    if (userData) {
+      const targetId = e.currentTarget.id;
+      if (targetId === 'home-btn') {
+        navigate('/');
+      } else {
+        // if (targetId === 'messages-btn') {
+        //   updateUserData(userData.handle, 'unseen/chats', false);
+        // } else {
+        //   updateUserData(userData.handle, 'unseen/teams', false);
+        // }
+        setShow(targetId === 'messages-btn' ? SIDEBAR_SHOW_MESSAGES : SIDEBAR_SHOW_TEAMS);
+        setActiveBtn(targetId);
+        window.localStorage.setItem('activeBtn', targetId);
+      }
     }
   }
+
+  // useEffect(() => {
+  //   if (userData) {
+  //     unseenTeamsChats(userData?.handle, (data) => {
+  //       setUnseenChatTeamBtn({
+  //         chats: data.chats,
+  //         teams: data.teams
+  //       });
+  //       if (activeBtn === 'messages-btn') {
+  //         console.log(activeBtn);
+  //         updateUserData(userData.handle, 'unseen/chats', false)
+  //       } else {
+  //         console.log('second!');
+  //         updateUserData(userData.handle, 'unseen/teams', false)
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   return (
     <Box
@@ -74,22 +114,35 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         <>
           <Flex alignItems='center' justifyContent={'space-around'}>
             <Box>
-              <Button borderRadius={'50%'} px={3} py={6}
+              <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
                 id={'messages-btn'}
                 bg={activeBtn === 'messages-btn' ? 'rgb(72,161,159)' : 'gray.100'}
                 _hover={{ opacity: 0.5 }}
                 onClick={(e) => showContentHandle(e)}>
                 <BsChatTextFill size={30} />
+                {/* {unseenChatTeamBtn.chats && <Box
+                  top={-1}
+                  right={-4}
+                  position={'absolute'}>
+                  <FaExclamationCircle size={25} color={'yellow'} />
+                </Box>} */}
               </Button>
               <FormLabel color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
             </Box>
             <Box>
-              <Button borderRadius={'50%'} px={3} py={6}
+              <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
                 id={'teams-btn'}
                 bg={activeBtn === 'teams-btn' ? 'rgb(72,161,159)' : 'gray.100'}
                 _hover={{ opacity: 0.5 }}
                 onClick={(e) => showContentHandle(e)}>
                 <RiTeamFill size={30} />
+                {/* {unseenChatTeamBtn.teams &&
+                  <Box
+                    top={-1}
+                    right={-4}
+                    position={'absolute'}>
+                    <FaExclamationCircle size={25} color={'yellow'} />
+                  </Box>} */}
               </Button>
               <FormLabel color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
             </Box>
