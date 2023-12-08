@@ -78,22 +78,22 @@ const TeamInfo = (team: Team) => {
       </Button>
       <Drawer placement={'right'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent minW={'600px'}>
-          <DrawerHeader fontSize="3xl" textAlign="center" borderBottomWidth='1px'>{team.name}</DrawerHeader>
-          <DrawerBody>
+        <DrawerContent minW={'600px'} bg={"RGB(59, 59, 59)"}>
+          <DrawerHeader fontSize="3xl" color="white" textAlign="center" borderBottomWidth='1px'>{team.name}</DrawerHeader>
+          <DrawerBody color="white">
             <Wrap justify="center">
             <WrapItem>
             <Avatar size='2xl' name={team.name} src={team.teamPhoto} mx="auto" my={10} />{' '}
             </WrapItem>
             </Wrap>
-            <Text textAlign="center" mx="auto" my={4} border={'1px solid gray'}>{team.description}</Text>
-            <Tabs isFitted variant='enclosed'>
-            <TabList mb='1em'>
-            <Tab>Owner</Tab>
+            <Text textAlign="center" mx="auto" my={4} border={'1px solid rgb(187,125,217)'}>{team.description}</Text>
+            <Tabs isFitted variant='enclosed' borderColor={'rgb(187,125,217)'}>
+            <TabList mb='1em' >
+            <Tab >Owner</Tab>
             <Tab>Members ({members.length})</Tab>
             </TabList>
-            <TabPanels>
-            <TabPanel>
+            <TabPanels borderBottomColor={"blue"}>
+            <TabPanel >
              <HStack justify="left">
             <Avatar size='sm' name={owner.firstName + ' ' + owner.lastName} src={owner.profilePhoto} my={4}/>{' '}
             <p>{owner.firstName} {owner.lastName}, {owner.email} </p>
@@ -102,7 +102,7 @@ const TeamInfo = (team: Team) => {
             <TabPanel>
             {members.map((member: User) => {
              return (
-             <HStack justify="left" borderBottomWidth='1px'>
+             <HStack justify="left" borderBottomWidth='1px' borderBottomColor={'rgb(187,125,217)'}>
              <Avatar size='sm' name={member.firstName + ' ' + member.lastName} src={member.profilePhoto}my={4} />{' '} 
              <Text key={member.handle} my={4} >{member.firstName} {member.lastName}, {member.email} </Text>
              </HStack>)
@@ -114,7 +114,7 @@ const TeamInfo = (team: Team) => {
             Channels:
             </Heading>
             {allChannels.map(channel => {
-              return (<Text key={channel.id} fontSize="lg" my={4} borderBottomWidth='1px'>{channel.title} </Text>)
+              return (<Text key={channel.id} fontSize="lg" my={4} borderBottomWidth='1px' borderBottomColor={'rgb(187,125,217)'}>{channel.title} </Text>)
             })}
           </DrawerBody>
         </DrawerContent>

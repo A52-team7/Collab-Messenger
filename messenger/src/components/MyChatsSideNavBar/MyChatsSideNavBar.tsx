@@ -67,7 +67,19 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
         w={'inherit'}
         maxH={'60vh'}
         mt={5}
-        overflowY={'scroll'}
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'black',
+            borderRadius: '24px',
+          },
+        }}
       >
         {channels.map((channel: Channel) => (
           <Flex

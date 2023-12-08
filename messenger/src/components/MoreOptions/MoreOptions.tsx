@@ -14,9 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect,useState } from 'react';
 import AppContext, {UserState} from '../../context/AppContext';
 import {Team} from '../CreateTeam/CreateTeam';
-import {getTeamById, addMemberToTeam} from '../../services/teams.service';
-import { FiEdit3, FiUsers, FiXOctagon   } from "react-icons/fi";
-import { updateUserTeams} from '../../services/users.service'
+import {getTeamById} from '../../services/teams.service';
+import { FiEdit3, FiUsers } from "react-icons/fi";
 
 export interface IdTeam{
   id:string
@@ -49,10 +48,6 @@ const MoreOptions = ({id}: IdTeam) => {
       navigate('/new-chat', {state: {team}}) 
   }
 
-  const removeTeam = () =>{
-// soon
-  }
-
   return (
     <Flex mt={4}>
       <Popover placement="bottom" isLazy>
@@ -67,42 +62,33 @@ const MoreOptions = ({id}: IdTeam) => {
             mt={-4}
           />
         </PopoverTrigger>
-        <PopoverContent w="fit-content" _focus={{ boxShadow: 'none' }}>
-          <PopoverArrow />
-          <PopoverBody>
+        <PopoverContent w="fit-content" borderColor="RGB(59, 59, 59)" _focus={{ boxShadow: 'none' }}>
+          <PopoverArrow borderColor="RGB(59, 59, 59)"/>
+          <PopoverBody bg={'RGB(59, 59, 59)'} >
             <Stack justifyContent="flex-start">
             <Button
                 w="170px"
-                variant="ghost"
+                variant='unstyled' 
+                color={'white'}
                 leftIcon={<FiUsers  />}
                 fontWeight="normal"
                 fontSize="sm"
+                _hover={{ opacity: '0.8' }} 
                 onClick={addNewChannel}>
                 Add channel
               </Button>
               {(team.owner === userData.handle) && 
               (<Button
                 w="170px"
-                variant="ghost"
+                variant='unstyled' 
+                color={'white'}
                 leftIcon={<FiEdit3 />}
                 fontWeight="normal"
                 fontSize="sm"
+                _hover={{ opacity: '0.8' }} 
                 onClick={() => navigate('/edit-team-information', {state:{team}})}>
                 Edit team information
-              </Button>)}
-              {/* {(team.owner === userData.handle) && 
-              (<Button
-                w="194px"
-                variant="ghost"
-                rightIcon={<FiXOctagon  />}
-                justifyContent="space-between"
-                fontWeight="normal"
-                colorScheme="red"
-                fontSize="sm"
-                onClick={removeTeam}>
-                Remove team
-              </Button>
-              )} */}
+              </Button>)}      
             </Stack>
           </PopoverBody>
         </PopoverContent>

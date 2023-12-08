@@ -1,5 +1,7 @@
 import { Box,  } from '@chakra-ui/react';
+import MyCalendar from '../../components/MyCalendar/MyCalendar';
 // import JitsiMeetingComponent from '../../components/JitsiMeetingComponent/JitsiMeetingComponent';
+
 
 const Home = (): JSX.Element  =>{
 
@@ -9,7 +11,7 @@ const Home = (): JSX.Element  =>{
         backgroundRepeat="no-repeat"
         backgroundSize='cover' >
             {/* <JitsiMeetingComponent/> */}
-
+        <MyCalendar/>
         </Box>
     )
 }

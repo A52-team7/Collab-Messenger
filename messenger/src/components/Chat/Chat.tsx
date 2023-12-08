@@ -22,8 +22,6 @@ import {
   setAllInChannelToUnseen,
   addTitleToChannel,
   getLeftMembersLive,
-  getIfUserHasChannel,
-  addChannelToMyChannels
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
 import { useContext, useEffect, useState, useRef } from 'react';
@@ -40,7 +38,6 @@ import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
-//import SearchMassage from '../SearchMassage/SearchMassage'
 
 const Chat = (): JSX.Element => {
 
@@ -311,7 +308,7 @@ const Chat = (): JSX.Element => {
       pl={30}
       py={12}>
       {!isLeft &&
-        <Flex w={'inherit'} mb={10} mt={-10}>
+        <Flex w={'inherit'} h={'50px'} mb={8} mt={-10}>
           {!editTitle ? (
             <Flex flex={1}>
               <Heading color={'white'}>{title}</Heading>
@@ -334,19 +331,30 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-          {channelId && <ChatMoreOptions channelId={channelId} />}
-          {/* <SearchMassage messages={messages}/> */}
+         {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack
         maxH={'60vh'}
         w={'inherit'}
-        overflowY={'scroll'}
+        overflowY="auto"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'black',
+            borderRadius: '24px',
+          },
+        }}
       >
         {ifIsLeftIsSet &&
           <>
             {messages.length > 0 &&
-              <Box h={'100vh'}>
+              <Box h={'auto'}>
                 <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
               </Box>
             }
@@ -365,17 +373,16 @@ const Chat = (): JSX.Element => {
           {!replyIsVisible ? (<Stack
             // boxShadow={'2xl'}
             // bg={useColorModeValue('white', 'gray.700')}
+            h={'100px'}
             rounded={'xl'}
             w={'60vw'}
-            p={10}
             spacing={8}
             align={'center'}
             position={'fixed'}
             bottom={'0'}>
-            <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} h={'7vh'}>
+            <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
               <Textarea
                 ref={textAreaRef}
-                mt={-3}
                 placeholder={'Write something...'}
                 color={useColorModeValue('gray.800', 'gray.200')}
                 bg={useColorModeValue('gray.100', 'gray.600')}
