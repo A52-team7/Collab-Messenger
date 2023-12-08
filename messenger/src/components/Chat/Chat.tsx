@@ -406,8 +406,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-          {channelId && <ChatMoreOptions channelId={channelId} />}
-          {/* <SearchMassage messages={messages}/> */}
+         {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack

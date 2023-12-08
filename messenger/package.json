@@ -12,6 +12,8 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
+    "@daily-co/daily-js": "^0.55.1",
+    "@daily-co/daily-react": "^0.16.0",
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.11.1",
@@ -20,15 +22,18 @@
     "firebase": "^10.6.0",
     "framer-motion": "^10.16.5",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.8.5",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-icons": "^4.12.0",
     "react-linkify": "^1.0.0-alpha",
     "react-router-dom": "^6.19.0",
+    "recoil": "^0.7.7",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
+    "@types/react-big-calendar": "^1.8.6",
     "@types/react-dom": "^18.2.7",
     "@types/react-linkify": "^1.0.4",
     "@types/uuid": "^9.0.7",
@@ -40,5 +45,17 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

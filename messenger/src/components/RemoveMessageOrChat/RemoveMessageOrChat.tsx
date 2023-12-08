@@ -6,6 +6,7 @@ import AppContext from '../../context/AppContext';
 import { addMessage } from "../../services/messages";
 import { ADMIN, LEFT, REMOVE_PERSON } from "../../common/constants";
 import { useNavigate } from "react-router-dom";
+import { FiXOctagon   } from "react-icons/fi";
 
 export interface RemoveMessageOrChatProps {
   onDeleteMessage?: () => void;
@@ -47,9 +48,14 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
     return (
       <>
         {!isFromChat ? (
-            <Button p={1} size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
+            <Button p={1} variant='unstyled' size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
         ) : (
-            <Button p={1} color={'white'} bg={'red'} onClick={onOpen}>Remove chat</Button>
+            <Button  
+            variant='unstyled' 
+            color={'red'} 
+            onClick={onOpen} 
+            _hover={{ opacity: '0.8' }} 
+            leftIcon={<FiXOctagon  />}>Remove chat</Button>
         )}
         
         <AlertDialog
