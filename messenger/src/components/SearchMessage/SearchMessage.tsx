@@ -9,17 +9,20 @@ import {
     Input,
     Button,
     useDisclosure,
-    Text
+    Text,
+    Flex,
+    Box,
+    VStack
   } from '@chakra-ui/react'
 import AppContext from '../../context/AppContext.tsx';
 import { useState, useEffect, useContext, useRef } from 'react';
 import {getChannelById} from '../../services/channels.service.ts'
-//import {getMessagesByChannel} from '../../services/messages.ts'
 import  { Message } from '../MessagesList/MessagesList.tsx';
 import {User} from '../SearchUsers/SearchUsers.tsx';
 import {getAllUsersData} from '../../services/users.service.ts'
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar.tsx';
 import { MdContentPasteSearch } from "react-icons/md";
+import SearchOneMessage from '../SearchOneMessage/SearchOneMessage';
 
 
 interface Messages {
@@ -28,15 +31,16 @@ interface Messages {
 }
 
 const SearchMessage = ({messages,channelId} : Messages) => {
-    const { userData } = useContext(AppContext);
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [search,setSearch] = useState<string>('')
+    //const [search,setSearch] = useState<string>('')
     //const [members,setMembers] = useState<string[]>([])
     const [initialData, setInitialData] = useState<User[]>([])
-    const [userSearch, setUserSearch] = useState<User[]>([])
     const [messageSearch, setSearchMessage] = useState<Message[]>([])
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const navigate = useNavigate();
+    
 
-    console.log(messages)
+    console.log(initialData)
     //const btnRef = useRef()
     useEffect(() => {
         getChannelById(channelId)
@@ -60,62 +64,54 @@ const SearchMessage = ({messages,channelId} : Messages) => {
         )
     }, [])
 
-    const searchValueFunc = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value)
-    }
-
-    const findUser = (value: string) =>{
-        if (!value) return;
-    const trimmedSearchValue = value.trim().toLocaleLowerCase();
-    const filteredUsers = initialData.filter(user => {
-      const username = user.handle.toLowerCase();
-      const email = user.email.toLowerCase();
-      const firstName = user.firstName.toLowerCase();
-      const lastName = user.lastName.toLowerCase();
-      const fullName = `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`;
-
-      if (firstName.startsWith(trimmedSearchValue)) return user;
-      if (lastName.startsWith(trimmedSearchValue)) return user;
-      if (username.startsWith(trimmedSearchValue)) return user;
-      if (email.startsWith(trimmedSearchValue)) return user;
-      if (fullName.startsWith(trimmedSearchValue)) return user;
-    });
-    const sortedFilteredUsers = filteredUsers.sort((a, b) => {
-      const aFirstNameContainsString = a.firstName.toLowerCase().includes(trimmedSearchValue);
-      const aLastNameContainsString = a.lastName.toLowerCase().includes(trimmedSearchValue);
-      const bFirstNameContainsString = b.firstName.toLowerCase().includes(trimmedSearchValue);
-      const bLastNameContainsString = b.lastName.toLowerCase().includes(trimmedSearchValue);
-
-      if (aFirstNameContainsString && !bFirstNameContainsString) {
-        return -1;
-      } else if (!aFirstNameContainsString && bFirstNameContainsString) {
-        return 1;
-      } else if (aLastNameContainsString && !bLastNameContainsString) {
-        return -1;
-      } else if (!aLastNameContainsString && bLastNameContainsString) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    setUserSearch(sortedFilteredUsers);
-    }
-
-    const SearchMassageAndUser =(e: React.KeyboardEvent<HTMLInputElement>) => {
+    const searchMassageAndUser =(e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (inputRef.current ===  null) return;
         if(e.key === "Enter"){
-          if(search.includes('@')){
-          const [searchValue, searchUser] = search.split('@')
-          findUser(searchUser)
+          console.log(inputRef.current.value)
+          
+          if(inputRef.current.value.includes('@')){
+          const [searchValue, searchUser] = inputRef.current.value.split('@')
+          console.log(searchValue, searchUser)
 
-          const messageFilterByUser = messages
-          .filter((message) => userSearch.find((user) => user.handle === message.author) !== undefined)
+          if (!searchUser) return;
+          const trimmedSearchValue = searchUser.trim().toLocaleLowerCase();
+          const filteredUsers = initialData.filter(user => {
+            const username = user.handle.toLowerCase();
+            const email = user.email.toLowerCase();
+            const firstName = user.firstName.toLowerCase();
+            const lastName = user.lastName.toLowerCase();
+            const fullName = `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`;
+      
+            if (firstName.startsWith(trimmedSearchValue)) return user;
+            if (lastName.startsWith(trimmedSearchValue)) return user;
+            if (username.startsWith(trimmedSearchValue)) return user;
+            if (email.startsWith(trimmedSearchValue)) return user;
+            if (fullName.startsWith(trimmedSearchValue)) return user;
+          });
+          const sortedFilteredUsers = filteredUsers.sort((a, b) => {
+            const aFirstNameContainsString = a.firstName.toLowerCase().includes(trimmedSearchValue);
+            const aLastNameContainsString = a.lastName.toLowerCase().includes(trimmedSearchValue);
+            const bFirstNameContainsString = b.firstName.toLowerCase().includes(trimmedSearchValue);
+            const bLastNameContainsString = b.lastName.toLowerCase().includes(trimmedSearchValue);
+      
+            if (aFirstNameContainsString && !bFirstNameContainsString) {
+              return -1;
+            } else if (!aFirstNameContainsString && bFirstNameContainsString) {
+              return 1;
+            } else if (aLastNameContainsString && !bLastNameContainsString) {
+              return -1;
+            } else if (!aLastNameContainsString && bLastNameContainsString) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+          const messageFilterByUser = messages.filter((message) => sortedFilteredUsers.find((user) => user.handle === message.author) !== undefined)
           .filter((message) => message.content.includes(searchValue.trim()) ===true)
-          console.log(messageFilterByUser)
-          setSearchMessage(messageFilterByUser)
-          console.log(messageSearch)
 
+          setSearchMessage([...messageFilterByUser])
           } else{
-            const messageFilterByText = messages.filter((message) => message.content.includes(search))
+            const messageFilterByText = messages.filter((message) => message.content.includes(inputRef.current.value))
             setSearchMessage(messageFilterByText)
           }
 }}
@@ -138,30 +134,42 @@ return (
         onClose={onClose}
       >
         <DrawerOverlay />
-        <DrawerContent bg={"RGB(59, 59, 59)"}>
+        <DrawerContent bg={"RGB(59, 59, 59)"} minW={'400px'}>
           <DrawerCloseButton />
           <DrawerHeader color={'white'} textAlign="center" >Find message</DrawerHeader>
 
           <DrawerBody>
             <Input placeholder='Search here...' 
-            onKeyDown={SearchMassageAndUser}
-            onChange={searchValueFunc}
+            ref={inputRef}
             bg={'white'}
+            onKeyDown={searchMassageAndUser}
+            //onChange={searchValueFunc}
             />  
-
-            {messageSearch.map(message => (<Text key={message.id}>{message.content}</Text>))}
-            
+            <Flex alignItems={'center'}>
+              <VStack>
+              {messageSearch.map(message  => (
+              <Box key={message.id} 
+              border={'1px solid rgb(187,125,217)'}
+              mt={'20px'} 
+              p={4}
+              minW={'100%'}
+              
+               >
+                </Box>))
+                }
+              </VStack>  
+            </Flex>
           </DrawerBody>
 
           <DrawerFooter>
             <Button 
             variant='outline' 
             mr={3} 
+            color={'teal.500'}
             borderColor={'teal.500'}
             bg={'none'}
-            color={'teal.500'}
             _hover={{ opacity: 0.8 }}
-            color={'teal.500'} onClick={onClose} >
+            onClick={onClose} >
               Cancel
             </Button>
           </DrawerFooter>

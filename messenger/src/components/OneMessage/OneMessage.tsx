@@ -24,6 +24,7 @@ export interface Author {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  profilePhoto: string;
 }
 
 export interface OneMessageProps {
