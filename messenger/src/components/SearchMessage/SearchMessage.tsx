@@ -32,14 +32,10 @@ interface Messages {
 
 const SearchMessage = ({messages,channelId} : Messages) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    //const [search,setSearch] = useState<string>('')
-    //const [members,setMembers] = useState<string[]>([])
     const [initialData, setInitialData] = useState<User[]>([])
     const [messageSearch, setSearchMessage] = useState<Message[]>([])
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const navigate = useNavigate();
-    
-
+  
     console.log(initialData)
     //const btnRef = useRef()
     useEffect(() => {
@@ -145,17 +141,16 @@ return (
             onKeyDown={searchMassageAndUser}
             //onChange={searchValueFunc}
             />  
-            <Flex alignItems={'center'}>
+            <Flex  mt={'20px'} >
               <VStack>
-              {messageSearch.map(message  => (
+              {messageSearch.length > 0 ? messageSearch.map(message  => (
               <Box key={message.id} 
               border={'1px solid rgb(187,125,217)'}
-              mt={'20px'} 
               p={4}
               minW={'100%'}
-              
                >
-                </Box>))
+                 <SearchOneMessage message={message}/>
+              </Box>)) : <Text color={'white'}>Not found message: {inputRef.current.value}</Text>
                 }
               </VStack>  
             </Flex>
