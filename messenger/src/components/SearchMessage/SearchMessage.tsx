@@ -150,7 +150,7 @@ return (
               minW={'100%'}
                >
                  <SearchOneMessage message={message}/>
-              </Box>)) : <Text color={'white'}>Not found message: {inputRef.current.value}</Text>
+              </Box>)) : <Text color={'white'}>Not found message</Text>
                 }
               </VStack>  
             </Flex>
