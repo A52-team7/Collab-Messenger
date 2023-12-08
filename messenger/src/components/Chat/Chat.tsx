@@ -9,6 +9,9 @@ import {
   Input,
   Alert,
   AlertIcon,
+  Image,
+  Text,
+  Tooltip,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage, setAllUsersUnseen } from '../../services/users.service';
@@ -38,7 +41,11 @@ import { IoClose } from "react-icons/io5";
 import { BsSend } from "react-icons/bs";
 import { BsFillSendFill } from "react-icons/bs";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
+import SendImagePopover from '../SendImagePopover/SendImagePopover';
 //import SearchMassage from '../SearchMassage/SearchMassage'
+import { AiOutlineDelete } from "react-icons/ai";
+import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const Chat = (): JSX.Element => {
 
@@ -72,6 +79,14 @@ const Chat = (): JSX.Element => {
   const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [image, setImage] = useState<string | ArrayBuffer>('');
+  const [imageSrc, setImageSrc] = useState<File | null>(null);
+
+  console.log(image);
+  console.log(imageSrc);
+  
+  
 
   useEffect(() => {
     setChannelId(params.id);
@@ -179,30 +194,82 @@ const Chat = (): JSX.Element => {
     };
   }, [ifIsLeftIsSet, isLeft, channelId, dateOfLeaving, userData]);
 
+  const uploadImageToFBAndSendAMessage = (): Promise<void> | void => {
+    if (imageSrc) {
+      return new Promise((resolve, reject) => {
+        const storage: FirebaseStorage = getStorage();
+        const fileId = uuidv4();
+        const folderPath: string = `${channelId}/${fileId}`;
+        const storageRef: StorageReference = ref(storage, folderPath);
+        uploadBytes(storageRef, imageSrc)
+          .then(() => {
+            const storageRef: StorageReference = ref(storage, folderPath);
+            return storageRef;
+          })
+          .then(storageRef => {
+            const url: Promise<string> = getDownloadURL(storageRef);
+            return url;
+          })
+          .then(url => {
+            if (channelId && userData) {
+              addMessage(url, userData.handle, channelId, false, USER_MESSAGE)
+                  .then(result => {
+                    channelMessage(channelId, result.id);
+                    userMessage(result.id, userData.handle);
+                    setAllInChannelToUnseen(channelId, userData.handle);
+                  })
+                  .then(() => {
+                    if (userData) {
+                      if (team) {
+                        setAllUsersUnseen(members, userData.handle, 'teams');
+                      } else {
+                        setAllUsersUnseen(members, userData.handle, 'chats');
+                      }
+                    }
+                  })
+                  .then(() => {
+                    setImageSrc(null);
+                  })
+                  .catch(e => console.error(e));
+                }
+            resolve();
+          })
+          .catch((err: Error) => {
+            console.log(err);
+            return reject(err);
+          });
+      });
+    }
+  };
+
   const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement>) => {
     if (event.key === 'Enter' || event.type === 'click') {
       if (!textAreaRef.current) return;
       const messageFromArea = textAreaRef.current.value.trim();
-      if (!messageFromArea) {
-        return alert(`Enter message first`)
-      }
-      if (channelId && userData) {
-        addMessage(messageFromArea, userData.handle, channelId, false, USER_MESSAGE)
-          .then(result => {
-            channelMessage(channelId, result.id);
-            userMessage(result.id, userData.handle);
-            setAllInChannelToUnseen(channelId, userData.handle);
-          })
-          .then(() => {
-            if (userData) {
-              if (team) {
-                setAllUsersUnseen(members, userData.handle, 'teams');
-              } else {
-                setAllUsersUnseen(members, userData.handle, 'chats');
+      // if (!messageFromArea) {
+      //   return alert(`Enter message first`)
+      // }
+      if(imageSrc){
+        uploadImageToFBAndSendAMessage();
+      }else{
+        if (channelId && userData) {
+          addMessage(messageFromArea, userData.handle, channelId, false, USER_MESSAGE)
+            .then(result => {
+              channelMessage(channelId, result.id);
+              userMessage(result.id, userData.handle);
+              setAllInChannelToUnseen(channelId, userData.handle);
+            })
+            .then(() => {
+              if (userData) {
+                if (team) {
+                  setAllUsersUnseen(members, userData.handle, 'teams');
+                } else {
+                  setAllUsersUnseen(members, userData.handle, 'chats');
+                }
               }
-            }
-          })
-          .catch(e => console.error(e));
+            })
+            .catch(e => console.error(e));
+          }
       }
       textAreaRef.current.value = '';
     }
@@ -289,6 +356,13 @@ const Chat = (): JSX.Element => {
 
   const onHideColor = () => {
     setVisibleColor(false);
+  }
+
+  const removeFilePhoto = () => {
+    if (fileInput.current) {
+      fileInput.current.value = '';
+    }
+    setImageSrc(null);
   }
 
 
@@ -381,8 +455,38 @@ const Chat = (): JSX.Element => {
             spacing={8}
             align={'center'}
             position={'fixed'}
-            bottom={'0'}>
+            bottom={'0'}
+          >
+              {imageSrc && <Flex
+              position="fixed"
+              zIndex="9999"
+              p={20}
+              backgroundColor="rgba(0, 0, 0, 0.9)"
+              mt={'-300px'} 
+              w={'fit-content'}
+              h={'300px'}
+            >
+             <Image src={image}  h={'300px'} mt={'-80px'} />
+             <Flex ml={2} mt={-65} textAlign={'center'} justifyContent={'center'}>
+                <Text fontWeight={'bold'} fontSize={'sm'} bg={'black'} color={'white'} isTruncated>
+                  {imageSrc.name}
+                  </Text>
+                <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
+                  <Button
+                    bg={'none'}
+                    size={'sm'}
+                    color={'red'}
+                    p={0}
+                    _hover={{ opacity: 0.7 }}
+                    onClick={removeFilePhoto}
+                    >
+                    <AiOutlineDelete size={23} />
+                  </Button>
+                </Tooltip>
+              </Flex>
+            </Flex>}
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
+              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc}/>}
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}

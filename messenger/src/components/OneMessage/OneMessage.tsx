@@ -1,4 +1,4 @@
-import { AspectRatio, Box, Button, Flex, Input, Text } from "@chakra-ui/react";
+import { AspectRatio, Box, Button, Flex, Image, Input, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
@@ -199,23 +199,29 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 maxW={'660px'}
                 w={'fit-content'}
               >
-                <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <>
-                  {!decoratedHref.includes('youtube') ? (
-                    <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
-                      {decoratedText}
-                    </a>
-            ) : (
-                    <AspectRatio w='640px' h={'360px'} ratio={1} ml={'-10px'} mr={'-10px'}>
-                    <iframe
-                      title={decoratedText}
-                      src={decoratedHref}
-                      allowFullScreen
-                      />
-                    </AspectRatio>
-                  )}
-                </>
-                )}>
+                <Linkify
+                  componentDecorator={(decoratedHref, decoratedText, key) => {
+                    if (decoratedHref.includes('youtube')) {
+                      return (
+                        <AspectRatio w="640px" h={'360px'} ratio={1} ml={'-10px'} mr={'-10px'}>
+                          <iframe
+                            title={decoratedText}
+                            src={decoratedHref}
+                            allowFullScreen
+                          />
+                        </AspectRatio>
+                      );
+                    } else if (decoratedHref.startsWith('https://firebasestorage')) {
+                      return <Image src={decoratedHref} h={'350px'}/>;
+                    } else {
+                      return (
+                        <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+                          {decoratedText}
+                        </a>
+                      );
+                    }
+                  }}
+                >
                   {contentOfMessage}
                 </Linkify>
                 {/* {visibleOptions &&  */}

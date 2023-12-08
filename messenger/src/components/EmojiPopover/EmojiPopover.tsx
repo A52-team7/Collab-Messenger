@@ -2,17 +2,40 @@ import { Button } from "@chakra-ui/button";
 import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/popover";
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { BsEmojiGrin } from "react-icons/bs";
+import { BsEmojiLaughing } from "react-icons/bs";
+import { BsEmojiLaughingFill } from "react-icons/bs";
+import { useState } from 'react';
 
 export interface EmojiPopoverProps {
     onGetEmoji:  (emoji: string) => void;
 }
 
 const EmojiPopover = ({onGetEmoji}: EmojiPopoverProps) => {
+
+    const [visibleColor, setVisibleColor] = useState(false);
+
+    const onSeeColor = () => {
+        setVisibleColor(true);
+      }
+    
+      const onHideColor = () => {
+        setVisibleColor(false);
+      }
+    
+
     return(
         <Popover placement="top">
         <PopoverTrigger>
-            <Button><BsEmojiGrin size={30}/></Button>
+            <Button
+                ml={-5}
+                bg={'none'}
+                color={'white'}
+                onMouseEnter={onSeeColor}
+                onMouseLeave={onHideColor}
+                _hover={{ bg: 'none' }}
+                _focus={{ bg: 'none' }}>
+                {!visibleColor ? (<BsEmojiLaughing size={35}/>) : (<BsEmojiLaughingFill size={35}/>)}
+            </Button>
         </PopoverTrigger>
         <PopoverContent w={'fit-content'}>
             <PopoverArrow />
