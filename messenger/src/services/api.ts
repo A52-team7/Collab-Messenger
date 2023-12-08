@@ -10,8 +10,10 @@ async function createRoom() {
     },
   };
 
+  console.log(import.meta.env.VITE_ROOM_ENDPOINT);
+
   const isLocal =
-    import.meta.env.REACT_APP_ROOM_ENDPOINT && import.meta.env.REACT_APP_ROOM_ENDPOINT === 'local';
+    import.meta.env.VITE_ROOM_ENDPOINT && import.meta.env.VITE_ROOM_ENDPOINT === 'local';
   const endpoint = isLocal
     ? 'https://api.daily.co/v1/rooms/'
     : `${window.location.origin}/api/rooms`;
@@ -23,7 +25,7 @@ async function createRoom() {
   const headers = isLocal && {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${import.meta.env.REACT_APP_DAILY_API_KEY}`,
+      Authorization: `Bearer ${import.meta.env.VITE_DAILY_API_KEY}`,
     },
   };
 

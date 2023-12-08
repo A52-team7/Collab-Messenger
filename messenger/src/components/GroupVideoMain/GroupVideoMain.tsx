@@ -50,7 +50,7 @@ export const GroupVideoMain = () => {
    */
   const startHairCheck = useCallback(async (url) => {
     const newCallObject = DailyIframe.createCallObject();
-    setRoomUrl('https://chatandblab.daily.co/roomyRoom');
+    setRoomUrl(url);
     setCallObject(newCallObject);
     setAppState(STATE_HAIRCHECK);
     await newCallObject.preAuth({ url }); // add a meeting token here if your room is private
