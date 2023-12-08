@@ -19,6 +19,8 @@ import  { Message } from '../MessagesList/MessagesList.tsx';
 import {User} from '../SearchUsers/SearchUsers.tsx';
 import {getAllUsersData} from '../../services/users.service.ts'
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar.tsx';
+import { MdContentPasteSearch } from "react-icons/md";
+
 
 interface Messages {
     messages: Message[]
@@ -122,8 +124,13 @@ const SearchMessage = ({messages,channelId} : Messages) => {
 
 return (
     <>
-    <Button  colorScheme='teal' onClick={onOpen}>
-        Open
+    <Button 
+    variant='unstyled' 
+    color={'white'} 
+    onClick={onOpen} 
+    _hover={{ opacity: '0.8' }} 
+    leftIcon={<MdContentPasteSearch />}>
+        Search Message
       </Button>
       <Drawer
         isOpen={isOpen}
@@ -131,14 +138,15 @@ return (
         onClose={onClose}
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent bg={"RGB(59, 59, 59)"}>
           <DrawerCloseButton />
-          <DrawerHeader>Find message</DrawerHeader>
+          <DrawerHeader color={'white'} textAlign="center" >Find message</DrawerHeader>
 
           <DrawerBody>
             <Input placeholder='Search here...' 
             onKeyDown={SearchMassageAndUser}
             onChange={searchValueFunc}
+            bg={'white'}
             />  
 
             {messageSearch.map(message => (<Text key={message.id}>{message.content}</Text>))}
@@ -146,64 +154,20 @@ return (
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant='outline' mr={3} onClick={onClose}>
+            <Button 
+            variant='outline' 
+            mr={3} 
+            borderColor={'teal.500'}
+            bg={'none'}
+            color={'teal.500'}
+            _hover={{ opacity: 0.8 }}
+            color={'teal.500'} onClick={onClose} >
               Cancel
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
-//     <Box 
-//     //w={ base: '90%', md: '300px', lg: '480px' }
-//       onFocus={() => setOpen(true)}
-//       onBlur={(e) => {
-//         if (!e.currentTarget.contains(e.relatedTarget)) {
-//           setOpen(false);
-//         }
-//       }}
-//       position={'relative'}
-//     >
-//       <Input pr={10} bg={'rgb(237,254,253)'}
-//         placeholder={'Search by username / names / email'}
-//         _placeholder={{ color: 'gray.500' }}
-//         rounded="md"
-//         value={searchValue}
-//         onChange={(e) => searchAllUsers(e.target.value)}
-//       />
-//       {
-//         open && <Box
-//           position={'absolute'}
-//           h={'fit-content'}
-//           w={'inherit'}
-//           maxH={'200px'}
-//           bg={searchType === ADD_USERS ? 'gray.300' : 'gray.100'}
-//           overflowY={'scroll'}
-//           tabIndex={-1}
-//           zIndex={99}
-//           cursor={'pointer'}
-//           css={{
-//             '&::-webkit-scrollbar': {
-//               display: 'none',
-//             },
-//             'msOverflowStyle': 'none',  /* IE and Edge */
-//             'scrollbarWidth': 'none',  /* Firefox */
-//           }}
-//         >
-//           {searchValue.length > 0 &&
-//             filteredResults?.map((user) => <SearchUsersBox
-//               key={user.handle}
-//               userName={user.handle}
-//               email={user.email}
-//               firstName={user.firstName}
-//               lastName={user.lastName}
-//               searchType={searchType}
-//               setOpen={setOpen}
-//               setSearchValue={setSearchValue}
-//               updateNewMember={updateNewMember}
-//             />)}
-//         </Box>
-//       }
-//     </Box>
   );
 };
 
