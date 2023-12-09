@@ -46,6 +46,7 @@ import SendImagePopover from '../SendImagePopover/SendImagePopover';
 import { AiOutlineDelete } from "react-icons/ai";
 import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 const Chat = (): JSX.Element => {
 
@@ -82,6 +83,7 @@ const Chat = (): JSX.Element => {
 
   const [image, setImage] = useState<string | ArrayBuffer>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   console.log(image);
   console.log(imageSrc);
@@ -399,6 +401,9 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
+            <Button onClick={() => navigate('/video')}>V</Button>
+            <Button onClick ={() => navigate('/new-event')}>Event</Button>
+
           {ifChatBetweenTwoIsSet && (
             <>
               {members.length > 0 && !chatBetweenTwo &&

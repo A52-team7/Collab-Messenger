@@ -184,7 +184,7 @@ const CreateTeam = () => {
             border={'2px solid'}
             borderColor={'teal.500'}
             bg={'none'}
-            color={'green.400'}
+            color={'teal.500'}
             _hover={{ opacity: 0.8 }}
             onClick={() => navigate(-1)}>
             Cancel
@@ -194,7 +194,7 @@ const CreateTeam = () => {
             variant={'primaryButton'} w='full'
             _hover={{ opacity: 0.8 }}
             onClick={saveNewTeam}>
-            Submit
+            Add Team
           </Button>
         </Stack>
       </Stack>

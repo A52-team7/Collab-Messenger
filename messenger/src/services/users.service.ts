@@ -136,14 +136,14 @@ export const updateUserStatus = (handle: string, status: string) => {
 }
 
 export const updateUserEvent = (handle: string, event: string) => {
-  return update(ref(db), {[`/users/${handle}/myEvent`]: event})
+  return update(ref(db), {[`/users/${handle}/myEvents/${event}`]: true})
 }
 
 export interface EventListener { (events: string[]): void }
 
 export const getUserEventLive = (handle: string, listener: EventListener ) => {
 
-  return onValue(ref(db, `events/${handle}/myEvents`), (snapshot) => {
+  return onValue(ref(db, `users/${handle}/myEvents`), (snapshot) => {
     if (!snapshot.exists()) return [];
 
     const events = Object.keys(snapshot.val());

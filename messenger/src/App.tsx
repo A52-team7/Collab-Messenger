@@ -16,6 +16,7 @@ import NewChat from './components/NewChat/NewChat';
 import UserDetails from './components/UserDetails/UserDetails';
 import EditTeamInfo from './components/EditTeamInfo/EditTeamInfo';
 import GroupVideoMain from './components/GroupVideoMain/GroupVideoMain';
+import NewEvent from './components/NewEvent/NewEvent';
 
 function App(): JSX.Element {
   const [userAuth, loading] = useAuthState(auth);
@@ -73,6 +74,7 @@ function App(): JSX.Element {
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />
           <Route path='/edit-team-information' element={<AuthenticatedRoute><EditTeamInfo /></AuthenticatedRoute>} />
+          <Route path='/new-event' element={<AuthenticatedRoute><NewEvent /></AuthenticatedRoute>} />
           <Route path='*' element={<NoPageFound />} />
         </Routes>
       </Body>}

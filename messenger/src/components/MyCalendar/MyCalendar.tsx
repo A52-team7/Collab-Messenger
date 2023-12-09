@@ -16,35 +16,22 @@ export interface MyEvent {
     members: { [handle: string]: boolean },
     start: string,
     end: string,
-    createdOn: string
+    createdOn?: string
+    meetingLink: string,
 }
 
 const MyEventBox = ({event}) => (<div>
     <strong>{event.title}</strong>
     <br />
     {/* Add your button or any other custom content here */}
-    <button onClick={() => alert(`Button clicked for ${event.title}`)}>Click me</button>
+    {event.meetingLink && (<button>
+      <a href={event.meetingLink}>Click me</a></button>)}
     </div>)
 
 
 const MyCalendar = () => {
     const [myEvent, setMyEvent] = useState<MyEvent[]>([])
     const { userData } = useContext<UserState>(AppContext);
-
-    const events=[
-        {
-          id: 1,
-          title: "Event 1",
-          start: new Date("2023/12/6 09:30"),
-          end: new Date("2023/12/6 10:30"),
-        },
-        {
-          id: 2,
-          title: "Event 2",
-          start: new Date("2023/12/8 10:00"),
-          end: new Date("2023/12/8 11:00"),
-        },
-    ]
 
     useEffect(() => {
         if(userData === null) return;
@@ -54,20 +41,20 @@ const MyCalendar = () => {
                   return getEventById(eventId)
                 }))
                 .then(elEvent => {
+                  console.log(elEvent)
                   setMyEvent([...elEvent])
                 })
                 .catch(e => console.log(e))
     })
-    }, [userData])
-    
-
+    }, [])
+  
     return (
         <Box bg={'white'} >
           <Calendar
             localizer={localizer}
             defaultDate={new Date()}
             defaultView="month"
-            events={events}
+            events={myEvent}
             style={{ height: "100vh" }}
             components={{
               event: MyEventBox

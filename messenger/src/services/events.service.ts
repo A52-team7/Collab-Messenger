@@ -1,7 +1,9 @@
 import { get, ref, query, equalTo, orderByChild,  push } from 'firebase/database'
 import { db } from '../config/firebaseConfig';
+import { Timestamp } from "firebase/firestore";
+import {Value} from '../components/NewEvent/NewEvent'
 
-export const createEvent = (title: string, creator: string, members: object, start: string, end: string) => {
+export const createEvent = (title: string, creator: string, members: object, start: number, end: number, meetingLink: string) => {
     return push(
         ref(db, 'events'),
         {
@@ -10,6 +12,7 @@ export const createEvent = (title: string, creator: string, members: object, sta
             members,
             start,
             end,
+            meetingLink,
             createdOn: Date.now()
         },
     )
@@ -30,6 +33,8 @@ export const getEventById = (id: string) => {
             const event = result.val();
             event.id = id;
             event.createdOn = new Date(event.createdOn);
+            event.start = new Date(event.start)
+            event.end = new Date(event.end)
             return event;
         });
 };
