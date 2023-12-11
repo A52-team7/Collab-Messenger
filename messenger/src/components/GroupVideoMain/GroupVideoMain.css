@@ -1,19 +1,19 @@
-.app {
+/* .app {
   background-color: var(--darkest-blue);
   min-height: 100vh;
-  display: grid;
-  /* this is where we're dividing our app in 3 rows: header, call, and tray. The meeting information
+  display: grid; */
+/* this is where we're dividing our app in 3 rows: header, call, and tray. The meeting information
   is outside the app's document flow.*/
-  grid-template-rows: 4rem 1fr 4rem;
-}
+/* grid-template-rows: 4rem 1fr 4rem;
+} */
 
-p {
+/* p {
   font-size: 16px;
   margin: 16px;
   text-align: center;
-}
+} */
 
-h1 {
+/* h1 {
   margin: 0;
   padding: 0;
   font-weight: 500;
@@ -67,4 +67,4 @@ video {
 .api-error a,
 .api-error a:visited {
   color: var(--white);
-}
+} */
