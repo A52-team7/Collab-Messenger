@@ -27,7 +27,6 @@ const EmojiPopover = ({onGetEmoji}: EmojiPopoverProps) => {
         <Popover placement="top">
         <PopoverTrigger>
             <Button
-                ml={-5}
                 bg={'none'}
                 color={'white'}
                 onMouseEnter={onSeeColor}

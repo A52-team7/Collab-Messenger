@@ -390,9 +390,29 @@ const Chat = (): JSX.Element => {
             </Flex>
           ) : (
             <Flex flex={1}>
-              <Input value={newTitle} bg={'grey'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
-              <Button p={1} onClick={onUpdateTitle}><FaCheck size={20} /></Button>
-              <Button p={1} onClick={onExitEditTitle}><IoClose size={25} /></Button>
+              <Input value={newTitle} bg={'rgb(237,254,253)'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
+              <Button 
+                  bg={'teal.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'teal.100' }}
+                  border={'1px solid'}
+                  borderColor={'teal'}
+                  color={'teal'} 
+                  p={1} 
+                  onClick={onUpdateTitle}>
+                    <FaCheck size={20} />
+              </Button>
+              <Button 
+                  bg={'teal.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'teal.100' }}
+                  border={'1px solid'}
+                  borderColor={'teal'}
+                  color={'teal'}
+                  p={1} 
+                  onClick={onExitEditTitle}>
+                    <IoClose size={25} />
+              </Button>
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
@@ -490,7 +510,7 @@ const Chat = (): JSX.Element => {
                 ref={textAreaRef}
                 placeholder={'Write something...'}
                 color={useColorModeValue('gray.800', 'gray.200')}
-                bg={useColorModeValue('gray.100', 'gray.600')}
+                bg={'rgb(237,254,253)'}
                 rounded={'xl'}
                 border={0}
                 resize={'none'}

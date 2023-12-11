@@ -8,9 +8,10 @@ export interface ReactionItemProps{
     reaction: ReactionItem;
     onAddReaction: (reaction: string) => void;
     onRemoveReaction: (reaction: string) => void;
+    isOnUserMessage: boolean;
 }
 
-const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemProps) => {
+const ReactionItem = ({reaction, onAddReaction, onRemoveReaction, isOnUserMessage}: ReactionItemProps) => {
 
     const { userData } = useContext(AppContext);
 
@@ -46,7 +47,7 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
                     ? onRemoveReaction(reaction[0])
                     : onAddReaction(reaction[0])
                 }
-                bg={userData && reaction[1].includes(userData.handle) ? `rgb(40,94,97)` : 'teal.600'}
+                bg={isOnUserMessage ? (userData && reaction[1].includes(userData.handle) ? 'rgb(69 59 80)' : 'rgb(88 76 103)') : (userData && reaction[1].includes(userData.handle) ? `rgb(40,94,97)` : 'teal.600')}
                 border={userData && reaction[1].includes(userData.handle) ? '1px solid white' : 'none'}
                 >
                     <Text>{reaction[0]}</Text>
@@ -56,7 +57,7 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction}: ReactionItemP
             </PopoverTrigger>
             <PopoverContent w={'250px'}>
                 <PopoverArrow />
-                <PopoverBody>{reaction[0]}: {reactedUsers.join(', ')}</PopoverBody>
+                <PopoverBody bg={'rgb(237,254,253)'}>{reaction[0]}: {reactedUsers.join(', ')}</PopoverBody>
             </PopoverContent>
         </Popover>
     )

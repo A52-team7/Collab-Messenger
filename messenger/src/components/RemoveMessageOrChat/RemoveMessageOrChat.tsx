@@ -48,7 +48,7 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
     return (
       <>
         {!isFromChat ? (
-            <Button p={1} variant='unstyled' size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
+            <Button p={1} variant='unstyled' size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
         ) : (
             <Button  
             variant='unstyled' 
