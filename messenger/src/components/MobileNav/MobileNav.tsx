@@ -91,13 +91,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
         <Flex alignItems={'center'} >
           <Menu>
             {userData ?
-                (<HStack>
-                  <Avatar
-                    size={'md'}
-                    src={userData.profilePhoto} >
-                      <UserStatus />
-                      </Avatar>
-                  <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
+              (<HStack>
+                <Avatar
+                  size={'md'}
+                  src={userData.profilePhoto} >
+                  <UserStatus />
+                </Avatar>
+                <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
                   <HStack
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='flex-start'
@@ -109,12 +109,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                   <Box display={{ base: 'none', md: 'flex' }}>
                     <FiChevronDown color={'grey'} />
                   </Box>
-              </MenuButton>
+                </MenuButton>
               </HStack>)
               :
               <TopNavLinks links={LinksUserOptions} />
             }
             <MenuList
+              zIndex={99}
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem onClick={() => navigate('/user-details')}>Profile</MenuItem>

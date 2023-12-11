@@ -22,6 +22,7 @@ import {
 import { AlertIcon } from '@chakra-ui/react';
 
 const Login = () => {
+  const { setContext } = useContext(AppContext);
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -30,8 +31,7 @@ const Login = () => {
     fieldErr: false,
     credentialsErr: false
   });
-  const { setContext } = useContext(AppContext);
-
+  const [loadingState, setLoadingState] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const updateForm = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +43,7 @@ const Login = () => {
 
   const onLogin = () => {
     if (!form.email || !form.password) return setError({ ...formErrors, fieldErr: true });
+    setLoadingState(true);
 
     loginUser(form.email, form.password)
       .then(credential => {
@@ -54,7 +55,9 @@ const Login = () => {
       .then(() => {
         navigate('/');
       })
+      .then(() => setLoadingState(false))
       .catch(e => {
+        setLoadingState(false);
         setError({ ...formErrors, credentialsErr: true });
         console.error(e.message);
       });
@@ -65,11 +68,11 @@ const Login = () => {
       maxH={'fit-content'}
       justify={'center'}
       bg={'none'}>
-      <Stack spacing={8} 
-      mx={'auto'} 
-      minW={'28vw'} 
-      maxW={'lg'} 
-      backgroundColor={'grey'} rounded={'lg'}>
+      <Stack spacing={8}
+        mx={'auto'}
+        minW={'28vw'}
+        maxW={'lg'}
+        backgroundColor={'grey'} rounded={'lg'}>
         <Box justifyContent={'center'} textAlign={'center'} mt={5} p={0}>
           <Heading m={0} p={0} fontSize={'4xl'}>Login</Heading>
         </Box>
@@ -84,7 +87,7 @@ const Login = () => {
               </Center>
               <Input
                 borderColor={'grey'}
-                bg={'white'} 
+                bg={'white'}
                 rounded="md"
                 type='text'
                 placeholder={formErrors.fieldErr && !form.email ? MSG_FIELD_REQUIRED : ''}
@@ -98,7 +101,7 @@ const Login = () => {
               <Input
                 borderColor={'grey'}
                 type={'password'}
-                bg={'white'} 
+                bg={'white'}
                 rounded="md"
                 placeholder={formErrors.fieldErr && !form.password ? MSG_FIELD_REQUIRED : ''}
                 textAlign={'center'}
@@ -129,6 +132,7 @@ const Login = () => {
               </Stack>
               <Button
                 onClick={onLogin}
+                isLoading={loadingState}
                 bg={'teal.500'}
                 color={'white'}
                 _hover={{
