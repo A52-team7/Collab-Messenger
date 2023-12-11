@@ -18,13 +18,13 @@ const ReactionPopover = ({ onAddReaction }: ReactionPopoverProps) => {
     return (
       <Popover isOpen={isOpen} onClose={onClose} placement="top">
         <PopoverTrigger>
-          <Button p={1} size="xs" color={'white'}  _hover={{ transform: 'scale(1.5)', color: 'white' }} bg="none" onClick={onToggle}>
+          <Button p={1} size="xs" color={'white'}  _hover={{ transform: 'scale(1.3)', color: 'white' }} bg="none" onClick={onToggle}>
             <VscReactions size={20} />
           </Button>
         </PopoverTrigger>
         <PopoverContent w="fit-content">
             <PopoverArrow />
-            <PopoverBody justifyContent="center">
+            <PopoverBody justifyContent="center" bg={'rgb(237,254,253)'}>
                 <Flex>
                     <Button bg="none" p={1} size="md" onClick={() => onReaction(LIKE)}>
                         {LIKE}

@@ -162,19 +162,17 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           <Text ml={2} color={'white'}>{message.content}</Text>
         </Flex>
       ) : (
-        <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={5}
+        <Flex position={'relative'} direction={'column'} justifyContent={flexAlignment} mb={10}
         // onMouseEnter={onSeeOptions} onMouseLeave={onHideOptions}
         >
           {isReply && (
-            <Flex maxW={'500px'} bg='teal.300' rounded='md' w={'fit-content'}>
-              <Text color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} ><GoReply size={20} /></Text>
+            <Flex maxW={'270px'} bg={message.author === userData?.handle ? 'rgb(186,124,215)' : 'teal.300'} rounded='md' w={'fit-content'}>
+              <Text color={'white'}><GoReply size={20} /></Text>
               <Text pr={2} noOfLines={1}>{authorOfToMessage}: {toMessage.content}</Text>
             </Flex>
           )}
-          {authorOfMessage && <Flex>
+          {authorOfMessage && <Flex alignItems={'center'}>
             <Text pl='7px' pr='7px' mr='10px' rounded='md'
-              // bg='white'
-              // bg={message.author === userData?.handle ? 'rgb(43,237,230)' : 'rgb(180,125,211)'}
               color={'white'}
               fontWeight={'bold'}
             >{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
@@ -190,7 +188,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 pr={'20px'}
                 color={'white'}
                 mb={'4'}
-                bg={message.author === userData?.handle ? 'rgb(105,90,121)' : 'teal.500'}
+                bg={message.author === userData?.handle ? 'rgb(121 103 141)' : 'teal.500'}
                 rounded={'md'}
                 shadow={'md'}
                 minW={'270px'}
@@ -230,8 +228,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                   // transform={'translateY(-50%)'}
                   >
                     <ReactionPopover onAddReaction={onAddReaction} />
-                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
-                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onEditMessage}><AiOutlineEdit size={20} /></Button>
                     <RemoveMessageOrChat onDeleteMessage={onDeleteMessage} isFromChat={false} />
                   </Flex>
                 }
@@ -244,16 +242,36 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                     bg={'none'}
                   >
                     <ReactionPopover onAddReaction={onAddReaction} />
-                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
+                    <Button p={1} size={'xs'} color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onReply}><GoReply size={20} /></Button>
                   </Flex>
                 }
               </Box>
             ) : (
               <Flex mb={8}>
-                <Input value={contentOfMessage} bg={'grey'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage} />
+                <Input value={contentOfMessage} bg={'rgb(237,254,253)'} h={'10'} w={500} onChange={updateNewMessage} onKeyDown={handleKeyDownForMessage} />
                 <EmojiPopover onGetEmoji={onGetEmoji} />
-                <Button p={1} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onUpdateMessage}><FaCheck size={20} /></Button>
-                <Button p={1} color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onExitEditMessage}><IoClose size={25} /></Button>
+                <Button 
+                  p={1}
+                  bg={'teal.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'teal.100' }}
+                  border={'1px solid'}
+                  borderColor={'teal'}
+                  color={'teal'}  
+                  onClick={onUpdateMessage}>
+                  <FaCheck size={20} />
+                </Button>
+                <Button 
+                  p={1}
+                  bg={'teal.100'}
+                  opacity={0.9}
+                  _hover={{ bg: 'teal.100' }}
+                  border={'1px solid'}
+                  borderColor={'teal'}
+                  color={'teal'}
+                  onClick={onExitEditMessage}>
+                  <IoClose size={25} />
+                </Button>
               </Flex>
             )}
           </Flex>
@@ -261,7 +279,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
             <Flex mt={'-28px'}>
               {reactions.reactions !== null && reactions.reactions.map((reaction) => (
                 <Box key={reaction[0]}>
-                  <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction} />
+                  <ReactionItem reaction={reaction} onAddReaction={onAddReaction} onRemoveReaction={onRemoveReaction} isOnUserMessage={message.author === userData?.handle}/>
                 </Box>
               ))}
             </Flex>
