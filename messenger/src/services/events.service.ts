@@ -1,7 +1,6 @@
-import { get, ref, query, equalTo, orderByChild, push } from 'firebase/database'
+// query, equalTo, orderByChild,
+import { get, ref, push } from 'firebase/database'
 import { db } from '../config/firebaseConfig';
-import { Timestamp } from "firebase/firestore";
-import { Value } from '../components/NewEvent/NewEvent'
 
 export const createEvent = (title: string, creator: string, members: object, start: number, end: number, meetingLink: string) => {
   return push(
