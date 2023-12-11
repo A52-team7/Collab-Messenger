@@ -42,7 +42,7 @@ const CreateTeam = () => {
     owner: '',
     members: {},
     description: '',
-    generalChannel:'',
+    generalChannel: '',
   })
 
   const navigate = useNavigate();
@@ -112,16 +112,16 @@ const CreateTeam = () => {
           owner: '',
           members: {},
           description: '',
-          generalChannel:'',
+          generalChannel: '',
         })
         updateUserTeams(userData.handle, team.id)
-        addChannel(userData.handle, 'General',team.members, team.id)
+        addChannel(userData.handle, 'General', team.members, team.id)
           .then(channel => {
             Object.keys(team.members).forEach((member: string) => userChannel(channel.id, member))
             updateTeamChannel(team.id, channel.id);
             updateGeneralTeamChannel(team.id, channel.id);
           })
-      }).catch(e => console.log(e))
+      }).catch(e => console.error(e))
   }
 
   return (
@@ -131,7 +131,7 @@ const CreateTeam = () => {
       justify={'center'}
       mt={{ base: 2, sm: 5 }}
       bg={'none'}
-      >
+    >
       <Stack
         spacing={4}
         w={'full'}
@@ -140,7 +140,7 @@ const CreateTeam = () => {
         rounded={'xl'}
         boxShadow={'lg'}
         p={{ base: 1, sm: 6 }}
-        >
+      >
         <Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           Create your new team
         </Heading>
@@ -161,9 +161,9 @@ const CreateTeam = () => {
           {/*HERE IS THE INPUT FOR ADDING USERS!*/}
           <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
           <Stack h={'15vh'}
-          overflowY={'scroll'}
+            overflowY={'scroll'}
           >
-          <UsersList members={Object.keys(teamForm.members)} removeChannelMembers={removeTeamMembers}/>
+            <UsersList members={Object.keys(teamForm.members)} removeChannelMembers={removeTeamMembers} />
           </Stack>
         </FormControl>
         <FormControl id="description">

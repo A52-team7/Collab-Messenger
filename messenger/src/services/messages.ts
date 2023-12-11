@@ -177,7 +177,7 @@ export const deleteMessage = (messageId: string) => {
       remove(ref(db, `messages/${messageId}`));
 
     })
-    .catch(e => console.log(e));
+    .catch(e => console.error(e));
 }
 
 export const updateContentOfMessage = (messageId: string, content: string) => {

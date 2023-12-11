@@ -1,52 +1,51 @@
 import AppContext from '../../context/AppContext';
 import { useContext, useState, useEffect } from 'react';
 import {
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    PopoverBody,
-    PopoverArrow,
-    IconButton,
-    Button,
-    Stack,
-    Flex,
-    AvatarBadge,
-  } from '@chakra-ui/react';
-  import {getUserStatusLive, updateUserStatus} from '../../services/users.service'
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+  Button,
+  Stack,
+  Flex,
+  AvatarBadge,
+} from '@chakra-ui/react';
+import { getUserStatusLive, updateUserStatus } from '../../services/users.service'
 
 const UserStatus = () => {
-    const {userData} = useContext(AppContext);
+  const { userData } = useContext(AppContext);
 
-    const [status, setStatus] = useState<string>(userData.handle)
-    //const [background, setBackground] = useState<string>('')
+  const [status, setStatus] = useState<string>(userData.handle)
+  //const [background, setBackground] = useState<string>('')
 
-    // if(status == "Available"){
-    //     setBackground('green')
-    // }else if(status == "Busy"){
-    //     setBackground('red')
-    // } else if(status == "Away"){
-    //     setBackground('yellow')
-    // }else if(status == "Unavailable"){
-    //     setBackground('grey')
-    // }
-    // console.log(status, background)
+  // if(status == "Available"){
+  //     setBackground('green')
+  // }else if(status == "Busy"){
+  //     setBackground('red')
+  // } else if(status == "Away"){
+  //     setBackground('yellow')
+  // }else if(status == "Unavailable"){
+  //     setBackground('grey')
+  // }
+  // console.log(status, background)
 
-    useEffect(() => {
-        if(userData === null) return;
-        getUserStatusLive(userData.handle, (data) =>{
-            setStatus(data)
-            // if(data =)
-        })
-    }, [])
+  useEffect(() => {
+    if (userData === null) return;
+    getUserStatusLive(userData.handle, (data) => {
+      setStatus(data)
+      // if(data =)
+    })
+  }, [])
 
-    const statusChange = (field: string) =>  {
-        if(userData === null) return;
-        setStatus(field)
-        updateUserStatus(userData.handle, field)
-    }
+  const statusChange = (field: string) => {
+    if (userData === null) return;
+    setStatus(field)
+    updateUserStatus(userData.handle, field)
+  }
 
-    return( 
-        <Flex mt={4}>
+  return (
+    <Flex mt={4}>
       <Popover placement="bottom" isLazy>
         <PopoverTrigger>
           {/* <IconButton
@@ -59,15 +58,15 @@ const UserStatus = () => {
             mt={-4}
           /> */}
           {status == "Available" ? (<AvatarBadge boxSize='15px' bg={'green'} backgroundColor={'none'} ml={-8} />)
-          : status == "Busy" ? (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'none'} ml={-6}/>) 
-          : status == "Away" ? (<AvatarBadge boxSize='20px' bg={'yellow'} backgroundColor={'none'} ml={-6}/>)
-          :  (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'grey'} ml={-6}/>)}
+            : status == "Busy" ? (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'none'} ml={-6} />)
+              : status == "Away" ? (<AvatarBadge boxSize='20px' bg={'yellow'} backgroundColor={'none'} ml={-6} />)
+                : (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'grey'} ml={-6} />)}
         </PopoverTrigger>
         <PopoverContent w="fit-content" _focus={{ boxShadow: 'none' }}>
           <PopoverArrow />
           <PopoverBody>
             <Stack justifyContent="flex-start">
-            <Button
+              <Button
                 w="fit-content"
                 h='20px'
                 variant="ghost"
@@ -88,8 +87,8 @@ const UserStatus = () => {
                 Busy
               </Button>
               <Button
-               w="fit-content"
-               h='20px'
+                w="fit-content"
+                h='20px'
                 variant="ghost"
                 //leftIcon={<FiEdit3 />}
                 fontWeight="normal"
@@ -106,12 +105,12 @@ const UserStatus = () => {
                 onClick={() => statusChange('Unavailable')}>
                 Unavailable
               </Button>
-              </Stack>
+            </Stack>
           </PopoverBody>
         </PopoverContent>
       </Popover>
     </Flex>
-    )
+  )
 }
 
 export default UserStatus;

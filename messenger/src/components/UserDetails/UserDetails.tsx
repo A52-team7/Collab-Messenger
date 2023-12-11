@@ -192,7 +192,7 @@ const UserDetails = (): JSX.Element => {
 
       setFormErrors({ ...errors });
 
-      if (errors.error || formErrors.error) return console.log('ERRORS');
+      if (errors.error || formErrors.error) return console.error('Form Errors');
       setFormSubmissionLoading(true);
 
       const formToUpdate: object = {

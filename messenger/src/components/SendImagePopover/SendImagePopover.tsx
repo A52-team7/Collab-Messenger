@@ -30,7 +30,6 @@ const SendImagePopover = ({setImage, setImageSrc}: SendImagePopoverProps) => {
       };
 
       const onLocallyUploadImage = (): void => {
-        console.log('here!');
     
         if (fileInput.current && fileInput.current.files) {
 

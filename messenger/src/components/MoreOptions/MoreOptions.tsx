@@ -11,18 +11,18 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect,useState } from 'react';
-import AppContext, {UserState} from '../../context/AppContext';
-import {Team} from '../CreateTeam/CreateTeam';
-import {getTeamById} from '../../services/teams.service';
+import { useContext, useEffect, useState } from 'react';
+import AppContext, { UserState } from '../../context/AppContext';
+import { Team } from '../CreateTeam/CreateTeam';
+import { getTeamById } from '../../services/teams.service';
 import { FiEdit3, FiUsers } from "react-icons/fi";
 
-export interface IdTeam{
-  id:string
+export interface IdTeam {
+  id: string
 }
 
-const MoreOptions = ({id}: IdTeam) => {
-  
+const MoreOptions = ({ id }: IdTeam) => {
+
   const [team, setTeam] = useState<Team>({
     id: '',
     name: '',
@@ -32,20 +32,20 @@ const MoreOptions = ({id}: IdTeam) => {
     generalChannel: '',
   })
 
-  useEffect(() =>{
+  useEffect(() => {
     getTeamById(id)
-    .then(res => {
-      return setTeam(res);
-    })
-    .catch(e => console.log(e));
-  },[])
+      .then(res => {
+        return setTeam(res);
+      })
+      .catch(e => console.error(e));
+  }, [])
 
   const navigate = useNavigate();
   const { userData } = useContext<UserState>(AppContext);
-  if(userData === null) return;
+  if (userData === null) return;
 
-  const addNewChannel = () =>{
-      navigate('/new-chat', {state: {team}}) 
+  const addNewChannel = () => {
+    navigate('/new-chat', { state: { team } })
   }
 
   return (
@@ -56,39 +56,39 @@ const MoreOptions = ({id}: IdTeam) => {
             aria-label="More server options"
             color={'white'}
             variant='unstyled'
-            icon={<BsThreeDotsVertical size={25}  />}
+            icon={<BsThreeDotsVertical size={25} />}
             w="fit-content"
             justifyContent="space-between"
             mt={-4}
           />
         </PopoverTrigger>
         <PopoverContent w="fit-content" borderColor="RGB(59, 59, 59)" _focus={{ boxShadow: 'none' }}>
-          <PopoverArrow borderColor="RGB(59, 59, 59)"/>
+          <PopoverArrow borderColor="RGB(59, 59, 59)" />
           <PopoverBody bg={'RGB(59, 59, 59)'} >
             <Stack justifyContent="flex-start">
-            <Button
+              <Button
                 w="170px"
-                variant='unstyled' 
+                variant='unstyled'
                 color={'white'}
-                leftIcon={<FiUsers  />}
+                leftIcon={<FiUsers />}
                 fontWeight="normal"
                 fontSize="sm"
-                _hover={{ opacity: '0.8' }} 
+                _hover={{ opacity: '0.8' }}
                 onClick={addNewChannel}>
                 Add channel
               </Button>
-              {(team.owner === userData.handle) && 
-              (<Button
-                w="170px"
-                variant='unstyled' 
-                color={'white'}
-                leftIcon={<FiEdit3 />}
-                fontWeight="normal"
-                fontSize="sm"
-                _hover={{ opacity: '0.8' }} 
-                onClick={() => navigate('/edit-team-information', {state:{team}})}>
-                Edit team information
-              </Button>)}      
+              {(team.owner === userData.handle) &&
+                (<Button
+                  w="170px"
+                  variant='unstyled'
+                  color={'white'}
+                  leftIcon={<FiEdit3 />}
+                  fontWeight="normal"
+                  fontSize="sm"
+                  _hover={{ opacity: '0.8' }}
+                  onClick={() => navigate('/edit-team-information', { state: { team } })}>
+                  Edit team information
+                </Button>)}
             </Stack>
           </PopoverBody>
         </PopoverContent>

@@ -62,7 +62,6 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
   const searchMassageAndUser = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputRef.current === null) return;
     if (e.key === "Enter") {
-      console.log(inputRef.current.value)
 
       if (inputRef.current.value.includes('@')) {
         const [searchValue, searchUser] = inputRef.current.value.split('@')
