@@ -96,8 +96,6 @@ const UserDetails = (): JSX.Element => {
         .then(() => {
           loginUser(userData.email, form.password)
             .then(credential => {
-              console.log('credentials', credential);
-
               setContext((prevState) => ({
                 ...prevState,
                 user: credential.user,
@@ -111,8 +109,6 @@ const UserDetails = (): JSX.Element => {
   };
 
   const onLocallyUploadImage = (): void => {
-    console.log('here!');
-
     if (fileInput.current && fileInput.current.files) {
       let errors = { ...formErrors };
       const file: File = fileInput.current.files[0];
@@ -164,7 +160,7 @@ const UserDetails = (): JSX.Element => {
             resolve();
           })
           .catch((err: Error) => {
-            console.log(err);
+            console.error(err);
             return reject(err);
           });
       });
@@ -234,8 +230,6 @@ const UserDetails = (): JSX.Element => {
     if (userData?.profilePhoto) {
       setProfilePicture(userData?.profilePhoto);
     }
-    console.log(profilePhotoSrc);
-
   }, [profilePhotoSrc, setProfilePhotoSrc]);
 
   useEffect(() => {
@@ -269,11 +263,11 @@ const UserDetails = (): JSX.Element => {
         rounded={'lg'}
         boxShadow={'lg'}
         p={{ base: 1, sm: 6 }}
-        >
-        <Heading textAlign={'center'} 
-        lineHeight={1.1} 
-        fontSize={{ base: '2xl', sm: '3xl' }}
-        mb={4}>
+      >
+        <Heading textAlign={'center'}
+          lineHeight={1.1}
+          fontSize={{ base: '2xl', sm: '3xl' }}
+          mb={4}>
           User Details
         </Heading>
         <Flex justifyContent={'space-between'}>

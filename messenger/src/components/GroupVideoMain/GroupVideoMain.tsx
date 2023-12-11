@@ -1,10 +1,12 @@
 import './GroupVideoMain.css';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import DailyIframe from '@daily-co/daily-js';
+import { useLocation } from 'react-router-dom';
+import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
 
 import api from '../../services/api';
+import { addChannelVideoSession } from '../../services/channels.service';
 import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
@@ -24,9 +26,13 @@ const STATE_HAIRCHECK = 'STATE_HAIRCHECK';
 
 export const GroupVideoMain = () => {
   const [appState, setAppState] = useState(STATE_IDLE);
-  const [roomUrl, setRoomUrl] = useState(null);
-  const [callObject, setCallObject] = useState(null);
+  const [roomUrl, setRoomUrl] = useState<string | null>(null);
+  const [callObject, setCallObject] = useState<DailyCall | null>(null);
   const [apiError, setApiError] = useState(false);
+  const location = useLocation();
+
+  const channelId = location.state.channelId;
+
   /**
    * Create a new call room. This function will return the newly created room URL.
    * We'll need this URL when pre-authorizing (https://docs.daily.co/reference/rn-daily-js/instance-methods/pre-auth)
@@ -48,7 +54,7 @@ export const GroupVideoMain = () => {
   /**
    * We've created a room, so let's start the hair check. We won't be joining the call yet.
    */
-  const startHairCheck = useCallback(async (url) => {
+  const startHairCheck = useCallback(async (url: string) => {
     const newCallObject = DailyIframe.createCallObject();
     setRoomUrl(url);
     setCallObject(newCallObject);
@@ -61,8 +67,12 @@ export const GroupVideoMain = () => {
    * Once we pass the hair check, we can actually join the call.
    * We'll pass the username entered during Haircheck to .join().
    */
-  const joinCall = useCallback((userName) => {
-    callObject.join({ url: roomUrl, userName });
+  const joinCall = useCallback((userName: string) => {
+    if (callObject && roomUrl) {
+      callObject.join({ url: roomUrl, userName });
+      addChannelVideoSession(channelId, roomUrl);
+    }
+
   }, [callObject, roomUrl]);
 
   /**
@@ -100,9 +110,11 @@ export const GroupVideoMain = () => {
    * Update the page's URL to reflect the active call when roomUrl changes.
    */
   useEffect(() => {
-    const pageUrl = pageUrlFromRoomUrl(roomUrl);
-    if (pageUrl === window.location.href) return;
-    window.history.replaceState(null, null, pageUrl);
+    if (roomUrl) {
+      const pageUrl = pageUrlFromRoomUrl(roomUrl);
+      if (pageUrl === window.location.href) return;
+      window.history.replaceState(null, null, pageUrl);
+    }
   }, [roomUrl]);
 
   /**
@@ -119,22 +131,24 @@ export const GroupVideoMain = () => {
     const events = ['joined-meeting', 'left-meeting', 'error', 'camera-error'];
 
     function handleNewMeetingState() {
-      switch (callObject.meetingState()) {
-        case 'joined-meeting':
-          setAppState(STATE_JOINED);
-          break;
-        case 'left-meeting':
-          callObject.destroy().then(() => {
-            setRoomUrl(null);
-            setCallObject(null);
-            setAppState(STATE_IDLE);
-          });
-          break;
-        case 'error':
-          setAppState(STATE_ERROR);
-          break;
-        default:
-          break;
+      if (callObject) {
+        switch (callObject.meetingState()) {
+          case 'joined-meeting':
+            setAppState(STATE_JOINED);
+            break;
+          case 'left-meeting':
+            callObject.destroy().then(() => {
+              setRoomUrl(null);
+              setCallObject(null);
+              setAppState(STATE_IDLE);
+            });
+            break;
+          case 'error':
+            setAppState(STATE_ERROR);
+            break;
+          default:
+            break;
+        }
       }
     }
 
@@ -170,20 +184,14 @@ export const GroupVideoMain = () => {
     if (apiError) {
       return (
         <div className="api-error">
-          <h1>Error</h1>
           <p>
-            Room could not be created. Check if your `.env` file is set up correctly. For more
-            information, see the{' '}
-            <a href="https://github.com/daily-demos/custom-video-daily-react-hooks#readme">
-              readme
-            </a>{' '}
-            :)
+            OH, NO! We have encountered a problem :(
           </p>
         </div>
       );
     }
 
-    if (showHairCheck || showCall) {
+    if (callObject && (showHairCheck || showCall)) {
       return (
         <DailyProvider callObject={callObject}>
           {showHairCheck ? (

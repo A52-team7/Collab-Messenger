@@ -26,8 +26,6 @@ export const logoutUser = (): Promise<void> => {
 
 export const updateUserPassword = (newPassword: string): Promise<void> => {
   const user = auth.currentUser;
-  console.log(user);
-
   if (!user) {
     return Promise.reject(new Error('No authenticated user'));
   }

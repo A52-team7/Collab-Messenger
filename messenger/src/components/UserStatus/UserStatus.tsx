@@ -42,7 +42,6 @@ const UserStatus = () => {
     const statusChange = (field: string) =>  {
         if(userData === null) return;
         setStatus(field)
-        console.log(status)
         updateUserStatus(userData.handle, field)
     }
 

@@ -47,7 +47,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
         .then(elTeam => {
           setMyTeam([...elTeam])
         })
-        .catch(e => console.log(e))
+        .catch(e => console.error(e))
     })
 
   }, [userData])
@@ -61,23 +61,23 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
           <Heading color={'white'} as='h2' size='lg' textAlign="left">My Teams</Heading>
           <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={() => navigate('/new-team')}><FiPlusSquare size={20} /></Button>
         </HStack>
-        <Accordion allowMultiple 
-        width="100%" 
-        maxW="lg"
-        rounded="lg"
-        overflowY="auto"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            width: '6px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'black',
-            borderRadius: '24px',
-          },
-        }}>
+        <Accordion allowMultiple
+          width="100%"
+          maxW="lg"
+          rounded="lg"
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'black',
+              borderRadius: '24px',
+            },
+          }}>
           {myTeam.length > 0 ? myTeam.map((team: Team) => {
             return (<AccordionItem key={team.id}>
               <HStack>
@@ -86,7 +86,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
                   alignItems="center"
                   justifyContent="space-between"
                   p={2}>
-                    <TeamTitle id={team.id} teamName={team.name} />
+                  <TeamTitle id={team.id} teamName={team.name} />
                   {/* <Wrap>
                     <WrapItem>
                       <Avatar size='sm' name={team.name} src={team.teamPhoto} />{' '}

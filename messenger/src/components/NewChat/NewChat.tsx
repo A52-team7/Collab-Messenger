@@ -93,49 +93,49 @@ const NewChat = (): JSX.Element => {
         .then(res => {
           navigate(`/chat/${res.id}`, { state: { team: team } });
         })
-        .catch(e => console.log(e));
+        .catch(e => console.error(e));
     } else {
       getAllChannels()
-      .then(allChannels => {
-        const onlyChats = allChannels.filter(channel => !Object.keys(channel).includes('toTeam'));
-        const existingChat = onlyChats.map(channel => {
-          const set1 = new Set(channel.members);
-          const set2 = new Set(Object.keys(members));
+        .then(allChannels => {
+          const onlyChats = allChannels.filter(channel => !Object.keys(channel).includes('toTeam'));
+          const existingChat = onlyChats.map(channel => {
+            const set1 = new Set(channel.members);
+            const set2 = new Set(Object.keys(members));
 
-          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
-          return areEqual;      
-        });
+            const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));
+            return areEqual;
+          });
 
-        if(!existingChat.includes(true)){
-    
-          addChannel(userData.handle, channelForm.title, members)
-            .then(result => {
-              Object.keys(result.members).forEach(member => {
-                userChannel(result.id, member);
+          if (!existingChat.includes(true)) {
+
+            addChannel(userData.handle, channelForm.title, members)
+              .then(result => {
+                Object.keys(result.members).forEach(member => {
+                  userChannel(result.id, member);
+                })
+                userChannel(result.id, userData.handle);
+                return result;
               })
-              userChannel(result.id, userData.handle);
-              return result;
-            })
-            .then(res => {
-              navigate(`/chat/${res.id}`);
-            })
-            .catch(e => console.log(e));
-        }else{
-          const index = existingChat.findIndex(el => el === true);
-          const chatToNavigate = (onlyChats[index]);
-          
-          navigate(`/chat/${chatToNavigate.id}`);
-        }
-      })
-      .catch(error => console.error(error.message));
+              .then(res => {
+                navigate(`/chat/${res.id}`);
+              })
+              .catch(e => console.log(e));
+          } else {
+            const index = existingChat.findIndex(el => el === true);
+            const chatToNavigate = (onlyChats[index]);
+
+            navigate(`/chat/${chatToNavigate.id}`);
+          }
+        })
+        .catch(error => console.error(error.message));
     }
   }
 
-  const privacyChange =(privacyValue: string) =>{
-    setChannelForm({...channelForm, members: {}})
+  const privacyChange = (privacyValue: string) => {
+    setChannelForm({ ...channelForm, members: {} })
     if (privacyValue === 'Standard') {
       setIsPrivate('Standard');
-      setChannelForm({...channelForm, members: team.members})
+      setChannelForm({ ...channelForm, members: team.members })
     } else if (privacyValue === 'Private') {
       setIsPrivate('Private');
     }
@@ -154,7 +154,7 @@ const NewChat = (): JSX.Element => {
     // py={12}
     // maxW={'600px'}
     >
-      
+
       <Flex
         direction={'column'}
         boxShadow={'2xl'}
@@ -168,35 +168,35 @@ const NewChat = (): JSX.Element => {
           Add new chat
         </Heading>)}
         <FormControl id="addTitle" isRequired>
-        <FormLabel textAlign={'center'}>Add title</FormLabel>
-        <Input
-          bg={'white'}
-          mb={5}
-          rounded="md"
-          placeholder="Add title"
-          onChange={updateTitle('title')} />
-          </FormControl>
-        <Stack mb={5} w={'500px'}> 
-        {team && (<FormControl id="privacy" isRequired><FormLabel textAlign={'center'}>Privacy</FormLabel>
-        <Select defaultValue="Private" bg={'white'} onClick={(e: React.MouseEvent<HTMLSelectElement>)=> privacyChange(e.target.value)} >
-        <option value='Standard'>Standard-Everyone on the team has access</option>
-        <option value='Private'>Private-Specific teammates have access</option>
-        </Select>
-        </FormControl>)}
-        </Stack>  
-        {(isPrivate === '' || isPrivate === 'Private') && 
-        (<FormControl id="addMembers" isRequired>
-          <FormLabel textAlign={'center'}>Add members</FormLabel>
+          <FormLabel textAlign={'center'}>Add title</FormLabel>
+          <Input
+            bg={'white'}
+            mb={5}
+            rounded="md"
+            placeholder="Add title"
+            onChange={updateTitle('title')} />
+        </FormControl>
+        <Stack mb={5} w={'500px'}>
+          {team && (<FormControl id="privacy" isRequired><FormLabel textAlign={'center'}>Privacy</FormLabel>
+            <Select defaultValue="Private" bg={'white'} onClick={(e: React.MouseEvent<HTMLSelectElement>) => privacyChange(e.target.value)} >
+              <option value='Standard'>Standard-Everyone on the team has access</option>
+              <option value='Private'>Private-Specific teammates have access</option>
+            </Select>
+          </FormControl>)}
+        </Stack>
+        {(isPrivate === '' || isPrivate === 'Private') &&
+          (<FormControl id="addMembers" isRequired>
+            <FormLabel textAlign={'center'}>Add members</FormLabel>
           </FormControl>)}
         <Stack mb={5} w={'500px'}>
-          {(team && isPrivate === 'Private') ? 
-          (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />)
-           : (team && (isPrivate ==='Standard')) ? null :(<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
+          {(team && isPrivate === 'Private') ?
+            (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team} />)
+            : (team && (isPrivate === 'Standard')) ? null : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
         </Stack>
         {(isPrivate === 'Private') && (<Stack h={'31vh'}
           overflowY={'scroll'}
         >
-        <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
+          <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
         </Stack>)}
         <Stack alignItems={'center'}>
           <Button

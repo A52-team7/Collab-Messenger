@@ -34,7 +34,7 @@ const TeamChannels = ({ id }: Id) => {
         .then(elChannel => {
           setChannels([...elChannel])
         })
-        .catch(e => console.log(e))
+        .catch(e => console.error(e))
     })
   }, [])
 

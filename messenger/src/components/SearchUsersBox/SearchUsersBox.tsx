@@ -44,11 +44,11 @@ const SearchUsersBox = ({
           const set1 = new Set(channel.members);
           const set2 = new Set([userName, userData.handle]);
 
-          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));    
-          return areEqual;      
+          const areEqual = set1.size === set2.size && [...set1].every(value => set2.has(value));
+          return areEqual;
         });
 
-        if(!existingChat.includes(true)){
+        if (!existingChat.includes(true)) {
           const members = { [userData.handle]: true, [userName]: true }
           addChannel(userData.handle, firstName + ' ' + lastName + ', ' + userData.firstName + ' ' + userData.lastName, members)
             .then(result => {
@@ -58,19 +58,19 @@ const SearchUsersBox = ({
               return result;
             })
             .then(result => navigate(`/chat/${result.id}`))
-            .catch((error: Error) => console.log(error))
+            .catch((error: Error) => console.error(error))
             .finally(() => {
               setOpen(false);
               setSearchValue('');
             });
-          }else{
-            const index = existingChat.findIndex(el => el === true);
-            const chatToNavigate = (onlyChats[index]);
-            
-            navigate(`/chat/${chatToNavigate.id}`);
-          }
-        })
-        .catch(error => console.error(error.message));
+        } else {
+          const index = existingChat.findIndex(el => el === true);
+          const chatToNavigate = (onlyChats[index]);
+
+          navigate(`/chat/${chatToNavigate.id}`);
+        }
+      })
+      .catch(error => console.error(error.message));
   };
 
   const handleClick = () => {

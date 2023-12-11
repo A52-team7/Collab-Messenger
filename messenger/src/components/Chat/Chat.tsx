@@ -85,11 +85,6 @@ const Chat = (): JSX.Element => {
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  console.log(image);
-  console.log(imageSrc);
-  
-  
-
   useEffect(() => {
     setChannelId(params.id);
   }, [params.id, params, isLeft]);
@@ -151,7 +146,7 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (userData === null || !channelId) return;
 
-    setMembers([]); 
+    setMembers([]);
 
     const removeListener = getChannelMembersLive(channelId, (data: string[]) => {
       setMembers([...data]);
@@ -179,11 +174,11 @@ const Chat = (): JSX.Element => {
             .catch(e => console.error(e));
         })
       ).then(channelMessages => {
-        if(ifIsLeftIsSet){
-          if(isLeft){
-          const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
-          setMessages([...messagesBeforeLeaving]);
-          }else{          
+        if (ifIsLeftIsSet) {
+          if (isLeft) {
+            const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
+            setMessages([...messagesBeforeLeaving]);
+          } else {
             setMessages([...channelMessages]);
           }
         }
@@ -215,29 +210,29 @@ const Chat = (): JSX.Element => {
           .then(url => {
             if (channelId && userData) {
               addMessage(url, userData.handle, channelId, false, USER_MESSAGE)
-                  .then(result => {
-                    channelMessage(channelId, result.id);
-                    userMessage(result.id, userData.handle);
-                    setAllInChannelToUnseen(channelId, userData.handle);
-                  })
-                  .then(() => {
-                    if (userData) {
-                      if (team) {
-                        setAllUsersUnseen(members, userData.handle, 'teams');
-                      } else {
-                        setAllUsersUnseen(members, userData.handle, 'chats');
-                      }
+                .then(result => {
+                  channelMessage(channelId, result.id);
+                  userMessage(result.id, userData.handle);
+                  setAllInChannelToUnseen(channelId, userData.handle);
+                })
+                .then(() => {
+                  if (userData) {
+                    if (team) {
+                      setAllUsersUnseen(members, userData.handle, 'teams');
+                    } else {
+                      setAllUsersUnseen(members, userData.handle, 'chats');
                     }
-                  })
-                  .then(() => {
-                    setImageSrc(null);
-                  })
-                  .catch(e => console.error(e));
-                }
+                  }
+                })
+                .then(() => {
+                  setImageSrc(null);
+                })
+                .catch(e => console.error(e));
+            }
             resolve();
           })
           .catch((err: Error) => {
-            console.log(err);
+            console.error(err);
             return reject(err);
           });
       });
@@ -251,9 +246,9 @@ const Chat = (): JSX.Element => {
       // if (!messageFromArea) {
       //   return alert(`Enter message first`)
       // }
-      if(imageSrc){
+      if (imageSrc) {
         uploadImageToFBAndSendAMessage();
-      }else{
+      } else {
         if (channelId && userData) {
           addMessage(messageFromArea, userData.handle, channelId, false, USER_MESSAGE)
             .then(result => {
@@ -271,7 +266,7 @@ const Chat = (): JSX.Element => {
               }
             })
             .catch(e => console.error(e));
-          }
+        }
       }
       textAreaRef.current.value = '';
     }
@@ -401,8 +396,8 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
-            <Button onClick={() => navigate('/video')}>V</Button>
-            <Button onClick ={() => navigate('/new-event')}>Event</Button>
+          <Button onClick={() => navigate('/video', { state: { channelId: channelId } })}>V</Button>
+          <Button onClick={() => navigate('/new-event')}>Event</Button>
 
           {ifChatBetweenTwoIsSet && (
             <>
@@ -411,7 +406,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-         {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
+          {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack
@@ -461,20 +456,20 @@ const Chat = (): JSX.Element => {
             position={'fixed'}
             bottom={'0'}
           >
-              {imageSrc && <Flex
+            {imageSrc && <Flex
               position="fixed"
               zIndex="9999"
               p={20}
               backgroundColor="rgba(0, 0, 0, 0.9)"
-              mt={'-300px'} 
+              mt={'-300px'}
               w={'fit-content'}
               h={'300px'}
             >
-             <Image src={image}  h={'300px'} mt={'-80px'} />
-             <Flex ml={2} mt={-65} textAlign={'center'} justifyContent={'center'}>
+              <Image src={image} h={'300px'} mt={'-80px'} />
+              <Flex ml={2} mt={-65} textAlign={'center'} justifyContent={'center'}>
                 <Text fontWeight={'bold'} fontSize={'sm'} bg={'black'} color={'white'} isTruncated>
                   {imageSrc.name}
-                  </Text>
+                </Text>
                 <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
                   <Button
                     bg={'none'}
@@ -483,14 +478,14 @@ const Chat = (): JSX.Element => {
                     p={0}
                     _hover={{ opacity: 0.7 }}
                     onClick={removeFilePhoto}
-                    >
+                  >
                     <AiOutlineDelete size={23} />
                   </Button>
                 </Tooltip>
               </Flex>
             </Flex>}
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
-              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc}/>}
+              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc} />}
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}

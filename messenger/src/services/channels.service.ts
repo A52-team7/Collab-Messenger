@@ -47,7 +47,7 @@ export const addChannel = (handle: string, title: string, members: object, teamI
       if (result.key === null) return;
       return getChannelById(result.key);
     })
-    .catch(e => console.log(e));
+    .catch(e => console.error(e));
 };
 
 export const getChannelById = (id: string) => {
@@ -66,7 +66,7 @@ export const getChannelById = (id: string) => {
 
       return channel;
     })
-    .catch(e => console.log(e));
+    .catch(e => console.error(e));
 };
 
 export const getAllChannels = () => {
@@ -120,12 +120,12 @@ export const removeChat = (channelId: string, handle: string) => {
 
 export const removeChatForBothUsers = (channelId: string) => {
   getChannelById(channelId)
-  .then((result) => {
-    Object.keys(result.members).map((member) => {
-      remove(ref(db, `/users/${member}/myChannels/${channelId}`));
+    .then((result) => {
+      Object.keys(result.members).map((member) => {
+        remove(ref(db, `/users/${member}/myChannels/${channelId}`));
+      })
     })
-  })
-  .catch(e => console.error(e));
+    .catch(e => console.error(e));
 
   remove(ref(db, `/channels/${channelId}`));
 }
@@ -169,6 +169,13 @@ export const getDateOfLeftChannel = (handle: string, channelId: string) => {
       }
     });
 };
+
+export const addChannelVideoSession = (channelId: string, sessionUrl: string) => {
+  const addChannelSession: { [key: string]: string } = {};
+  addChannelSession[`channels/${channelId}/videoSession`] = sessionUrl;
+
+  return update(ref(db), addChannelSession);
+}
 
 export const addTitleToChannel = (channelId: string, title: string) => {
   const updateChannelTitle: { [key: string]: string } = {};

@@ -24,7 +24,7 @@ export interface UserData {
 const AppContext = createContext<UserState>({
   user: null,
   userData: null,
-  loading: true,
+  loading: false,
   setContext: () => { }
 });
 

@@ -29,24 +29,23 @@ const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: Messag
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  console.log('i am messages list');
-  
+  console.error('i am messages list');
 
   return (
-      <UnorderedList styleType='none'>
-        {messages.map((message: Message) => (
-          <Box
-            display={'flex'}
-            ref={bottomRef}
-            flexWrap={'wrap'}
-            key={message.id}
-            mr={message.author === userData?.handle ? 35 : 0}
-            justifyContent={message.author === userData?.handle ? 'flex-end' : 'flex-start'}>
-            <OneMessage {...{ message, setReplyIsVisible, setMessageToReply }} />
-          </Box>
-        ))}
-      </UnorderedList>
-      // <Stack ref={bottomRef} />    
+    <UnorderedList styleType='none'>
+      {messages.map((message: Message) => (
+        <Box
+          display={'flex'}
+          ref={bottomRef}
+          flexWrap={'wrap'}
+          key={message.id}
+          mr={message.author === userData?.handle ? 35 : 0}
+          justifyContent={message.author === userData?.handle ? 'flex-end' : 'flex-start'}>
+          <OneMessage {...{ message, setReplyIsVisible, setMessageToReply }} />
+        </Box>
+      ))}
+    </UnorderedList>
+    // <Stack ref={bottomRef} />    
   );
 }
 
