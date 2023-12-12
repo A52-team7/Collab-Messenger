@@ -11,7 +11,7 @@ import {
 import MeetingInformation from '../MeetingInformation/MeetingInformation';
 import VideoChat from '../VideoChat/VideoChat';
 
-import './Tray.css';
+import { Box, Flex, Button, } from '@chakra-ui/react';
 import {
   CameraOn,
   Leave,
@@ -28,7 +28,7 @@ export default function Tray({ leaveCall }) {
   const callObject = useDaily();
   const { isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare();
 
-  const [showMeetingInformation, setShowMeetingInformation] = useState(false);
+  // const [showMeetingInformation, setShowMeetingInformation] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [newChatMessage, setNewChatMessage] = useState(false);
 
@@ -60,9 +60,9 @@ export default function Tray({ leaveCall }) {
 
   const toggleScreenShare = () => isSharingScreen ? stopScreenShare() : startScreenShare();
 
-  const toggleMeetingInformation = () => {
-    setShowMeetingInformation(!showMeetingInformation);
-  };
+  // const toggleMeetingInformation = () => {
+  //   setShowMeetingInformation(!showMeetingInformation);
+  // };
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -72,47 +72,33 @@ export default function Tray({ leaveCall }) {
   };
 
   return (
-    <div className="tray">
-      {showMeetingInformation && <MeetingInformation />}
-      {/*  The chat messages 'live' in the <Chat/> component's state. We can't just remove the component */}
-      {/*  from the DOM when hiding the chat, because that would cause us to lose that state. So we're */}
-      {/*  choosing a slightly different approach of toggling the chat: always render the component, but only */}
-      {/*  render its HTML when showChat is set to true. */}
-
-      {/*   We're also passing down the toggleChat() function to the component, so we can open and close the chat */}
-      {/*   from the chat UI and not just the Tray. */}
+    <Box mb={'auto'} px={{ base: 0, md: 0, lg: 0, xl: 10 }}>
       <VideoChat showChat={showChat} toggleChat={toggleChat} />
-      <div className="tray-buttons-container">
-        <div className="controls">
-          <button onClick={toggleVideo} type="button">
-            {mutedVideo ? <CameraOff /> : <CameraOn />}
-            {mutedVideo ? 'Turn camera on' : 'Turn camera off'}
-          </button>
-          <button onClick={toggleAudio} type="button">
-            {mutedAudio ? <MicrophoneOff /> : <MicrophoneOn />}
-            {mutedAudio ? 'Unmute mic' : 'Mute mic'}
-          </button>
-        </div>
-        <div className="actions">
-          <button onClick={toggleScreenShare} type="button">
-            <Screenshare />
-            {isSharingScreen ? 'Stop sharing screen' : 'Share screen'}
-          </button>
-          <button onClick={toggleMeetingInformation} type="button">
-            <Info />
-            {showMeetingInformation ? 'Hide info' : 'Show info'}
-          </button>
-          <button onClick={toggleChat} type="button">
-            {newChatMessage ? <ChatHighlighted /> : <ChatIcon />}
-            {showChat ? 'Hide chat' : 'Show chat'}
-          </button>
-        </div>
-        <div className="leave">
-          <button onClick={leaveCall} type="button">
-            <Leave /> Leave call
-          </button>
-        </div>
-      </div>
-    </div>
+      <Flex justifyItems={'flex-end'} justifyContent={'space-between'}>
+        <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={toggleVideo}>
+          {mutedVideo ? <CameraOff /> : <CameraOn />}
+          {mutedVideo ? 'Turn camera on' : 'Turn camera off'}
+        </Button>
+        <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={toggleAudio}>
+          {mutedAudio ? <MicrophoneOff /> : <MicrophoneOn />}
+          {mutedAudio ? 'Unmute mic' : 'Mute mic'}
+        </Button>
+        <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={toggleScreenShare}>
+          <Screenshare />
+          {isSharingScreen ? 'Stop sharing screen' : 'Share screen'}
+        </Button>
+        {/* <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={toggleMeetingInformation}>
+          <Info />
+          {showMeetingInformation ? 'Hide info' : 'Show info'}
+        </Button> */}
+        <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={toggleChat}>
+          {newChatMessage ? <ChatHighlighted /> : <ChatIcon />}
+          {showChat ? 'Hide chat' : 'Show chat'}
+        </Button>
+        <Button bg={'rgb(237,254,253)'} _hover={{ bg: 'teal.300' }} onClick={leaveCall}>
+          <Leave /> Leave call
+        </Button>
+      </Flex>
+    </Box>
   );
 }

@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
 
+import { Box, Flex } from '@chakra-ui/react'
+
 import api from '../../services/api';
 import { getChannelVideoSession, addChannelVideoSession } from '../../services/video.service';
 import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
@@ -193,28 +195,31 @@ export const GroupVideoMain = () => {
       return (
         <DailyProvider callObject={callObject}>
           {showHairCheck ? (
-            // No API errors? Let's check our hair then.
             <HairCheck joinCall={joinCall} cancelCall={startLeavingCall} />
           ) : (
-            // No API errors, we passed the hair check, and we've joined the call? Then show the call.
-            <>
-              <Call />
-              <Tray leaveCall={startLeavingCall} />
-              <DailyAudio />
-            </>
+            <Flex flexDirection={'column'} justifyContent={'space-between'}>
+              <Box>
+                <Call />
+              </Box>
+              <Box>
+                <DailyAudio />
+              </Box>
+              <Box>
+                <Tray leaveCall={startLeavingCall} />
+              </Box>
+            </Flex>
           )}
         </DailyProvider>
       );
     }
 
-    // The default view is the HomeScreen, from where we start the demo.
     return <HomeScreen createCall={createCall} startHairCheck={startHairCheck} />;
   };
 
   return (
-    <div className="app">
+    <Box>
       {renderApp()}
-    </div>
+    </Box>
   );
 }
 

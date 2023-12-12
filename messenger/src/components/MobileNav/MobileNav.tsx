@@ -64,7 +64,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
       px={{ base: 4, md: 0 }}
       height={'14'}
       alignItems='center'
-      //bg={'darkBlue'}
       bg={'RGB(29, 29, 29)'}
       borderBottomWidth='1px'
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}

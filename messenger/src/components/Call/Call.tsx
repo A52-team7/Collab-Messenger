@@ -6,7 +6,7 @@ import {
   useLocalSessionId,
 } from '@daily-co/daily-react';
 
-import './Call.css';
+import { Flex, Heading } from '@chakra-ui/react';
 import Tile from '../Tile/Tile';
 import UserMediaError from '../UserMediaError/UserMediaError';
 
@@ -53,11 +53,9 @@ export default function Call() {
         </>
       ) : (
         // When there are no remote participants or screen shares
-        <div className="info-box">
-          <h1>Waiting for others</h1>
-          <p>Invite someone by sharing this link:</p>
-          <span className="room-url">{window.location.href}</span>
-        </div>
+        <Flex p={10} justifyContent="center" alignItems="center">
+          <Heading color={'rgb(237,254,253)'}>Waiting for others</Heading>
+        </Flex>
       )}
     </div>
   );
