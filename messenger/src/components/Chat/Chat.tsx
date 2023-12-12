@@ -42,12 +42,12 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 import SendImagePopover from '../SendImagePopover/SendImagePopover';
-//import SearchMassage from '../SearchMassage/SearchMassage'
 import { AiOutlineDelete } from "react-icons/ai";
 import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import SendButton from '../SendButton/SendButton';
+import { FaVideo } from "react-icons/fa";
 
 const Chat = (): JSX.Element => {
 
@@ -169,6 +169,9 @@ const Chat = (): JSX.Element => {
     setMessagesAreLoaded(false);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
+      if(!data){
+        setMessagesAreLoaded(true);
+      }else{
       Promise.all(
         data.map((message) => {
           return getMessageById(message)
@@ -188,6 +191,7 @@ const Chat = (): JSX.Element => {
         .then(() => setMessagesAreLoaded(true))
         .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
+    }
     });
     return () => {
       removeListener();
@@ -408,7 +412,7 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
-          <Button onClick={() => navigate('/video', { state: { channelId: channelId } })}>V</Button>
+          <Button colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25}/></Button>
           <Button onClick={() => navigate('/new-event')}>Event</Button>
 
           {ifChatBetweenTwoIsSet && (
@@ -452,13 +456,17 @@ const Chat = (): JSX.Element => {
             </Center>
           ) : (
             <>
-            {messages.length > 0 &&
+            {messages.length > 0 ?(
               <Box h={'auto'}>
                 <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
               </Box>
-            }
+            ) : (
+            <Center>
+              <Image src={'/no_messages.jpg'} h={'420px'} w={'420px'} opacity={0.9}/>
+            </Center>
+            )}
             </>
-          )}
+          )} 
           </Stack>
         }
       </Stack>

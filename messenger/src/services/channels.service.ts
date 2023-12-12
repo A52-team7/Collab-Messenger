@@ -182,7 +182,7 @@ export interface MessagesListener { (messages: string[]): void }
 export const getChannelMessagesLive = (channelId: string, listener: MessagesListener) => {
 
   return onValue(ref(db, `channels/${channelId}/messages`), (snapshot) => {
-    if (!snapshot.exists()) return [];
+    if (!snapshot.exists()) return listener([]);
 
     const messages = Object.keys(snapshot.val());
 
