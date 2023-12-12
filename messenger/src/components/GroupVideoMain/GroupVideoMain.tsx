@@ -1,7 +1,7 @@
 import './GroupVideoMain.css';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
 
@@ -30,6 +30,7 @@ export const GroupVideoMain = () => {
   const [apiError, setApiError] = useState(false);
   const location = useLocation();
 
+  const navigate = useNavigate();
   const channelId = location.state.channelId;
 
   /**
@@ -50,15 +51,12 @@ export const GroupVideoMain = () => {
       });
   }, []);
 
-  /**
-   * We've created a room, so let's start the hair check. We won't be joining the call yet.
-   */
   const startHairCheck = useCallback(async (url: string) => {
     const newCallObject = DailyIframe.createCallObject();
     setRoomUrl(url);
     setCallObject(newCallObject);
     setAppState(STATE_HAIRCHECK);
-    await newCallObject.preAuth({ url }); // add a meeting token here if your room is private
+    await newCallObject.preAuth({ url });
     await newCallObject.startCamera();
   }, []);
 
@@ -74,9 +72,6 @@ export const GroupVideoMain = () => {
 
   }, [callObject, roomUrl]);
 
-  /**
-   * Start leaving the current call.
-   */
   const startLeavingCall = useCallback(() => {
     if (!callObject) return;
     // If we're in the error state, we've already "left", so just clean up
@@ -92,6 +87,7 @@ export const GroupVideoMain = () => {
       setAppState(STATE_LEAVING);
       callObject.leave();
     }
+    navigate(`/chat/${channelId}`);
   }, [callObject, appState]);
 
   /**
@@ -105,15 +101,7 @@ export const GroupVideoMain = () => {
           startHairCheck(url);
         }
       })
-    // const url = roomUrlFromPageUrl();
-    // if (url) {
-    //   startHairCheck(url);
-    // }
   }, [startHairCheck]);
-
-  useEffect(() => {
-    startLeavingCall();
-  }, [])
 
   /**
    * Update the page's URL to reflect the active call when roomUrl changes.
