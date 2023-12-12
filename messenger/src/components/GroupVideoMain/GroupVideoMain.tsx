@@ -31,7 +31,7 @@ export const GroupVideoMain = () => {
   const location = useLocation();
 
   const navigate = useNavigate();
-  const channelId = location.state.channelId;
+  const channelId = location.state?.channelId;
 
   /**
    * Create a new call room. This function will return the newly created room URL.
@@ -95,6 +95,7 @@ export const GroupVideoMain = () => {
    * join the room.
    */
   useEffect(() => {
+    if (!channelId) navigate('/');
     getChannelVideoSession(channelId)
       .then(url => {
         if (url) {
