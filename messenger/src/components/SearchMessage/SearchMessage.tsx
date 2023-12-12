@@ -104,7 +104,6 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
           .filter((message) => {
           const massageToLowerCase = message.content.toLowerCase()
           const search = searchValue.toLowerCase()
-          console.log(massageToLowerCase)
           if(massageToLowerCase.includes(search.trim()) === true){
             return message
           }
@@ -119,7 +118,6 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
           if(inputRef.current === null) return;
             const massageToLowerCase = message.content.toLowerCase()
             const search = inputRef.current.value.trim().toLowerCase()
-            console.log(massageToLowerCase)
             if(massageToLowerCase.includes(search) === true){
               return message
             }
@@ -132,8 +130,6 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
       }
     }
   }
-
-  console.log(hasMassage)
 
   const onClear = () => {
     if(inputRef.current === null) return;
@@ -177,8 +173,6 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
                     border={'1px solid rgb(187,125,217)'}
                     p={4}
                     w ={'350px'}
-                    align="flex-start" 
-                    justify="flex-start"                  
                   >
                     <SearchOneMessage message={message} />
                   </Box>)
