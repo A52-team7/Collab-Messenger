@@ -11,7 +11,6 @@ import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
 import Call from '../Call/Call';
-import Header from '../Header/Header';
 import Tray from '../Tray/Tray';
 import HairCheck from '../HairCheck/HairCheck';
 
@@ -100,11 +99,21 @@ export const GroupVideoMain = () => {
    * join the room.
    */
   useEffect(() => {
-    const url = roomUrlFromPageUrl();
-    if (url) {
-      startHairCheck(url);
-    }
+    getChannelVideoSession(channelId)
+      .then(url => {
+        if (url) {
+          startHairCheck(url);
+        }
+      })
+    // const url = roomUrlFromPageUrl();
+    // if (url) {
+    //   startHairCheck(url);
+    // }
   }, [startHairCheck]);
+
+  useEffect(() => {
+    startLeavingCall();
+  }, [])
 
   /**
    * Update the page's URL to reflect the active call when roomUrl changes.
@@ -215,7 +224,6 @@ export const GroupVideoMain = () => {
 
   return (
     <div className="app">
-      <Header />
       {renderApp()}
     </div>
   );
