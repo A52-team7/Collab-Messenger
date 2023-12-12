@@ -1,4 +1,4 @@
-import { Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Stack, Text, useDisclosure } from "@chakra-ui/react"
+import { Button, Center, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Stack, Text, useDisclosure } from "@chakra-ui/react"
 import React from 'react';
 import { BsPersonFillAdd } from "react-icons/bs";
 import UsersList from "../UsersList/UsersList";
@@ -53,23 +53,28 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
           onClose={onClose}
         >
           <DrawerOverlay />
-          <DrawerContent>
+          <DrawerContent bg={"RGB(59, 59, 59)"} minW={'350px'}>
             <DrawerCloseButton />
-            <DrawerHeader borderBottomWidth='1px'>
+            <DrawerHeader borderBottomWidth='1px' color={'white'} textAlign="center" >
               Members
             </DrawerHeader>
   
             <DrawerBody>
+              <Center>
                 <Stack w={'18vw'} mb={20}>
                 {team ? (
                       <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} team={team}/>
                     ) : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember}/>)}
                 </Stack>
+                </Center>
+                <Center>
                 <Stack>
                   {channelId && (
                     <UsersList {...{members: members, channelId: channelId}}/>
                   )}
                 </Stack>
+                </Center>
+                <Center>
                 <Stack alignItems={'center'}>
                     {(team && team?.owner !== userData?.handle) ? ( 
                     <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>
@@ -77,11 +82,18 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
                       <RemoveUser onDelete={onLeaveChatOrTeam} selfRemove={true}/>
                     )}
                 </Stack>
+                </Center>
             </DrawerBody>
   
             <DrawerFooter borderTopWidth='1px'>
                 <Stack alignItems={'center'} w={'100%'}>
-                    <Button variant='outline' mr={3} onClick={onClose}>
+                    <Button border={'2px solid'}
+                    borderColor={'teal.500'}
+                    bg={'none'}
+                    color={'teal.500'}
+                    _hover={{ opacity: 0.8 }} 
+                    mr={3} 
+                    onClick={onClose}>
                     Cancel
                     </Button>
                 </Stack>
