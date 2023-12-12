@@ -14,7 +14,7 @@ import { addChannel, getAllChannels } from '../../services/channels.service';
 import { useState } from 'react';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS, TITLE_NAME_LENGTH_MAX, TITLE_NAME_LENGTH_MIN } from '../../common/constants';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import AppContext, { UserState } from '../../context/AppContext';
 import UsersList from '../UsersList/UsersList';
 import { updateTeamChannel } from '../../services/teams.service';
@@ -38,6 +38,14 @@ const NewChat = (): JSX.Element => {
   const [channelForm, setChannelForm] = useState<ChannelForm>({ title: '', members: {} });
 
   const [isPrivate, setIsPrivate] = useState<string>('Private');
+
+  const [canAddChat, setCanAddChat] = useState(false);
+
+  useEffect(() => {
+    if (channelForm.title && Object.keys(channelForm.members).length > 0) {
+      setCanAddChat(true);
+    }
+  }, [channelForm]);
 
   const updateNewMember = (user: string) => {
     const newMembers = { ...channelForm.members };
@@ -67,15 +75,11 @@ const NewChat = (): JSX.Element => {
 
   const onAddNewChannel = () => {
     if (userData === null) return;
-    if (!channelForm.title) {
-      return alert(`Enter title`)
-    }
+    
     if (channelForm.title.length < TITLE_NAME_LENGTH_MIN || channelForm.title.length > TITLE_NAME_LENGTH_MAX) {
       return alert(`Channel name must be between ${TITLE_NAME_LENGTH_MIN} and ${TITLE_NAME_LENGTH_MAX} characters!`)
     }
-    if (Object.keys(channelForm.members).length === 0) {
-      return alert(`Enter channel members`)
-    }
+    
     const members = { ...channelForm.members, [userData.handle]: true };
     if (team) {
       addChannel(userData.handle, channelForm.title, members, team.id)
@@ -141,6 +145,10 @@ const NewChat = (): JSX.Element => {
     }
   }
 
+  const onNavigate = () => {
+    navigate(-1);
+  }
+
   return (
     <Flex
       maxH={'fit-content'}
@@ -148,11 +156,6 @@ const NewChat = (): JSX.Element => {
       justify={'center'}
       mt={{ base: 2, sm: 5 }}
       bg={'none'}
-    // align={'center'}
-    // direction={'center'}
-    // justify={'center'}
-    // py={12}
-    // maxW={'600px'}
     >
 
       <Flex
@@ -160,7 +163,6 @@ const NewChat = (): JSX.Element => {
         boxShadow={'2xl'}
         bg={'grey'}
         rounded={'xl'}
-        //w={'60vw'}
         p={{ base: 1, sm: 6 }}>
         {team ? (<Heading textAlign={'center'} lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }} mb={'4'}>
           Add new channel
@@ -198,16 +200,27 @@ const NewChat = (): JSX.Element => {
         >
           <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
         </Stack>)}
-        <Stack alignItems={'center'}>
-          <Button
-            bg={'teal.500'}
-            maxW={'100px'}
-            variant={'primaryButton'} w='full'
+        <Flex alignItems={'center'}>
+        <Button
+            w='full'
+            border={'2px solid'}
+            borderColor={'teal.500'}
+            bg={'none'}
+            color={'teal.500'}
             _hover={{ opacity: 0.8 }}
+            onClick={onNavigate}>
+            Cancel
+          </Button>
+          <Button
+            bg={canAddChat ? 'teal.500' : 'gray'}
+            variant={'primaryButton'} 
+            w='full'
+            _hover={{ opacity: 0.8 }}
+            isDisabled={!canAddChat}
             onClick={onAddNewChannel}>
             Add chat
           </Button>
-        </Stack>
+        </Flex>
       </Flex>
       <Stack>
 

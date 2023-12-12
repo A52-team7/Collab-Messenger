@@ -14,11 +14,15 @@ const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
     return (
       <>
         {!selfRemove ? (
-            <Button bg={'none'} rounded={20} onClick={onOpen}>
+            <Button 
+            bg={'none'}
+            _hover={{ bg: 'teal.300', opacity: 0.8 }} 
+            rounded={20} 
+            onClick={onOpen}>
             x
             </Button>
         ) : (
-            <Button bg={'none'} rounded={20} onClick={onOpen}>
+            <Button bg={'teal.500'} _hover={{opacity: 0.8 }} rounded={20} onClick={onOpen}>
             Leave chat
             </Button>
         )}
