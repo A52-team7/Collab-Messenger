@@ -87,7 +87,7 @@ const Chat = (): JSX.Element => {
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  const [messagerAreLoaded, setMessagesAreLoaded] = useState(false);
+  const [messagesAreLoaded, setMessagesAreLoaded] = useState(false);
 
   useEffect(() => {
     setChannelId(params.id);
@@ -169,6 +169,7 @@ const Chat = (): JSX.Element => {
     if (userData === null || !channelId) return;
 
     setMessages([]);
+    setMessagesAreLoaded(false);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
       Promise.all(
@@ -182,13 +183,12 @@ const Chat = (): JSX.Element => {
           if (isLeft) {
             const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
             setMessages([...messagesBeforeLeaving]);
-            setMessagesAreLoaded(true);
           } else {
             setMessages([...channelMessages]);
-            setMessagesAreLoaded(true);
           }
         }
       })
+        .then(() => setMessagesAreLoaded(true))
         .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
     });
@@ -249,9 +249,9 @@ const Chat = (): JSX.Element => {
     if (event.key === 'Enter' || event.type === 'click') {
       if (!textAreaRef.current) return;
       const messageFromArea = textAreaRef.current.value.trim();
-      // if (!messageFromArea) {
-      //   return alert(`Enter message first`)
-      // }
+      if (!messageFromArea && !imageSrc) {
+        return alert(`Enter message first`)
+      }
       if (imageSrc) {
         uploadImageToFBAndSendAMessage();
       } else {
@@ -271,10 +271,10 @@ const Chat = (): JSX.Element => {
                 }
               }
             })
+            .then(() => textAreaRef.current.value = '')
             .catch(e => console.error(e));
         }
       }
-      textAreaRef.current.value = '';
     }
   }
 
@@ -362,9 +362,6 @@ const Chat = (): JSX.Element => {
   }
 
   const removeFilePhoto = () => {
-    if (fileInput.current) {
-      fileInput.current.value = '';
-    }
     setImageSrc(null);
   }
 
@@ -454,7 +451,7 @@ const Chat = (): JSX.Element => {
               borderRadius: '24px',
             },
           }}>
-          {!messagerAreLoaded ? (
+          {!messagesAreLoaded ? (
             <Center height="100vh">
               <Spinner
               thickness='4px'
@@ -462,7 +459,7 @@ const Chat = (): JSX.Element => {
               emptyColor='gray.200'
               color='blue.500'
               size='xl'
-            />
+              />
             </Center>
           ) : (
             <>
@@ -524,7 +521,7 @@ const Chat = (): JSX.Element => {
               </Flex>
             </Flex>}
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
-              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc} />}
+              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc}/>}
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}
