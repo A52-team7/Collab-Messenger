@@ -17,6 +17,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import EmojiPopover from "../EmojiPopover/EmojiPopover";
 import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
+import ImageModal from "../ImageModal/ImageModal";
 export interface Author {
   handle: string;
   uid: string;
@@ -195,7 +196,30 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 maxW={'660px'}
                 w={'fit-content'}
               >
-                <Linkify
+                <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+                  <>
+                  {decoratedHref.includes('youtube') ? (
+                  <AspectRatio w='640px' h={'360px'} ratio={1} ml={'-10px'} mr={'-10px'}>
+                  <iframe title={decoratedText} src={decoratedHref} allowFullScreen />
+                  </AspectRatio>
+                  ) : (
+                  <>
+                  {decoratedHref.startsWith('https://firebasestorage') ? (
+                    <Box h={'350px'}>
+                      <ImageModal imageSrc={decoratedHref}/>
+                    </Box>
+                  ) : (
+                  <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+                  {decoratedText}
+                  </a>
+                  )}
+                  </>
+                  )}
+                  </>
+                  )}>
+                  {contentOfMessage}
+                  </Linkify>
+                {/* <Linkify
                   componentDecorator={(decoratedHref, decoratedText, key) => {
                     if (decoratedHref.includes('youtube')) {
                       return (
@@ -219,7 +243,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                   }}
                 >
                   {contentOfMessage}
-                </Linkify>
+                </Linkify> */}
                 {/* {visibleOptions &&  */}
                 {message.author === userData.handle &&
                   <Flex position={'absolute'}
