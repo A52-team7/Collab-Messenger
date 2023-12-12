@@ -40,15 +40,14 @@ import TeamInfo from '../TeamInfo/TeamInfo';
 import { GrEdit } from "react-icons/gr";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import { BsSend } from "react-icons/bs";
-import { BsFillSendFill } from "react-icons/bs";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 import SendImagePopover from '../SendImagePopover/SendImagePopover';
-//import SearchMassage from '../SearchMassage/SearchMassage'
 import { AiOutlineDelete } from "react-icons/ai";
 import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import SendButton from '../SendButton/SendButton';
+import { FaVideo } from "react-icons/fa";
 
 const Chat = (): JSX.Element => {
 
@@ -76,8 +75,6 @@ const Chat = (): JSX.Element => {
   const [editTitle, setEditTitle] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>('');
 
-  const [visibleColor, setVisibleColor] = useState(false);
-
   const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
   const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
 
@@ -87,7 +84,7 @@ const Chat = (): JSX.Element => {
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  const [messagerAreLoaded, setMessagesAreLoaded] = useState(false);
+  const [messagesAreLoaded, setMessagesAreLoaded] = useState(false);
 
   useEffect(() => {
     setChannelId(params.id);
@@ -169,8 +166,12 @@ const Chat = (): JSX.Element => {
     if (userData === null || !channelId) return;
 
     setMessages([]);
+    setMessagesAreLoaded(false);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
+      if(!data){
+        setMessagesAreLoaded(true);
+      }else{
       Promise.all(
         data.map((message) => {
           return getMessageById(message)
@@ -182,15 +183,15 @@ const Chat = (): JSX.Element => {
           if (isLeft) {
             const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
             setMessages([...messagesBeforeLeaving]);
-            setMessagesAreLoaded(true);
           } else {
             setMessages([...channelMessages]);
-            setMessagesAreLoaded(true);
           }
         }
       })
+        .then(() => setMessagesAreLoaded(true))
         .then(() => setChannelToSeen(channelId, userData.handle))
         .catch(error => console.error(error.message));
+    }
     });
     return () => {
       removeListener();
@@ -249,9 +250,9 @@ const Chat = (): JSX.Element => {
     if (event.key === 'Enter' || event.type === 'click') {
       if (!textAreaRef.current) return;
       const messageFromArea = textAreaRef.current.value.trim();
-      // if (!messageFromArea) {
-      //   return alert(`Enter message first`)
-      // }
+      if (!messageFromArea && !imageSrc) {
+        return alert(`Enter message first`)
+      }
       if (imageSrc) {
         uploadImageToFBAndSendAMessage();
       } else {
@@ -271,10 +272,10 @@ const Chat = (): JSX.Element => {
                 }
               }
             })
+            .then(() => textAreaRef.current.value = '')
             .catch(e => console.error(e));
         }
       }
-      textAreaRef.current.value = '';
     }
   }
 
@@ -353,18 +354,7 @@ const Chat = (): JSX.Element => {
     }
   }
 
-  const onSeeColor = () => {
-    setVisibleColor(true);
-  }
-
-  const onHideColor = () => {
-    setVisibleColor(false);
-  }
-
   const removeFilePhoto = () => {
-    if (fileInput.current) {
-      fileInput.current.value = '';
-    }
     setImageSrc(null);
   }
 
@@ -422,7 +412,7 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
-          <Button onClick={() => navigate('/video', { state: { channelId: channelId } })}>V</Button>
+          <Button colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25}/></Button>
           <Button onClick={() => navigate('/new-event')}>Event</Button>
 
           {ifChatBetweenTwoIsSet && (
@@ -454,7 +444,7 @@ const Chat = (): JSX.Element => {
               borderRadius: '24px',
             },
           }}>
-          {!messagerAreLoaded ? (
+          {!messagesAreLoaded ? (
             <Center height="100vh">
               <Spinner
               thickness='4px'
@@ -462,17 +452,21 @@ const Chat = (): JSX.Element => {
               emptyColor='gray.200'
               color='blue.500'
               size='xl'
-            />
+              />
             </Center>
           ) : (
             <>
-            {messages.length > 0 &&
+            {messages.length > 0 ?(
               <Box h={'auto'}>
                 <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
               </Box>
-            }
+            ) : (
+            <Center>
+              <Image src={'/no_messages.jpg'} h={'420px'} w={'420px'} opacity={0.9}/>
+            </Center>
+            )}
             </>
-          )}
+          )} 
           </Stack>
         }
       </Stack>
@@ -524,7 +518,7 @@ const Chat = (): JSX.Element => {
               </Flex>
             </Flex>}
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
-              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc} />}
+              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc}/>}
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}
@@ -542,18 +536,7 @@ const Chat = (): JSX.Element => {
                 onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
-              <Button
-                ml={-5}
-                bg={'none'}
-                color={'white'}
-                flex={'1 0 auto'}
-                onMouseEnter={onSeeColor}
-                onMouseLeave={onHideColor}
-                _hover={{ bg: 'none' }}
-                _focus={{ bg: 'none' }}
-                onClick={onSendMessage}>
-                {!visibleColor ? (<BsSend size={35} />) : (<BsFillSendFill size={35} />)}
-              </Button>
+              <SendButton onSendMessage={onSendMessage}/>
             </Stack>
           </Stack>
           ) : (

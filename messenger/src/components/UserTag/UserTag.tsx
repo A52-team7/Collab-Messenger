@@ -1,4 +1,4 @@
-import { Avatar, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from 'react';
 import { getUserByHandle } from "../../services/users.service";
 import { Author } from "../OneMessage/OneMessage";
@@ -57,7 +57,8 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     return(
         <>
         {userInfo && (
-            <Tag size='lg' w={'fit-content'} h={'45px'} colorScheme='red' borderRadius='full'>
+            <Tag size='lg' w={'300px'} h={'45px'} bg={'rgb(193,137,219)'} borderRadius='full'>
+                <Flex w={'full'} alignItems={'center'}>
                 <Avatar
                     size='xs'
                     name={displayName}
@@ -65,6 +66,7 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
                     mr={2}
                 />
                 <TagLabel>{displayName}</TagLabel>
+                </Flex>
                 {handle !== userData?.handle && (
                     <>
                         {(teamId && channelId == undefined) ? (<RemoveUser name={displayName} onDelete={onDeleteTeamMember} selfRemove={false}/>)

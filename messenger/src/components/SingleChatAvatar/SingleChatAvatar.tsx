@@ -14,7 +14,7 @@ const SingleChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsI
       borderColor={'rgb(187,125,217)'}
       borderRadius={'25px 5px 5px 25px'}
       _hover={{ cursor: "pointer", bg: 'teal.600' }}>
-      <Avatar mr={-4} size={'sm'} name={channel.title} src='https://bit.ly/broken-link' />
+      <Avatar mr={-4} size={'sm'} name={title} src='https://bit.ly/broken-link' />
       <Flex
         w={'100%'}
         alignItems={'center'}

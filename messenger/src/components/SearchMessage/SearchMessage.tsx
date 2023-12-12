@@ -35,8 +35,8 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
   const [initialData, setInitialData] = useState<User[]>([])
   const [messageSearch, setSearchMessage] = useState<Message[]>([])
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [hasMassage, setHasMassage] = useState<boolean>(true)
 
-  //const btnRef = useRef()
   useEffect(() => {
     getChannelById(channelId)
       .then((channel: Channel) => {
@@ -53,11 +53,12 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
             });
 
             setInitialData(filterUserByChannel);
+            setHasMassage(true)
           })
           .catch((err: Error) => console.error(err));
       }
       )
-  }, [])
+  }, [channelId])
 
   const searchMassageAndUser = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputRef.current === null) return;
@@ -100,16 +101,43 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
           }
         });
         const messageFilterByUser = messages.filter((message) => sortedFilteredUsers.find((user) => user.handle === message.author) !== undefined)
-          .filter((message) => message.content.includes(searchValue.trim()) === true)
+          .filter((message) => {
+          const massageToLowerCase = message.content.toLowerCase()
+          const search = searchValue.toLowerCase()
+          if(massageToLowerCase.includes(search.trim()) === true){
+            return message
+          }
+        })
 
         setSearchMessage([...messageFilterByUser])
+        if(messageSearch.length === 0){
+          setHasMassage(false)
+        }
       } else {
-        const messageFilterByText = messages.filter((message) => message.content.includes(inputRef.current.value))
+        const messageFilterByText = messages.filter((message) => {
+          if(inputRef.current === null) return;
+            const massageToLowerCase = message.content.toLowerCase()
+            const search = inputRef.current.value.trim().toLowerCase()
+            if(massageToLowerCase.includes(search) === true){
+              return message
+            }
+          })
+
         setSearchMessage(messageFilterByText)
+        if(messageSearch.length === 0){
+          setHasMassage(false)
+        }
       }
     }
   }
 
+  const onClear = () => {
+    if(inputRef.current === null) return;
+    inputRef.current.value = ''
+    setHasMassage(true)
+    setSearchMessage([])
+    
+  }
 
 
   return (
@@ -133,11 +161,10 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
           <DrawerHeader color={'white'} textAlign="center" >Find message</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder='Search here...'
+            <Input placeholder='Search for your message...'
               ref={inputRef}
               bg={'white'}
               onKeyDown={searchMassageAndUser}
-            //onChange={searchValueFunc}
             />
             <Flex mt={'20px'} >
               <VStack>
@@ -145,10 +172,11 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
                   <Box key={message.id}
                     border={'1px solid rgb(187,125,217)'}
                     p={4}
-                    minW={'100%'}
+                    w ={'350px'}
                   >
                     <SearchOneMessage message={message} />
-                  </Box>)) : <Text color={'white'}>Not found message</Text>
+                  </Box>)
+                  ) : (!hasMassage) ? (<Text color={'white'} textAlign="center">Not found message</Text>) : null
                 }
               </VStack>
             </Flex>
@@ -161,10 +189,19 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
               color={'teal.500'}
               borderColor={'teal.500'}
               bg={'none'}
+              maxW={'90px'}
               _hover={{ opacity: 0.8 }}
               onClick={onClose} >
               Cancel
             </Button>
+            <Button
+            bg={'teal.500'}
+            maxW={'90px'}
+            variant={'primaryButton'} w='full'
+            _hover={{ opacity: 0.8 }}
+            onClick={onClear}>
+            Clear
+          </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
