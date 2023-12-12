@@ -23,10 +23,13 @@ interface MessagesListProps {
 
 const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: MessagesListProps): JSX.Element => {
   const { userData } = useContext(AppContext);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (containerRef.current) {
+      const container = containerRef.current;
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
   }, [messages]);
 
   console.error('i am messages list');
@@ -36,7 +39,7 @@ const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: Messag
       {messages.map((message: Message) => (
         <Box
           display={'flex'}
-          ref={bottomRef}
+          ref={containerRef}
           flexWrap={'wrap'}
           key={message.id}
           mr={message.author === userData?.handle ? 35 : 0}
@@ -44,8 +47,8 @@ const MessagesList = ({ messages, setReplyIsVisible, setMessageToReply }: Messag
           <OneMessage {...{ message, setReplyIsVisible, setMessageToReply }} />
         </Box>
       ))}
-    </UnorderedList>
-    // <Stack ref={bottomRef} />    
+      <Stack ref={containerRef} />  
+    </UnorderedList>  
   );
 }
 

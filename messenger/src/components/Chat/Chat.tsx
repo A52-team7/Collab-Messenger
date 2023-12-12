@@ -12,6 +12,8 @@ import {
   Image,
   Text,
   Tooltip,
+  Spinner,
+  Center,
 } from '@chakra-ui/react'
 import { useLocation, useParams } from 'react-router-dom';
 import { getUserByHandle, userChannel, userMessage, setAllUsersUnseen } from '../../services/users.service';
@@ -84,6 +86,8 @@ const Chat = (): JSX.Element => {
   const [image, setImage] = useState<string | ArrayBuffer>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
+
+  const [messagerAreLoaded, setMessagesAreLoaded] = useState(false);
 
   useEffect(() => {
     setChannelId(params.id);
@@ -178,8 +182,10 @@ const Chat = (): JSX.Element => {
           if (isLeft) {
             const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
             setMessages([...messagesBeforeLeaving]);
+            setMessagesAreLoaded(true);
           } else {
             setMessages([...channelMessages]);
+            setMessagesAreLoaded(true);
           }
         }
       })
@@ -385,7 +391,7 @@ const Chat = (): JSX.Element => {
             <Flex flex={1}>
               <Heading color={'white'}>{title}</Heading>
               {!chatBetweenTwo &&
-                <Button color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
+                <Button color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
               }
             </Flex>
           ) : (
@@ -432,28 +438,42 @@ const Chat = (): JSX.Element => {
       <Stack
         maxH={'60vh'}
         w={'inherit'}
-        overflowY="auto"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            width: '6px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'black',
-            borderRadius: '24px',
-          },
-        }}
       >
         {ifIsLeftIsSet &&
-          <>
+          <Stack
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'black',
+              borderRadius: '24px',
+            },
+          }}>
+          {!messagerAreLoaded ? (
+            <Center height="100vh">
+              <Spinner
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='xl'
+            />
+            </Center>
+          ) : (
+            <>
             {messages.length > 0 &&
               <Box h={'auto'}>
                 <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
               </Box>
             }
-          </>
+            </>
+          )}
+          </Stack>
         }
       </Stack>
       {isLeft ? (
@@ -466,8 +486,6 @@ const Chat = (): JSX.Element => {
       ) : (
         <>
           {!replyIsVisible ? (<Stack
-            // boxShadow={'2xl'}
-            // bg={useColorModeValue('white', 'gray.700')}
             h={'100px'}
             rounded={'xl'}
             w={'60vw'}
@@ -480,6 +498,7 @@ const Chat = (): JSX.Element => {
               position="fixed"
               zIndex="9999"
               p={20}
+              pr={5}
               backgroundColor="rgba(0, 0, 0, 0.9)"
               mt={'-300px'}
               w={'fit-content'}
@@ -487,7 +506,7 @@ const Chat = (): JSX.Element => {
             >
               <Image src={image} h={'300px'} mt={'-80px'} />
               <Flex ml={2} mt={-65} textAlign={'center'} justifyContent={'center'}>
-                <Text fontWeight={'bold'} fontSize={'sm'} bg={'black'} color={'white'} isTruncated>
+                <Text fontWeight={'bold'} fontSize={'sm'} color={'white'} isTruncated>
                   {imageSrc.name}
                 </Text>
                 <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
