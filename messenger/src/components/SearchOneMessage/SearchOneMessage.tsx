@@ -28,10 +28,9 @@ const SearchOneMessage = ({message}: SearchOneMessage) => {
       }, []);
 
       return (
-        <Flex >
-            <VStack >
+        <VStack align="flex-start" justify="flex-start" w={'fit-content'} maxW ={'350px'}>
             {authorOfMessage && (
-            <HStack maxH={'5px'} mt={2}>
+            <HStack maxH={'5px'} mt={2} justify={'left'}>
             <Wrap>
             <Avatar size='sm'name={authorOfMessage.firstName + " " + authorOfMessage.lastName} 
             src={authorOfMessage.profilePhoto}  
@@ -41,11 +40,9 @@ const SearchOneMessage = ({message}: SearchOneMessage) => {
                 {authorOfMessage.firstName} {authorOfMessage.lastName} {message.createdOn.toLocaleString("en-GB").slice(0, 17)}
             </Text>
             </HStack>) }
-            <Text color={'white'} maxH={'10px'}>{message.content}</Text>
-            </VStack>
-        </Flex>
+            <Text color={'white'}  w={'fit-content'} maxW ={'325px'} p={2} mt={2} textAlign="left">{message.content}</Text>
+         </VStack>
       )
-
 }
 
 export default SearchOneMessage;
