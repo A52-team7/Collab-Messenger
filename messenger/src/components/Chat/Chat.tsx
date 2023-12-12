@@ -40,8 +40,6 @@ import TeamInfo from '../TeamInfo/TeamInfo';
 import { GrEdit } from "react-icons/gr";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import { BsSend } from "react-icons/bs";
-import { BsFillSendFill } from "react-icons/bs";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 import SendImagePopover from '../SendImagePopover/SendImagePopover';
 //import SearchMassage from '../SearchMassage/SearchMassage'
@@ -49,6 +47,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import SendButton from '../SendButton/SendButton';
 
 const Chat = (): JSX.Element => {
 
@@ -75,8 +74,6 @@ const Chat = (): JSX.Element => {
 
   const [editTitle, setEditTitle] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>('');
-
-  const [visibleColor, setVisibleColor] = useState(false);
 
   const [chatBetweenTwo, setChatBetweenTwo] = useState<boolean>();
   const [ifChatBetweenTwoIsSet, setIfChatBetweenTwoIsSet] = useState(false);
@@ -353,14 +350,6 @@ const Chat = (): JSX.Element => {
     }
   }
 
-  const onSeeColor = () => {
-    setVisibleColor(true);
-  }
-
-  const onHideColor = () => {
-    setVisibleColor(false);
-  }
-
   const removeFilePhoto = () => {
     setImageSrc(null);
   }
@@ -539,18 +528,7 @@ const Chat = (): JSX.Element => {
                 onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
-              <Button
-                ml={-5}
-                bg={'none'}
-                color={'white'}
-                flex={'1 0 auto'}
-                onMouseEnter={onSeeColor}
-                onMouseLeave={onHideColor}
-                _hover={{ bg: 'none' }}
-                _focus={{ bg: 'none' }}
-                onClick={onSendMessage}>
-                {!visibleColor ? (<BsSend size={35} />) : (<BsFillSendFill size={35} />)}
-              </Button>
+              <SendButton onSendMessage={onSendMessage}/>
             </Stack>
           </Stack>
           ) : (
