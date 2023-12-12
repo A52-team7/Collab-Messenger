@@ -413,7 +413,6 @@ const Chat = (): JSX.Element => {
           )}
           {team && <TeamInfo {...team} />}
           <Button colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25}/></Button>
-          <Button onClick={() => navigate('/new-event')}>Event</Button>
 
           {ifChatBetweenTwoIsSet && (
             <>
