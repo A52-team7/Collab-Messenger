@@ -6,7 +6,7 @@ import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
 
 import api from '../../services/api';
-import { addChannelVideoSession } from '../../services/channels.service';
+import { getChannelVideoSession, addChannelVideoSession } from '../../services/video.service';
 import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';

@@ -170,13 +170,6 @@ export const getDateOfLeftChannel = (handle: string, channelId: string) => {
     });
 };
 
-export const addChannelVideoSession = (channelId: string, sessionUrl: string) => {
-  const addChannelSession: { [key: string]: string } = {};
-  addChannelSession[`channels/${channelId}/videoSession`] = sessionUrl;
-
-  return update(ref(db), addChannelSession);
-}
-
 export const addTitleToChannel = (channelId: string, title: string) => {
   const updateChannelTitle: { [key: string]: string } = {};
   updateChannelTitle[`/channels/${channelId}/title`] = title;
