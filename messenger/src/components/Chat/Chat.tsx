@@ -42,7 +42,6 @@ import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import ChatMoreOptions from '../ChatMoreOptions/ChatMoreOptions';
 import SendImagePopover from '../SendImagePopover/SendImagePopover';
-//import SearchMassage from '../SearchMassage/SearchMassage'
 import { AiOutlineDelete } from "react-icons/ai";
 import { FirebaseStorage, StorageReference, getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -409,7 +408,6 @@ const Chat = (): JSX.Element => {
           )}
           {team && <TeamInfo {...team} />}
           <Button onClick={() => navigate('/video', { state: { channelId: channelId } })}>V</Button>
-          <Button onClick={() => navigate('/new-event')}>Event</Button>
 
           {ifChatBetweenTwoIsSet && (
             <>

@@ -147,8 +147,8 @@ const SearchMessage = ({ messages, channelId }: Messages) => {
         color={'white'}
         onClick={onOpen}
         _hover={{ opacity: '0.8' }}
-        leftIcon={<MdContentPasteSearch />}>
-        Search Message
+        leftIcon={<MdContentPasteSearch size={'20px'} />}>
+        Find Message
       </Button>
       <Drawer
         isOpen={isOpen}

@@ -55,7 +55,7 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
             color={'red'} 
             onClick={onOpen} 
             _hover={{ opacity: '0.8' }} 
-            leftIcon={<FiXOctagon  />}>Remove chat</Button>
+            leftIcon={<FiXOctagon size={'20px'} />}>Remove chat</Button>
         )}
         
         <AlertDialog
