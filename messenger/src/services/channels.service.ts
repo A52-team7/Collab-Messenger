@@ -249,7 +249,7 @@ export const getChannelTitleLive = (channelId: string, listener: TitleListener) 
   return onValue(ref(db, `channels/${channelId}/title`), (snapshot) => {
     if (!snapshot.exists()) return '';
 
-    const title = snapshot.val();
+    const title = snapshot.val(); 
 
     return listener(title);
   })
