@@ -59,7 +59,7 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
       <Flex justify={'center'}>
         <HStack w={'80%'} justify="space-between">
           <Heading as={'h2'} size={'lg'} color={'white'}>My chats</Heading>
-          <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.5)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
+          <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
         </HStack>
       </Flex>
 
