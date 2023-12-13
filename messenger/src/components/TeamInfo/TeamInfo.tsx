@@ -22,6 +22,7 @@ import { Team } from '../CreateTeam/CreateTeam';
 import { FcAbout } from "react-icons/fc";
 import { User } from '../SearchUsers/SearchUsers';
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar'
+import { getTeamTitleLive, getTeamMemberLive } from '../../services/teams.service';
 
 
 const TeamInfo = (team: Team) => {
@@ -30,12 +31,14 @@ const TeamInfo = (team: Team) => {
   const [members, setMembers] = useState<User[]>([])
   const [owner, setOwner] = useState<User>({})
   const [allChannels, setAllChannels] = useState<Channel[]>([])
+  const [title,setTitle] = useState<string>(team.name)
 
   useEffect(() => {
+    getTeamMemberLive(team.id, (teamMember) =>{
     getAllUsersData()
       .then(data => {
         const snapshot: User[] = Object.values(data.val());
-        const members = Object.keys(team.members)
+        const members = Object.keys(teamMember)
         const teamMembers = snapshot.filter((user) => {
           if (members.includes(user.handle) && user.handle !== team.owner) {
             return user;
@@ -47,6 +50,7 @@ const TeamInfo = (team: Team) => {
         setMembers(teamMembers)
       })
       .catch(e => console.error(e))
+    })
 
     if (team.channels === undefined) {
       setAllChannels([]);
@@ -70,6 +74,13 @@ const TeamInfo = (team: Team) => {
     }
   }, [team, userData])
 
+  useEffect(() => {
+    getTeamTitleLive(team.id, (data) => {
+      setTitle(data)
+    })
+  },[])
+  
+
   return (
     <>
       <Button key={'lg'} variant='unstyled' _hover={{ transform: 'scale(1.5)', color: 'inherit' }} onClick={onOpen}>
@@ -78,8 +89,22 @@ const TeamInfo = (team: Team) => {
       <Drawer placement={'right'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent minW={'600px'} bg={"RGB(59, 59, 59)"}>
-          <DrawerHeader fontSize="3xl" color="white" textAlign="center" borderBottomWidth='1px'>{team.name}</DrawerHeader>
-          <DrawerBody color="white">
+          <DrawerHeader fontSize="3xl" color="white" textAlign="center" borderBottomWidth='1px'>{title}</DrawerHeader>
+          <DrawerBody 
+          color="white" 
+          overflowY="auto"
+            css={{
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'black',
+                borderRadius: '24px',
+              },
+            }}>
             <Wrap justify="center">
               <WrapItem>
                 <Avatar size='2xl' name={team.name} src={team.teamPhoto} mx="auto" my={10} />{' '}
