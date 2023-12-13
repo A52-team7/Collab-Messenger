@@ -57,19 +57,23 @@ const UserStatus = () => {
             justifyContent="space-between"
             mt={-4}
           /> */}
-          {status == "Available" ? (<AvatarBadge boxSize='15px' bg={'green'} backgroundColor={'none'} ml={-8} />)
-            : status == "Busy" ? (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'none'} ml={-6} />)
-              : status == "Away" ? (<AvatarBadge boxSize='20px' bg={'yellow'} backgroundColor={'none'} ml={-6} />)
-                : (<AvatarBadge boxSize='20px' bg={'red'} backgroundColor={'grey'} ml={-6} />)}
+          {status == "Available" ? (<AvatarBadge boxSize='18px' bg={'green'} backgroundColor={'none'} ml={-8} />)
+            : status == "Busy" ? (<AvatarBadge boxSize='18px' bg={'red'} backgroundColor={'none'} ml={-6} />)
+              : status == "Away" ? (<AvatarBadge boxSize='18px' bg={'yellow'} backgroundColor={'none'} ml={-6} />)
+                : (<AvatarBadge boxSize='18px' bg={'red'} backgroundColor={'grey'} ml={-6} />)}
         </PopoverTrigger>
-        <PopoverContent w="fit-content" _focus={{ boxShadow: 'none' }}>
-          <PopoverArrow />
-          <PopoverBody>
+        <PopoverContent 
+        bg={"RGB(59, 59, 59)"}
+        w="fit-content" >
+          <PopoverArrow  bg={"RGB(59, 59, 59)"} />
+          <PopoverBody color="white">
             <Stack justifyContent="flex-start">
               <Button
                 w="fit-content"
+                color='white'
                 h='20px'
-                variant="ghost"
+                variant='unstyled'
+                _hover={{ opacity: '0.8' }}
                 //leftIcon={<FiUsers  />}
                 fontWeight="normal"
                 fontSize="sm"
@@ -78,8 +82,10 @@ const UserStatus = () => {
               </Button>
               <Button
                 w="fit-content"
+                color='white'
                 h='20px'
-                variant="ghost"
+                variant='unstyled'
+                _hover={{ opacity: '0.8' }}
                 //leftIcon={<FiEdit3 />}
                 fontWeight="normal"
                 fontSize="sm"
@@ -88,8 +94,10 @@ const UserStatus = () => {
               </Button>
               <Button
                 w="fit-content"
+                color='white'
                 h='20px'
-                variant="ghost"
+                variant='unstyled'
+                _hover={{ opacity: '0.8' }}
                 //leftIcon={<FiEdit3 />}
                 fontWeight="normal"
                 fontSize="sm"
@@ -98,8 +106,10 @@ const UserStatus = () => {
               </Button>
               <Button
                 w="fit-content"
+                variant='unstyled'
+                color='white'
+                _hover={{ opacity: '0.8' }}
                 h='20px'
-                variant="ghost"
                 //leftIcon={<FiEdit3 />}
                 fontSize="sm"
                 onClick={() => statusChange('Unavailable')}>

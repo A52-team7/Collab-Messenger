@@ -1,4 +1,4 @@
-import { Box, Button, } from '@chakra-ui/react';
+import { Box, Button, Stack} from '@chakra-ui/react';
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -7,6 +7,7 @@ import { useContext, useState, useEffect } from 'react';
 import { getUserEventLive } from '../../services/users.service'
 import { getEventById } from '../../services/events.service'
 import { useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 
 const localizer = momentLocalizer(moment);
@@ -18,24 +19,39 @@ export interface MyEvent {
   members: { [handle: string]: boolean },
   start: string,
   end: string,
-  createdOn?: string,
+  createdOn: string,
   meetingLink: string,
-  createRoom?: boolean,
+  createRoom: boolean,
   channelId: string
 }
 
-const MyEventBox = ({ event }) => {
+interface EventBoxProps {
+  event: MyEvent;
+}
+
+
+const MyEventBox = ({ event } : EventBoxProps) => {
   const navigate = useNavigate();
 
-  return (<Box>
+  return (<Stack overflowY="auto" css={{
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'blue',
+      borderRadius: '24px',
+    },
+  }} >
   <strong>{event.title}</strong>
   <br />
-  {/* Add your button or any other custom content here */}
   {event.createRoom && (<Button 
   colorScheme='teal' 
   onClick={() => navigate('/video', { state: { channelId: event.channelId, eventId: event.id } })}>
     Join</Button>)}
-   </Box>)
+   </Stack>)
 }
 
 
@@ -58,7 +74,7 @@ const MyCalendar = () => {
   }, [])
 
   return (
-    <Box bg={'white'} >
+    <Box bg={'grey'} >
       <Calendar
         localizer={localizer}
         defaultDate={new Date()}

@@ -115,11 +115,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
             }
             <MenuList
               zIndex={99}
-              bg={useColorModeValue('white', 'gray.900')}
-              borderColor={useColorModeValue('gray.200', 'gray.700')}>
-              <MenuItem onClick={() => navigate('/user-details')}>Profile</MenuItem>
+              color="white"
+              bg={"RGB(59, 59, 59)"}
+              borderColor={"RGB(59, 59, 59)"}>
+              <MenuItem bg={"RGB(59, 59, 59)"} onClick={() => navigate('/user-details')}>Profile</MenuItem>
               <MenuDivider />
-              <MenuItem onClick={onLogout}>Sign out</MenuItem>
+              <MenuItem bg={"RGB(59, 59, 59)"} onClick={onLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
