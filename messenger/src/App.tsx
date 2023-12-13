@@ -17,6 +17,7 @@ import UserDetails from './components/UserDetails/UserDetails';
 import EditTeamInfo from './components/EditTeamInfo/EditTeamInfo';
 import GroupVideoMain from './components/GroupVideoMain/GroupVideoMain';
 import NewEvent from './components/NewEvent/NewEvent';
+import MyCalendar from './components/MyCalendar/MyCalendar';
 
 function App(): JSX.Element {
   const [userAuth, loading] = useAuthState(auth);
@@ -70,6 +71,7 @@ function App(): JSX.Element {
           <Route path='/new-chat' element={<AuthenticatedRoute><NewChat /></AuthenticatedRoute>} />
           <Route path='/chat/:id' element={<AuthenticatedRoute><Chat /></AuthenticatedRoute>} />
           <Route path='/user-details' element={<AuthenticatedRoute><UserDetails /></AuthenticatedRoute>} />
+          <Route path='/calendar' element={<AuthenticatedRoute><MyCalendar /></AuthenticatedRoute>} />
           <Route path='/video' element={<AuthenticatedRoute><GroupVideoMain /></AuthenticatedRoute>} />
           {/* <Route path='/search' element={<AuthenticatedRoute><SearchPage /></AuthenticatedRoute>} /> */}
           <Route path='/new-team' element={<AuthenticatedRoute><CreateTeam /></AuthenticatedRoute>} />

@@ -9,14 +9,13 @@ import {
   useColorModeValue,
   FormLabel,
   Image,
-  Center,
 } from '@chakra-ui/react';
 import { BsChatTextFill } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
 import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constants';
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
-import { IoCalendarSharp } from "react-icons/io5";
+import CalendarBtn from '../CalendarBtn/CalendarBtn';
 
 interface SidebarContentProps {
   onClose: () => void
@@ -126,27 +125,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                   <FaExclamationCircle size={25} color={'yellow'} />
                 </Box>} */}
               </Button>
-              <FormLabel color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
+              <FormLabel mr={0} color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
             </Box>
-            <Box>
-              <Center>
-              <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
-                id={'calendar-btn'}
-                bg={activeBtn === 'calendar-btn' ? 'rgb(72,161,159)' : 'gray.100'}
-                _hover={{ opacity: 0.5 }}
-                onClick={(e) => showContentHandle(e)}>
-                <IoCalendarSharp size={30} />
-                {/* {unseenChatTeamBtn.teams &&
-                  <Box
-                    top={-1}
-                    right={-4}
-                    position={'absolute'}>
-                    <FaExclamationCircle size={25} color={'yellow'} />
-                  </Box>} */}
-              </Button>
-              </Center>
-              <FormLabel color={'white'} htmlFor={'calendar-btn'}>CALENDAR</FormLabel>
-            </Box>
+
+            <CalendarBtn />
+
             <Box>
               <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
                 id={'teams-btn'}
@@ -162,7 +145,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                     <FaExclamationCircle size={25} color={'yellow'} />
                   </Box>} */}
               </Button>
-              <FormLabel color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
+              <FormLabel mr={0} color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
             </Box>
           </Flex>
           <Box minW={'210px'}>
