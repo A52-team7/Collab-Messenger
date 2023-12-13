@@ -21,7 +21,7 @@ const Tile = ({ id, isScreenShare, isLocal, isAlone }) => {
   }
 
   return (
-    <Box m={1} p={1} maxW={'50%'} className={containerCssClasses} border={'2px solid'} borderColor={'teal.300'} rounded={'lg'}>
+    <Box m={1} p={1} minW={'30%'} maxW={'50%'} className={containerCssClasses} border={'2px solid'} borderColor={'teal.300'} rounded={'lg'}>
       <DailyVideo automirror sessionId={id} type={isScreenShare ? 'screenVideo' : 'video'} />
       {!isScreenShare && <Username id={id} isLocal={isLocal} />}
     </Box>

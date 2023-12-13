@@ -34,30 +34,34 @@ export default function Call() {
   const renderCallScreen = () => (
     // className = { screens.length > 0 ? 'is-screenshare' : 'call' }
     <Box>
-      {/* Your self view */}
-      {localSessionId && (
-        <Tile
-          id={localSessionId}
-          isLocal
-          isAlone={isAlone}
-        />
-      )}
-      {/* Videos of remote participants and screen shares */}
-      {remoteParticipantIds.length > 0 || screens.length > 0 ? (
-        <>
-          {remoteParticipantIds.map((id) => (
-            <Tile key={id} id={id} />
-          ))}
-          {screens.map((screen) => (
-            <Tile key={screen.screenId} id={screen.session_id} isScreenShare />
-          ))}
-        </>
-      ) : (
+      <Flex>
+        {/* Your self view */}
+        {localSessionId && (
+          <Tile
+            id={localSessionId}
+            isLocal
+            isAlone={isAlone}
+          />
+        )}
+        {/* Videos of remote participants and screen shares */}
+        {remoteParticipantIds.length > 0 || screens.length > 0 && (
+          <>
+            {remoteParticipantIds.map((id) => (
+              <Tile key={id} id={id} />
+            ))}
+            {screens.map((screen) => (
+              <Tile key={screen.screenId} id={screen.session_id} isScreenShare />
+            ))}
+          </>
+        )}
+      </Flex>
+      {
         // When there are no remote participants or screen shares
-        <Flex p={10} justifyContent="center" alignItems="center">
+        isAlone &&
+        <Box mt={'auto'} p={10} textAlign={'center'}>
           <Heading color={'rgb(237,254,253)'}>Waiting for others</Heading>
-        </Flex>
-      )}
+        </Box>
+      }
     </Box>
   );
 
