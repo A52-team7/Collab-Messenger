@@ -51,7 +51,7 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
   }, []);
 
   return (
-    <Flex position={'relative'} w={'80%'} mt={2} onClick={onOpenChat} onMouseOver={() => setTrashVisibility(false)} onMouseLeave={() => setTrashVisibility(true)}>
+    <Flex position={'relative'} w={'75%'} mt={2} onClick={onOpenChat} onMouseOver={() => setTrashVisibility(false)} onMouseLeave={() => setTrashVisibility(true)}>
       <Box position={'absolute'} left={-6} style={{ opacity: trashVisibility ? 0 : 1, transition: 'opacity 0.5s' }}>
         <RemoveMessageOrChat channelId={channel.id} isFromChat={false} />
       </Box>

@@ -36,7 +36,6 @@ const GroupChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsIn
           textAlign={'center'}>
           <Text
             color={'white'}
-            bg={seenState === true || seenState === null ? 'green' : 'red'}
             fontWeight={seenState === true || seenState === null ? '' : 'bold'}
           >
             {title}
