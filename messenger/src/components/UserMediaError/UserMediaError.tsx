@@ -1,5 +1,4 @@
-import './UserMediaError.css';
-import React from 'react';
+import { Button, Heading, Stack, Text } from '@chakra-ui/react';
 
 const refreshPage = () => {
   console.log(
@@ -10,21 +9,21 @@ const refreshPage = () => {
 
 export default function UserMediaError() {
   return (
-    <div className="call">
-      <div className="info-box get-user-media-error">
-        <h1>Camera or mic blocked</h1>
-        <button onClick={refreshPage} type="button">
+    <Stack alignItems={'center'}>
+      <Stack bg={'grey'} w={'40%'} h={'400px'} gridColumn={1/3} alignItems={'center'}>
+        <Heading mt={'80px'} mb={'50px'}>Camera or mic blocked</Heading>
+        <Button bg={'black'} color={'white'} _hover={{opacity:0.6}} m={'1rem 0 1rem 0'} onClick={refreshPage} type="button">
           Try again
-        </button>
-        <p>
+        </Button>
+        <Text textDecoration={'underline'} mt={'30px'}>
           <a
             href="https://docs.daily.co/guides/how-daily-works/handling-device-permissions"
             target="_blank"
             rel="noreferrer">
             Get help
           </a>
-        </p>
-      </div>
-    </div>
+        </Text>
+      </Stack>
+    </Stack>
   );
 }

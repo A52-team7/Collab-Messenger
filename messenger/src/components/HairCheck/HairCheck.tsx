@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useDevices,
   useDaily,
@@ -9,7 +9,7 @@ import {
 } from '@daily-co/daily-react';
 import UserMediaError from '../UserMediaError/UserMediaError';
 
-import './HairCheck.css';
+import { Box, Button, Center, Flex, FormLabel, Heading, Input, Select } from '@chakra-ui/react';
 
 export default function HairCheck({ joinCall, cancelCall }) {
   const localSessionId = useLocalSessionId();
@@ -56,65 +56,96 @@ export default function HairCheck({ joinCall, cancelCall }) {
   return getUserMediaError ? (
     <UserMediaError />
   ) : (
-    <form className="hair-check" onSubmit={handleJoin}>
-      <h1>Setup your hardware</h1>
+    <Flex 
+    bg={'grey'} 
+    border={'1px solid grey'} 
+    p={'1rem'} 
+    borderRadius={'4px'}
+    maxW={'600px'}
+    direction={'column'}
+    m={'auto'}
+    justifyContent={'center'}
+    onSubmit={handleJoin}>
+      <Center>
+        <Heading mb={5} size='lg'>Setup your hardware</Heading>
+      </Center>
+
       {/* Video preview */}
-      {localSessionId && <DailyVideo sessionId={localSessionId} mirror />}
+      <Box maxW={'400px'}>
+        {localSessionId && <DailyVideo sessionId={localSessionId} mirror />}
+      </Box>
 
       {/* Username */}
-      <div>
-        <label htmlFor="username">Your name:</label>
-        <input
+      <Box>
+        <FormLabel htmlFor="username" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Your name:</FormLabel>
+        <Input
+          bg={'white'}
           name="username"
           type="text"
           placeholder="Enter username"
           onChange={handleChange}
           value={username || ' '}
         />
-      </div>
+      </Box>
 
       {/* Microphone select */}
-      <div>
-        <label htmlFor="micOptions">Microphone:</label>
-        <select name="micOptions" id="micSelect" onChange={updateMicrophone} value={currentMic?.device?.deviceId}>
+      <Box>
+        <FormLabel htmlFor="micOptions" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Microphone:</FormLabel>
+        <Select name="micOptions" bg={'white'} onChange={updateMicrophone} value={currentMic?.device?.deviceId}>
           {microphones.map((mic) => (
             <option key={`mic-${mic.device.deviceId}`} value={mic.device.deviceId}>
               {mic.device.label}
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </Box>
 
       {/* Speakers select */}
-      <div>
-        <label htmlFor="speakersOptions">Speakers:</label>
-        <select name="speakersOptions" id="speakersSelect" onChange={updateSpeakers} value={currentSpeaker?.device?.deviceId}>
+      <Box>
+        <FormLabel htmlFor="speakersOptions" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Speakers:</FormLabel>
+        <Select name="speakersOptions" bg={'white'} onChange={updateSpeakers} value={currentSpeaker?.device?.deviceId}>
           {speakers.map((speaker) => (
             <option key={`speaker-${speaker.device.deviceId}`} value={speaker.device.deviceId}>
               {speaker.device.label}
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </Box>
 
       {/* Camera select */}
-      <div>
-        <label htmlFor="cameraOptions">Camera:</label>
-        <select name="cameraOptions" id="cameraSelect" onChange={updateCamera} value={currentCam?.device?.deviceId}>
+      <Box>
+        <FormLabel htmlFor="cameraOptions" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Camera:</FormLabel>
+        <Select name="cameraOptions" bg={'white'} onChange={updateCamera} value={currentCam?.device?.deviceId}>
           {cameras.map((camera) => (
             <option key={`cam-${camera.device.deviceId}`} value={camera.device.deviceId}>
               {camera.device.label}
             </option>
           ))}
-        </select>
-      </div>
+        </Select>
+      </Box>
 
-      <button onClick={handleJoin} type="submit">
-        Join call
-      </button>
-      <button onClick={cancelCall} className="cancel-call" type="button">
-        Back to start
-      </button>
-    </form>
+      <Flex mt={5}>
+        <Button 
+        w='full'
+        border={'2px solid'}
+        borderColor={'teal.500'}
+        bg={'none'}
+        color={'teal.500'}
+        _hover={{ opacity: 0.8 }}
+        onClick={cancelCall} 
+        type="button">
+          Back to start
+        </Button>
+        <Button 
+        bg={'teal.500'}
+        color={'white'}
+        w='full'
+        _hover={{ opacity: 0.8 }}
+        onClick={handleJoin} 
+        type="submit">
+          Join call
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
