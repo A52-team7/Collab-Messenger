@@ -1,10 +1,12 @@
 import { createContext } from 'react';
 import { User } from "firebase/auth";
+import { DailyCall } from '@daily-co/daily-js';
 
 export interface UserState {
   user: User | null;
   userData: UserData | null;
   loading: boolean;
+  callObject: DailyCall | null
   setContext: React.Dispatch<React.SetStateAction<UserState>>;
 }
 
@@ -25,6 +27,7 @@ const AppContext = createContext<UserState>({
   user: null,
   userData: null,
   loading: false,
+  callObject: null,
   setContext: () => { }
 });
 

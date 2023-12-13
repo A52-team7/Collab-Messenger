@@ -1,11 +1,12 @@
 import './GroupVideoMain.css';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
+import AppContext from '../../context/AppContext';
 
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, Textarea } from '@chakra-ui/react';
 
 import api from '../../services/api';
 import { getChannelVideoSession, addChannelVideoSession } from '../../services/video.service';
@@ -28,8 +29,12 @@ const STATE_HAIRCHECK = 'STATE_HAIRCHECK';
 export const GroupVideoMain = () => {
   const [appState, setAppState] = useState(STATE_IDLE);
   const [roomUrl, setRoomUrl] = useState<string | null>(null);
-  const [callObject, setCallObject] = useState<DailyCall | null>(null);
+  // const [callObject, setCallObject] = useState<DailyCall | null>(null);
   const [apiError, setApiError] = useState(false);
+  const { callObject, setContext } = useContext(AppContext);
+
+  const callObjectRef = useRef<DailyCall | null>(null);
+
   const location = useLocation();
 
   const navigate = useNavigate();
@@ -54,9 +59,15 @@ export const GroupVideoMain = () => {
   }, []);
 
   const startHairCheck = useCallback(async (url: string) => {
+    console.log(callObject);
+
+    if (callObject) return;
     const newCallObject = DailyIframe.createCallObject();
     setRoomUrl(url);
-    setCallObject(newCallObject);
+    setContext(prevState => ({
+      ...prevState,
+      callObject: newCallObject
+    }))
     setAppState(STATE_HAIRCHECK);
     await newCallObject.preAuth({ url });
     await newCallObject.startCamera();
@@ -80,22 +91,62 @@ export const GroupVideoMain = () => {
     if (appState === STATE_ERROR) {
       callObject.destroy().then(() => {
         setRoomUrl(null);
-        setCallObject(null);
+        setContext(prevState => ({
+          ...prevState,
+          callObject: null
+        }));
         setAppState(STATE_IDLE);
-      });
+      })
+        .then(() => navigate(`/chat/${channelId}`))
     } else {
       /* This will trigger a `left-meeting` event, which in turn will trigger
       the full clean-up as seen in handleNewMeetingState() below. */
       setAppState(STATE_LEAVING);
-      callObject.leave();
+      callObject.leave()
+        .then(() => navigate(`/chat/${channelId}`))
     }
-    navigate(`/chat/${channelId}`);
   }, [callObject, appState]);
 
   /**
    * If a room's already specified in the page's URL when the component mounts,
    * join the room.
    */
+
+  // I am updating the ref to callObject
+  useEffect(() => {
+    callObjectRef.current = callObject;
+  }, [callObject]);
+
+  // I am using the ref to clear the callObject. Still not sure why?!? But it works!
+  useEffect(() => {
+    return () => {
+      if (callObjectRef.current) {
+        callObjectRef.current.destroy()
+          .then(() => {
+            setContext(prevState => ({
+              ...prevState,
+              callObject: null
+            }));
+          })
+      }
+    }
+  }, []);
+
+  // This may be needed if bugs occur!
+  // useEffect(() => {
+  //   console.log(callObject);
+
+  //   if (callObject) {
+  //     callObject.destroy()
+  //       .then(() => {
+  //         setContext(prevState => ({
+  //           ...prevState,
+  //           callObject: null
+  //         }));
+  //       })
+  //   }
+  // }, [])
+
   useEffect(() => {
     if (!channelId) navigate('/');
     getChannelVideoSession(channelId)
@@ -106,9 +157,6 @@ export const GroupVideoMain = () => {
       })
   }, [startHairCheck]);
 
-  /**
-   * Update the page's URL to reflect the active call when roomUrl changes.
-   */
   useEffect(() => {
     if (roomUrl) {
       const pageUrl = pageUrlFromRoomUrl(roomUrl);
@@ -117,14 +165,6 @@ export const GroupVideoMain = () => {
     }
   }, [roomUrl]);
 
-  /**
-   * Update app state based on reported meeting state changes.
-   *
-   * NOTE: Here we're showing how to completely clean up a call with destroy().
-   * This isn't strictly necessary between join()s, but is good practice when
-   * you know you'll be done with the call object for a while, and you're no
-   * longer listening to its events.
-   */
   useEffect(() => {
     if (!callObject) return;
 
@@ -139,7 +179,10 @@ export const GroupVideoMain = () => {
           case 'left-meeting':
             callObject.destroy().then(() => {
               setRoomUrl(null);
-              setCallObject(null);
+              setContext(prevState => ({
+                ...prevState,
+                callObject: null
+              }));
               setAppState(STATE_IDLE);
             });
             break;
@@ -152,42 +195,28 @@ export const GroupVideoMain = () => {
       }
     }
 
-    // Use initial state
     handleNewMeetingState();
 
-    /*
-     * Listen for changes in state.
-     * We can't use the useDailyEvent hook (https://docs.daily.co/reference/daily-react/use-daily-event) for this
-     * because right now, we're not inside a <DailyProvider/> (https://docs.daily.co/reference/daily-react/daily-provider)
-     * context yet. We can't access the call object via daily-react just yet, but we will later in Call.js and HairCheck.js!
-     */
     events.forEach((event) => callObject.on(event, handleNewMeetingState));
 
-    // Stop listening for changes in state
     return () => {
       events.forEach((event) => callObject.off(event, handleNewMeetingState));
     };
   }, [callObject]);
 
-  /**
-   * Show the call UI if we're either joining, already joined, or have encountered
-   * an error that is _not_ a room API error.
-   */
   const showCall = !apiError && [STATE_JOINING, STATE_JOINED, STATE_ERROR].includes(appState);
 
-  /* When there's no problems creating the room and startHairCheck() has been successfully called,
-   * we can show the hair check UI. */
   const showHairCheck = !apiError && appState === STATE_HAIRCHECK;
 
   const renderApp = () => {
     // If something goes wrong with creating the room.
     if (apiError) {
       return (
-        <div className="api-error">
-          <p>
+        <Box className="api-error">
+          <Textarea>
             OH, NO! We have encountered a problem :(
-          </p>
-        </div>
+          </Textarea>
+        </Box>
       );
     }
 
