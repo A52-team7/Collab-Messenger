@@ -43,7 +43,7 @@ const UsersDrawer = ({members, updateNewMember, channelId, team}: UserDrawerProp
   
     return (
       <>
-        <Button colorScheme='teal' onClick={onOpen}>
+        <Button  mr={2} colorScheme='teal' onClick={onOpen}>
             <BsPersonFillAdd size={30}/><Text fontSize='xl'>{members.length}</Text>
         </Button>
         <Drawer
