@@ -6,7 +6,7 @@ import {
   useLocalSessionId,
 } from '@daily-co/daily-react';
 
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading, Box } from '@chakra-ui/react';
 import Tile from '../Tile/Tile';
 import UserMediaError from '../UserMediaError/UserMediaError';
 
@@ -32,7 +32,8 @@ export default function Call() {
   const isAlone = remoteParticipantIds.length < 1 || screens.length < 1;
 
   const renderCallScreen = () => (
-    <div className={screens.length > 0 ? 'is-screenshare' : 'call'}>
+    // className = { screens.length > 0 ? 'is-screenshare' : 'call' }
+    <Box>
       {/* Your self view */}
       {localSessionId && (
         <Tile
@@ -57,7 +58,7 @@ export default function Call() {
           <Heading color={'rgb(237,254,253)'}>Waiting for others</Heading>
         </Flex>
       )}
-    </div>
+    </Box>
   );
 
   return getUserMediaError ? <UserMediaError /> : renderCallScreen();

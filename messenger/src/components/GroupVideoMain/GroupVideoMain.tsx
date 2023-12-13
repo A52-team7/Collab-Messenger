@@ -1,5 +1,3 @@
-import './GroupVideoMain.css';
-
 import React, { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
@@ -82,7 +80,7 @@ export const GroupVideoMain = () => {
     if (callObject && roomUrl) {
       callObject.join({ url: roomUrl, userName });
       addChannelVideoSession(channelId, roomUrl);
-      if(eventId){
+      if (eventId) {
         addEventMeetingLink(eventId, roomUrl)
       }
     }
@@ -230,7 +228,7 @@ export const GroupVideoMain = () => {
           {showHairCheck ? (
             <HairCheck joinCall={joinCall} cancelCall={startLeavingCall} />
           ) : (
-            <Flex flexDirection={'column'} justifyContent={'space-between'}>
+            <Flex h={'calc(100vh - 60px)'} m={'auto'} flexDirection={'column'} justifyContent={'space-between'}>
               <Box>
                 <Call />
               </Box>
