@@ -196,7 +196,20 @@ const NewChat = (): JSX.Element => {
             : (team && (isPrivate === 'Standard')) ? null : (<SearchUsers searchType={ADD_USERS} updateNewMember={updateNewMember} />)}
         </Stack>
         {(isPrivate === 'Private') && (<Stack h={'31vh'}
-          overflowY={'scroll'}
+          
+          overflowY="auto"
+                css={{
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    width: '6px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgb(202, 213, 227)',
+                    borderRadius: '24px',
+                  },
+                }}
         >
           <UsersList members={Object.keys(channelForm.members)} removeChannelMembers={removeChannelMembers} />
         </Stack>)}

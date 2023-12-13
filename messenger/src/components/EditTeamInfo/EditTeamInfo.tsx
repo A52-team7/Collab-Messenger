@@ -233,7 +233,19 @@ const EditTeamInfo = () => {
               <FormLabel textAlign={'center'}>Add members</FormLabel>
               <SearchUsers updateNewMember={updateNewMember} searchType={ADD_USERS} />
               <Stack h={'15vh'}
-                overflowY={'scroll'}
+                overflowY="auto"
+                css={{
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    width: '6px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgb(202, 213, 227)',
+                    borderRadius: '24px',
+                  },
+                }}
               >
                 <UsersList members={Object.keys(teamForm.members)} teamId={teamForm.id} />
               </Stack>

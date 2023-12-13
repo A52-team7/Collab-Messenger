@@ -235,7 +235,19 @@ const NewEvent = () => {
           <FormLabel textAlign={'center'}>Add members</FormLabel>
         <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewEventMember} />
         <Stack h={'15vh'}
-          overflowY={'scroll'}
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'rgb(202, 213, 227)',
+              borderRadius: '24px',
+            },
+          }}
         >
           <UsersList members={Object.keys(newEvent.members)} removeChannelMembers={removeNewEventMembers} />
         </Stack>
