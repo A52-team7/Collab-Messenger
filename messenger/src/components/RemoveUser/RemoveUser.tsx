@@ -33,7 +33,7 @@ const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
           onClose={onClose}
         >
           <AlertDialogOverlay>
-            <AlertDialogContent>
+            <AlertDialogContent bg={'grey'}>
             {!selfRemove ? (
               <AlertDialogHeader fontSize='lg' fontWeight='bold'>
                 Remove {name}
@@ -57,7 +57,14 @@ const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
             }
   
               <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
+                <Button 
+                ref={cancelRef} 
+                onClick={onClose}
+                border={'2px solid'}
+                borderColor={'teal.500'}
+                bg={'none'}
+                color={'teal.500'}
+                _hover={{ opacity: 0.8 }}>
                   Cancel
                 </Button>
                 {!selfRemove ? (
