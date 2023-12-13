@@ -17,3 +17,10 @@ export const addChannelVideoSession = (channelId: string, sessionUrl: string) =>
 
   return update(ref(db), addChannelSession);
 }
+
+export const addEventMeetingLink = (eventId: string, sessionUrl: string) => {
+  const addEventMeetingLink: { [key: string]: string } = {};
+  addEventMeetingLink[`events/${eventId}/meetingLink`] = sessionUrl;
+
+  return update(ref(db), addEventMeetingLink);
+}

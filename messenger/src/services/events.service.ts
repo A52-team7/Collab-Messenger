@@ -2,7 +2,7 @@
 import { get, ref, push } from 'firebase/database'
 import { db } from '../config/firebaseConfig';
 
-export const createEvent = (title: string, creator: string, members: object, start: number, end: number, meetingLink: string) => {
+export const createEvent = (title: string, creator: string, members: object, start: number, end: number, meetingLink: string | null, createRoom: boolean, channelId: string) => {
   return push(
     ref(db, 'events'),
     {
@@ -12,7 +12,9 @@ export const createEvent = (title: string, creator: string, members: object, sta
       start,
       end,
       meetingLink,
-      createdOn: Date.now()
+      createdOn: Date.now(),
+      createRoom,
+      channelId,
     },
   )
     .then(result => {

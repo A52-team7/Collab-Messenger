@@ -1,22 +1,17 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import DateTimePicker from 'react-datetime-picker';
 import {
   Flex,
   Stack,
   Button,
-  useColorModeValue,
   Heading,
   Textarea,
   Box,
   Input,
-  Alert,
-  AlertIcon,
-  Image,
-  Text,
-  Tooltip,
   FormControl,
   HStack,
   FormLabel,
+  Switch,
 } from '@chakra-ui/react'
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -24,11 +19,15 @@ import 'react-clock/dist/Clock.css';
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { ADD_USERS } from '../../common/constants';
 import UsersList from '../UsersList/UsersList';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppContext, { UserState } from '../../context/AppContext';
 import { createEvent } from '../../services/events.service'
 import { Timestamp } from "firebase/firestore";
 import { updateUserEvent } from '../../services/users.service'
+import { getChannelById, channelMessage } from '../../services/channels.service';
+import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar';
+import {addMessage} from '../../services/messages';
+import {NEW_EVENT, FOR, ADDED, ADMIN, EVENT } from '../../common/constants';
 
 type ValuePiece = Date;
 
@@ -38,6 +37,7 @@ interface NewEvent {
   title: string,
   members: { [handle: string]: boolean },
   meetingLink: string,
+  createRoom: boolean,
 }
 
 
@@ -47,10 +47,24 @@ const NewEvent = () => {
   const [newEvent, setNewEvent] = useState<NewEvent>({
     title: '',
     members: {},
-    meetingLink: ''
+    meetingLink: '',
+    createRoom: false,
   })
+  const location = useLocation();
   const navigate = useNavigate();
   const { userData } = useContext<UserState>(AppContext);
+  const channelId = location.state?.channelId;
+  //const [channel, setChannel] = useState<Channel>({})
+
+  useEffect(() => {
+    getChannelById(channelId)
+    .then((channel) => {
+      setNewEvent({
+        ...newEvent,
+        members:{...channel.members}
+      })
+    })
+  },[channelId])
 
   const updateNewEventMember = (user: string) => {
     const newMembers = { ...newEvent.members };
@@ -72,7 +86,19 @@ const NewEvent = () => {
   }
 
   const updateNewEvent = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (field !== 'members') {
+    if (field === 'createRoom'){
+      if(newEvent.createRoom){
+        setNewEvent({
+          ...newEvent,
+          [field]: false,
+        })
+      }else{
+        setNewEvent({
+        ...newEvent,
+        [field]: true,
+      })
+      }       
+    } else if (field !== 'members') {
       setNewEvent({
         ...newEvent,
         [field]: e.target.value,
@@ -91,17 +117,18 @@ const NewEvent = () => {
 
     const allMembers = { ...newEvent.members }
     allMembers[userData.handle] = true;
-    // const start =Math.floor(valueStart.getTime() / 1000);
-    // const end = Math.floor(valueEnd.getTime() / 1000);
-    // const start = valueStart.unix();
-    // const end = valueStart.unix();
     const start = Timestamp.fromDate(valueStart).seconds * 1000
     const end = Timestamp.fromDate(valueEnd).seconds * 1000
-    createEvent(newEvent.title, userData.handle, allMembers, start, end, newEvent.meetingLink)
+    createEvent(newEvent.title, userData.handle, allMembers, start, end, null, newEvent.createRoom, channelId)
       .then(event => {
         Object.keys(event.members).forEach(el => updateUserEvent(el, event.id))
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + NEW_EVENT + newEvent.title + FOR + valueStart, ADMIN, channelId, true, EVENT)
+        .then(message => {
+          channelMessage(channelId, message.id);
+         })
+        .catch(error => console.error(error.message))
       })
-    //Timestamp.fromDate(valueEnd).seconds
+      
   }
 
   console.error(newEvent)
@@ -117,13 +144,15 @@ const NewEvent = () => {
       <Stack
         spacing={4}
         w={'full'}
-        maxW={'fit-content'}
+        maxW={'25%'}
         bg={'grey'}
         rounded={'xl'}
         boxShadow={'lg'}
         p={{ base: 1, sm: 6 }}
       >
         <Heading>New event</Heading>
+        <FormControl id="title" isRequired>
+          <FormLabel textAlign={'center'}>Title</FormLabel>
         <Input
           placeholder='Title'
           _placeholder={{ color: 'gray.500' }}
@@ -132,8 +161,11 @@ const NewEvent = () => {
           rounded="md"
           value={newEvent.title}
           onChange={updateNewEvent('title')} />
-        <HStack >
-          <Text>Start:</Text>
+          </FormControl>
+          <FormControl id="start" isRequired>
+        <HStack justifyContent={'space-between'}>
+       
+          <FormLabel >Start:</FormLabel>
           <DateTimePicker
             amPmAriaLabel="Select AM/PM"
             calendarAriaLabel="Toggle calendar"
@@ -150,8 +182,10 @@ const NewEvent = () => {
             format="dd/MM/yy HH:mm"
           />
         </HStack>
-        <HStack>
-          <Text>End:</Text>
+        </FormControl>
+        <FormControl id="end" isRequired>
+        <HStack justifyContent={'space-between'}>
+        <FormLabel >End:</FormLabel>
           <DateTimePicker amPmAriaLabel="Select AM/PM"
             calendarAriaLabel="Toggle calendar"
             clearAriaLabel="Clear value"
@@ -167,19 +201,25 @@ const NewEvent = () => {
             onChange={onChangeEnd}
           />
         </HStack>
-        <Input placeholder='Meeting link'
-          _placeholder={{ color: 'gray.500' }}
-          type="text"
-          bg={'white'}
-          rounded="md"
-          value={newEvent.meetingLink}
-          onChange={updateNewEvent('meetingLink')} />
+        </FormControl>
+        <FormControl  isRequired>
+        <HStack justifyContent={'space-between'}>
+          <FormLabel textAlign={'center'} htmlFor='isChecked'>Create a meeting room?</FormLabel>
+          <Switch  onChange={updateNewEvent('createRoom')} colorScheme='teal' size='md'/>
+          </HStack>
+          </FormControl>
+
+          <FormControl id="addMembers" isRequired>
+          <FormLabel textAlign={'center'}>Add members</FormLabel>
         <SearchUsers searchType={ADD_USERS} updateNewMember={updateNewEventMember} />
         <Stack h={'15vh'}
           overflowY={'scroll'}
         >
           <UsersList members={Object.keys(newEvent.members)} removeChannelMembers={removeNewEventMembers} />
         </Stack>
+        </FormControl>
+
+        <Stack spacing={6} direction={['column', 'row']}>
         <Button
           w='full'
           border={'2px solid'}
@@ -197,7 +237,7 @@ const NewEvent = () => {
           onClick={saveNewEvent}>
           Add Event
         </Button>
-
+        </Stack>
       </Stack>
     </Flex>
   )

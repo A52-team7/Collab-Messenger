@@ -35,7 +35,7 @@ const ChatMoreOptions = ({ messages, channelId }: ChatMoreOptionsProps) => {
                 color={'white'}
                 _hover={{ opacity: '0.8' }}
                 leftIcon={<MdEventAvailable size={'20px'} />}
-                onClick={() => navigate('/new-event')}>Create event</Button>
+                onClick={() => navigate('/new-event', { state: { channelId } } )}>Create event</Button>
                 <RemoveMessageOrChat channelId={channelId} isFromChat={true}/>
                     
                 </VStack>

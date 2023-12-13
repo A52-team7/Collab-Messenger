@@ -9,7 +9,7 @@ import AppContext from '../../context/AppContext';
 import { Box, Flex, Textarea } from '@chakra-ui/react';
 
 import api from '../../services/api';
-import { getChannelVideoSession, addChannelVideoSession } from '../../services/video.service';
+import { getChannelVideoSession, addChannelVideoSession, addEventMeetingLink } from '../../services/video.service';
 import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
@@ -39,6 +39,7 @@ export const GroupVideoMain = () => {
 
   const navigate = useNavigate();
   const channelId = location.state?.channelId;
+  const eventId = location.state?.eventId;
 
   /**
    * Create a new call room. This function will return the newly created room URL.
@@ -81,6 +82,9 @@ export const GroupVideoMain = () => {
     if (callObject && roomUrl) {
       callObject.join({ url: roomUrl, userName });
       addChannelVideoSession(channelId, roomUrl);
+      if(eventId){
+        addEventMeetingLink(eventId, roomUrl)
+      }
     }
 
   }, [callObject, roomUrl]);

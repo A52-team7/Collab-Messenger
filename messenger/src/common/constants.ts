@@ -48,15 +48,10 @@ export const LEFT = 'left ';
 export const LEFT_CHAT_MESSAGE = 'You are not able to write in this chat any more!'
 export const CHANGED = ' changed chat title to ';
 export const CHANGE_TITLE = 'change title';
+export const NEW_EVENT = 'new event: '
+export const FOR = 'for '
+export const EVENT = 'event'
 
-//more option menu
-export const TEAM_MORE_OPTIONS = [
-  { title: 'Add channel', function: 'addChannel', icon: 'FiUsers' },
-  { title: 'Add/Remove members', function: 'addOrRemoveNewMember', icon: 'FiUsers' },
-  { title: 'Edit team information', function: 'editTeamInformation', icon: 'FiEdit3' },
-  { title: 'Remove team', function: 'removeTeam', icon: 'FiXOctagon' }
-]
-export const CHAT_MESSAGE_MORE_OPTIONS = [];
 
 //emoji constants
 export const LIKE = '👍';
