@@ -127,6 +127,18 @@ export const getTeamTitleLive = (teamId: string, listener: TitleListener) => {
   })
 }
 
+export interface MemberListener { (members: object): void }
+
+export const getTeamMemberLive = (teamId: string, listener: TitleListener) => {
+
+  return onValue(ref(db, `teams/${teamId}/members`), (snapshot) => {
+    if (!snapshot.exists()) return listener('');
+
+    const members = snapshot.val();
+    return listener(members);
+  })
+}
+
 export const getTeamPhotoLive = (teamId: string, listener: TitleListener) => {
 
   return onValue(ref(db, `teams/${teamId}/teamPhoto`), (snapshot) => {

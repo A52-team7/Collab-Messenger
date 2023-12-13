@@ -76,9 +76,6 @@ const EditTeamInfo = () => {
     if (fileInput.current && fileInput.current.files) {
       const file: File = fileInput.current.files[0];
 
-      // if (!file.type.startsWith('image/') || file.type !== '') {
-      //   return alert('File is not image') 
-      // } 
       setTeamPhoto(file);
 
     }
