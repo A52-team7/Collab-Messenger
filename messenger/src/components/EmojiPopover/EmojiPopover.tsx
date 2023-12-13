@@ -1,6 +1,5 @@
 import { Button } from "@chakra-ui/button";
 import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/popover";
-import { Tooltip } from "@chakra-ui/react";
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { BsEmojiLaughing } from "react-icons/bs";
@@ -27,17 +26,15 @@ const EmojiPopover = ({ onGetEmoji }: EmojiPopoverProps) => {
   return (
     <Popover placement="top">
       <PopoverTrigger>
-        <Tooltip hasArrow border={'1px solid black'} label={'Select emojis'} bg={'rgb(237,254,253)'} color='black'>
-          <Button
-            bg={'none'}
-            color={'white'}
-            onMouseEnter={onSeeColor}
-            onMouseLeave={onHideColor}
-            _hover={{ bg: 'none' }}
-            _focus={{ bg: 'none' }}>
-            {!visibleColor ? (<BsEmojiLaughing size={35} />) : (<BsEmojiLaughingFill size={35} />)}
-          </Button>
-        </Tooltip>
+        <Button
+          bg={'none'}
+          color={'white'}
+          onMouseEnter={onSeeColor}
+          onMouseLeave={onHideColor}
+          _hover={{ bg: 'none' }}
+          _focus={{ bg: 'none' }}>
+          {!visibleColor ? (<BsEmojiLaughing size={35} />) : (<BsEmojiLaughingFill size={35} />)}
+        </Button>
 
       </PopoverTrigger>
       <PopoverContent w={'fit-content'}>

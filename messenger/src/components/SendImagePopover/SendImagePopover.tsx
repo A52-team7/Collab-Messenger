@@ -1,6 +1,5 @@
 import { Button } from "@chakra-ui/button";
 import { Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger } from "@chakra-ui/popover";
-import { Tooltip } from "@chakra-ui/react";
 import { BsImage } from "react-icons/bs";
 import { BsFillImageFill } from "react-icons/bs";
 import { useState, useRef } from 'react';
@@ -56,18 +55,16 @@ const SendImagePopover = ({ setImage, setImageSrc }: SendImagePopoverProps) => {
   return (
     <Popover placement="top">
       <PopoverTrigger>
-        <Tooltip border={'1px solid black'} hasArrow label={'Select image'} bg={'rgb(237,254,253)'} color='black'>
-          <Button
-            ml={-5}
-            bg={'none'}
-            color={'white'}
-            onMouseEnter={onSeeColor}
-            onMouseLeave={onHideColor}
-            _hover={{ bg: 'none' }}
-            _focus={{ bg: 'none' }}>
-            {!visibleColor ? (<BsImage size={35} />) : (<BsFillImageFill size={35} />)}
-          </Button>
-        </Tooltip>
+        <Button
+          ml={-5}
+          bg={'none'}
+          color={'white'}
+          onMouseEnter={onSeeColor}
+          onMouseLeave={onHideColor}
+          _hover={{ bg: 'none' }}
+          _focus={{ bg: 'none' }}>
+          {!visibleColor ? (<BsImage size={35} />) : (<BsFillImageFill size={35} />)}
+        </Button>
       </PopoverTrigger>
       <PopoverContent w={'fit-content'}>
         <PopoverArrow />
