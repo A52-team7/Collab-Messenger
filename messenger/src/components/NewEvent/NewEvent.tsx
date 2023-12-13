@@ -132,7 +132,7 @@ const NewEvent = () => {
     createEvent(newEvent.title, userData.handle, allMembers, start, end, null, newEvent.createRoom, channelId)
       .then(event => {
         Object.keys(event.members).forEach(el => updateUserEvent(el, event.id))
-        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + NEW_EVENT + newEvent.title + FOR + valueStart, ADMIN, channelId, true, EVENT)
+        addMessage(userData?.firstName + ' ' + userData?.lastName + ' ' + ADDED + NEW_EVENT + newEvent.title + FOR + (valueStart.toLocaleString("en-GB").slice(0, 17)), ADMIN, channelId, true, EVENT)
         .then(message => {
           channelMessage(channelId, message.id);
          })
@@ -241,7 +241,7 @@ const NewEvent = () => {
         </Stack>
         </FormControl>
 
-        <Stack spacing={6} direction={['column', 'row']}>
+        <FormControl>
         <Box>
           {isSave &&
             <Alert status={'success'}
@@ -258,6 +258,8 @@ const NewEvent = () => {
               />
             </Alert>}
         </Box>
+        </FormControl>
+        <Stack spacing={6} direction={['column', 'row']}>
         <Button
           w='full'
           border={'2px solid'}

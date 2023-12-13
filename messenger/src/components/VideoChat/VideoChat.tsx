@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useAppMessage, useLocalSessionId, useParticipantProperty } from '@daily-co/daily-react';
 
 import { Arrow } from '../Tray/Icons/index';
-import './VideoChat.css';
+// import './VideoChat.css';
 
 const VideoChat = ({ showChat, toggleChat }) => {
   const [messages, setMessages] = useState([]);

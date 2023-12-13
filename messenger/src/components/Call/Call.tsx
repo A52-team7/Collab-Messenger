@@ -6,7 +6,7 @@ import {
   useLocalSessionId,
 } from '@daily-co/daily-react';
 
-import { Flex, Heading } from '@chakra-ui/react';
+import { Flex, Heading, Box } from '@chakra-ui/react';
 import Tile from '../Tile/Tile';
 import UserMediaError from '../UserMediaError/UserMediaError';
 
@@ -32,32 +32,37 @@ export default function Call() {
   const isAlone = remoteParticipantIds.length < 1 || screens.length < 1;
 
   const renderCallScreen = () => (
-    <div className={screens.length > 0 ? 'is-screenshare' : 'call'}>
-      {/* Your self view */}
-      {localSessionId && (
-        <Tile
-          id={localSessionId}
-          isLocal
-          isAlone={isAlone}
-        />
-      )}
-      {/* Videos of remote participants and screen shares */}
-      {remoteParticipantIds.length > 0 || screens.length > 0 ? (
-        <>
-          {remoteParticipantIds.map((id) => (
-            <Tile key={id} id={id} />
-          ))}
-          {screens.map((screen) => (
-            <Tile key={screen.screenId} id={screen.session_id} isScreenShare />
-          ))}
-        </>
-      ) : (
+    // className = { screens.length > 0 ? 'is-screenshare' : 'call' }
+    <Box>
+      <Flex>
+        {/* Your self view */}
+        {localSessionId && (
+          <Tile
+            id={localSessionId}
+            isLocal
+            isAlone={isAlone}
+          />
+        )}
+        {/* Videos of remote participants and screen shares */}
+        {remoteParticipantIds.length > 0 || screens.length > 0 && (
+          <>
+            {remoteParticipantIds.map((id) => (
+              <Tile key={id} id={id} />
+            ))}
+            {screens.map((screen) => (
+              <Tile key={screen.screenId} id={screen.session_id} isScreenShare />
+            ))}
+          </>
+        )}
+      </Flex>
+      {
         // When there are no remote participants or screen shares
-        <Flex p={10} justifyContent="center" alignItems="center">
+        isAlone &&
+        <Box mt={'auto'} p={10} textAlign={'center'}>
           <Heading color={'rgb(237,254,253)'}>Waiting for others</Heading>
-        </Flex>
-      )}
-    </div>
+        </Box>
+      }
+    </Box>
   );
 
   return getUserMediaError ? <UserMediaError /> : renderCallScreen();
