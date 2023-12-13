@@ -118,9 +118,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
               color="white"
               bg={"RGB(59, 59, 59)"}
               borderColor={"RGB(59, 59, 59)"}>
-              <MenuItem bg={"RGB(59, 59, 59)"} onClick={() => navigate('/user-details')}>Profile</MenuItem>
-              <MenuDivider />
-              <MenuItem bg={"RGB(59, 59, 59)"} onClick={onLogout}>Sign out</MenuItem>
+              <MenuItem 
+              bg={"RGB(59, 59, 59)"}
+              _hover={{opacity: '0.8'}}
+               onClick={() => navigate('/user-details')}>Profile</MenuItem>
+              <MenuDivider borderColor={'gray'} />
+              <MenuItem 
+              bg={"RGB(59, 59, 59)"} 
+              _hover={{opacity: '0.8'}}
+              onClick={onLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>

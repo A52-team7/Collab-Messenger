@@ -64,8 +64,9 @@ const UserStatus = () => {
         </PopoverTrigger>
         <PopoverContent 
         bg={"RGB(59, 59, 59)"}
+        borderColor="RGB(59, 59, 59)"
         w="fit-content" >
-          <PopoverArrow  bg={"RGB(59, 59, 59)"} />
+          <PopoverArrow  borderColor="RGB(59, 59, 59)" />
           <PopoverBody color="white">
             <Stack justifyContent="flex-start">
               <Button
