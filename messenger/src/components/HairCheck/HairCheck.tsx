@@ -56,22 +56,22 @@ export default function HairCheck({ joinCall, cancelCall }) {
   return getUserMediaError ? (
     <UserMediaError />
   ) : (
-    <Flex 
-    bg={'grey'} 
-    border={'1px solid grey'} 
-    p={'1rem'} 
-    borderRadius={'4px'}
-    maxW={'600px'}
-    direction={'column'}
-    m={'auto'}
-    justifyContent={'center'}
-    onSubmit={handleJoin}>
+    <Flex
+      bg={'grey'}
+      border={'1px solid grey'}
+      p={'1rem'}
+      borderRadius={'4px'}
+      maxW={'600px'}
+      direction={'column'}
+      m={'auto'}
+      justifyContent={'center'}
+      onSubmit={handleJoin}>
       <Center>
         <Heading mb={5} size='lg'>Setup your hardware</Heading>
       </Center>
 
       {/* Video preview */}
-      <Box maxW={'400px'}>
+      <Box m={'auto'} maxW={'425px'}>
         {localSessionId && <DailyVideo sessionId={localSessionId} mirror />}
       </Box>
 
@@ -125,24 +125,24 @@ export default function HairCheck({ joinCall, cancelCall }) {
       </Box>
 
       <Flex mt={5}>
-        <Button 
-        w='full'
-        border={'2px solid'}
-        borderColor={'teal.500'}
-        bg={'none'}
-        color={'teal.500'}
-        _hover={{ opacity: 0.8 }}
-        onClick={cancelCall} 
-        type="button">
+        <Button
+          w='full'
+          border={'2px solid'}
+          borderColor={'teal.500'}
+          bg={'none'}
+          color={'teal.500'}
+          _hover={{ opacity: 0.8 }}
+          onClick={cancelCall}
+          type="button">
           Back to start
         </Button>
-        <Button 
-        bg={'teal.500'}
-        color={'white'}
-        w='full'
-        _hover={{ opacity: 0.8 }}
-        onClick={handleJoin} 
-        type="submit">
+        <Button
+          bg={'teal.500'}
+          color={'white'}
+          w='full'
+          _hover={{ opacity: 0.8 }}
+          onClick={handleJoin}
+          type="submit">
           Join call
         </Button>
       </Flex>
