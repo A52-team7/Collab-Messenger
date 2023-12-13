@@ -379,7 +379,7 @@ const Chat = (): JSX.Element => {
         <Flex w={'inherit'} h={'50px'} mb={8} mt={-10}>
           {!editTitle ? (
             <Flex flex={1}>
-              <Heading color={'white'}>{title}</Heading>
+              <Heading borderBottom={'2px solid'} borderColor={'teal.500'} color={'teal.400'}>{title}</Heading>
               {!chatBetweenTwo &&
                 <Button color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
               }
