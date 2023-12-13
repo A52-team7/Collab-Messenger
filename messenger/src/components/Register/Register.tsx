@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AppContext from '../../context/AppContext';
-import { getUserByHandle, createUserHandle } from '../../services/users.service';
+import { getUserByHandle, createUserHandle, updateMyNotes } from '../../services/users.service';
 import { registerUser } from '../../services/auth.service';
 import {
   Flex,
@@ -28,6 +28,7 @@ import {
   NAMES_LENGTH_MIN, NAMES_LENGTH_MAX, MSG_FIELD_REQUIRED,
   MSG_NAMES_LENGTH, MSG_EMAIL_INVALID, EMAIL_REGEX, MSG_USERNAME_TAKEN, MSG_EMAIL_TAKEN,
 } from '../../common/constants.ts';
+import { addChannel, updateChatIsNotes } from '../../services/channels.service.ts';
 
 const formInitialState = {
   firstName: '',
@@ -101,6 +102,11 @@ const Register = () => {
 
         return createUserHandle(form.handle, credential.user.uid, credential.user.email, form.firstName, form.lastName, form.phoneNumber)
           .then(() => {
+            addChannel(form.handle, 'My notes', {[form.handle]: true})
+            .then(result => {
+              updateChatIsNotes(result.id);
+              updateMyNotes(form.handle, result.id);
+            })
             setContext(prevState => ({
               ...prevState,
               user: credential.user
