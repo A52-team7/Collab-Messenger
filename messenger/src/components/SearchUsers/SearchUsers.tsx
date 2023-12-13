@@ -130,6 +130,7 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
               email={user.email}
               firstName={user.firstName}
               lastName={user.lastName}
+              imageSrc={user.profilePhoto}
               searchType={searchType}
               setOpen={setOpen}
               setSearchValue={setSearchValue}

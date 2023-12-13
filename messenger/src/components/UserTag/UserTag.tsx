@@ -22,12 +22,18 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     const [userInfo, setUserInfo] = useState<Author>();
     const [displayName, setDisplayName] = useState('');
     const {userData} = useContext(AppContext);
+    const [imageSrc, setImageSrc] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         getUserByHandle(handle)
         .then(result => {
             setUserInfo(result.val());
             setDisplayName(result.val().firstName + ' ' + result.val().lastName);
+            if(result.val().profilePhoto){
+                setImageSrc(result.val().profilePhoto);
+            }
         })
         .catch(e =>console.error(e));
     }, [handle]);
@@ -50,7 +56,7 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
     const onDeleteTeamMember = () =>{
         if(teamId !== undefined && userData?.firstName !== undefined){
         deleteMemberFromTeam(teamId, handle, userData.firstName, userData?.lastName, displayName)
-        //navigate(-1)
+        navigate(-1)
     }
     }
 
@@ -62,6 +68,7 @@ const UserTag = ({ handle, channelId, teamId, removeChannelMembers }: UserTagPro
                 <Avatar
                     size='xs'
                     name={displayName}
+                    src={imageSrc}
                     ml={-1}
                     mr={2}
                 />

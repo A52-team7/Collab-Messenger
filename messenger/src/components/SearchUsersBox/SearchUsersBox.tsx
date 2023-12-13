@@ -1,4 +1,4 @@
-import { Text, Box } from "@chakra-ui/react";
+import { Text, Box, Flex, Avatar } from "@chakra-ui/react";
 import { ADD_USERS } from "../../common/constants";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
@@ -13,6 +13,7 @@ interface SearchBoxProps {
   firstName: string;
   lastName: string;
   searchType?: string;
+  imageSrc: string;
   setOpen: (value: boolean) => void;
   setSearchValue: (value: string) => void;
   updateNewMember?: (value: string) => void;
@@ -24,6 +25,7 @@ const SearchUsersBox = ({
   firstName,
   lastName,
   searchType,
+  imageSrc,
   setOpen,
   setSearchValue,
   updateNewMember }: SearchBoxProps): JSX.Element => {
@@ -93,9 +95,12 @@ const SearchUsersBox = ({
         backgroundColor: 'gray.500'
       }}
     >
-      <Text w={'inherit'} px={1}>
-        {firstName} {lastName}
-      </Text>
+      <Flex>
+        <Avatar size={'sm'} name={(firstName + ' ' + lastName)} src={imageSrc} />
+        <Text w={'inherit'} px={1}>
+          {firstName} {lastName}
+        </Text>
+      </Flex>
       <Text fontSize={13} px={1}>
         ({userName}) {email}
       </Text>

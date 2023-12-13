@@ -1,4 +1,4 @@
-import { AspectRatio, Box, Button, Flex, Image, Input, Text } from "@chakra-ui/react";
+import { AspectRatio, Avatar, Box, Button, Flex, Input, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
@@ -51,6 +51,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
   const [editMessage, setEditMessage] = useState<boolean>(false);
   const [contentOfMessage, setContentOfMessage] = useState<string>('');
 
+  const [imageSrc, setImageSrc] = useState('');
+
   const [emoji, setEmoji] = useState<string>('');
 
 
@@ -82,7 +84,12 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
 
   useEffect(() => {
     getUserByHandle(message.author)
-      .then(result => setAuthorOfMessage(result.val()))
+      .then(result => {
+        setAuthorOfMessage(result.val());
+        if(result.val().profilePhoto){
+          setImageSrc(result.val().profilePhoto);
+        }
+      })
       .catch(error => console.error(error.message));
   }, []);
 
@@ -176,7 +183,8 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
             </Flex>
           )}
           {authorOfMessage && <Flex alignItems={'center'}>
-            <Text pl='7px' pr='7px' mr='10px' rounded='md'
+            <Avatar size={'sm'} name={(authorOfMessage.firstName + ' ' + authorOfMessage.lastName)} src={imageSrc} />
+            <Text pl='7px' pr='7px' mr='6px' rounded='md'
               color={'white'}
               fontWeight={'bold'}
             >{authorOfMessage.firstName} {authorOfMessage.lastName}</Text>
@@ -195,7 +203,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                 bg={message.author === userData?.handle ? 'rgb(121 103 141)' : 'teal.500'}
                 rounded={'md'}
                 shadow={'md'}
-                minW={'270px'}
+                minW={'300px'}
                 maxW={'660px'}
                 w={'fit-content'}
               >

@@ -7,6 +7,7 @@ import { setChannelToSeen, getChannelSeenLive, getChannelTitleLive, getChannelBy
 import SingleChatAvatar from "../SingleChatAvatar/SingleChatAvatar";
 import GroupChatAvatar from "../GroupChatAvatar/GroupChatAvatar";
 import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
+import { getUserByHandle } from "../../services/users.service";
 
 interface MyChatProps {
   channel: Channel;
@@ -20,6 +21,7 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
   const [trashVisibility, setTrashVisibility] = useState(true);
   const navigate = useNavigate();
   const [newTitle, setNewTitle] = useState("");
+  const [imageSrc, setImageSrc] = useState('');
 
   // console.log(title)
   const onOpenChat = () => {
@@ -38,9 +40,19 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
     getChannelById(channel.id)
       .then((channel) => {
         if (Object.keys(channel).includes('isBetweenTwo')) {
+          if (!userData) return;
           const usersInChat = channel.title.split(',');
           const titleToShow = usersInChat.findIndex((user: string) => user !== (userData?.firstName + ' ' + userData?.lastName));
-          setNewTitle(usersInChat[titleToShow]);
+          setNewTitle(usersInChat[titleToShow].trim());
+          const otherUser = Object.keys(channel.members).filter(member => member !== userData.handle);
+          getUserByHandle(otherUser)
+          .then((result) => {
+            if(result.val().profilePhoto){
+              setImageSrc(result.val().profilePhoto);
+            }
+        })
+        .catch((err: Error) => console.error(err));
+          
         }
         else {
           getChannelTitleLive(channel.id, (data: string) => {
@@ -48,7 +60,10 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
           })
         }
       })
+      .catch((err: Error) => console.error(err));
   }, []);
+ 
+  
 
   return (
     <Flex position={'relative'} w={'75%'} mt={2} onClick={onOpenChat} onMouseOver={() => setTrashVisibility(false)} onMouseLeave={() => setTrashVisibility(true)}>
@@ -58,7 +73,7 @@ const MyChat = ({ channel, activeBtn }: MyChatProps) => {
       {Object.keys(channel.members).length > 2 ?
         <GroupChatAvatar channel={channel} seenState={seenState} title={newTitle} activeBtn={activeBtn} />
         :
-        <SingleChatAvatar channel={channel} seenState={seenState} title={newTitle} activeBtn={activeBtn} />
+        <SingleChatAvatar channel={channel} seenState={seenState} title={newTitle} activeBtn={activeBtn} imageSrc={imageSrc}/>
       }
     </Flex>
   );

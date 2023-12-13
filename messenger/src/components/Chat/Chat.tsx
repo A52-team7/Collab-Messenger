@@ -61,7 +61,7 @@ const Chat = (): JSX.Element => {
 
   const { userData } = useContext(AppContext);
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>();
   const [title, setTitle] = useState('');
   const [members, setMembers] = useState<string[]>([]);
 

@@ -6,7 +6,6 @@ import AppContext from '../../context/AppContext';
 import { getUserByHandle, getUserChannelsLive } from '../../services/users.service';
 import MyChat from '../MyChat/MyChat';
 import { FiPlusSquare } from "react-icons/fi";
-import SingleChatAvatar from '../SingleChatAvatar/SingleChatAvatar';
 
 export interface Channel {
   id: string;
