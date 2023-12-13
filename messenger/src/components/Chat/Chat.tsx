@@ -169,29 +169,29 @@ const Chat = (): JSX.Element => {
     setMessagesAreLoaded(false);
 
     const removeListener = getChannelMessagesLive(channelId, (data: string[]) => {
-      if(!data){
+      if (!data) {
         setMessagesAreLoaded(true);
-      }else{
-      Promise.all(
-        data.map((message) => {
-          return getMessageById(message)
-            .then(res => res)
-            .catch(e => console.error(e));
-        })
-      ).then(channelMessages => {
-        if (ifIsLeftIsSet) {
-          if (isLeft) {
-            const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
-            setMessages([...messagesBeforeLeaving]);
-          } else {
-            setMessages([...channelMessages]);
+      } else {
+        Promise.all(
+          data.map((message) => {
+            return getMessageById(message)
+              .then(res => res)
+              .catch(e => console.error(e));
+          })
+        ).then(channelMessages => {
+          if (ifIsLeftIsSet) {
+            if (isLeft) {
+              const messagesBeforeLeaving = channelMessages.filter((message) => message.createdOn <= dateOfLeaving);
+              setMessages([...messagesBeforeLeaving]);
+            } else {
+              setMessages([...channelMessages]);
+            }
           }
-        }
-      })
-        .then(() => setMessagesAreLoaded(true))
-        .then(() => setChannelToSeen(channelId, userData.handle))
-        .catch(error => console.error(error.message));
-    }
+        })
+          .then(() => setMessagesAreLoaded(true))
+          .then(() => setChannelToSeen(channelId, userData.handle))
+          .catch(error => console.error(error.message));
+      }
     });
     return () => {
       removeListener();
@@ -387,32 +387,32 @@ const Chat = (): JSX.Element => {
           ) : (
             <Flex flex={1}>
               <Input value={newTitle} bg={'rgb(237,254,253)'} h={'10'} onChange={updateNewTitle} onKeyDown={handleKeyDownForTitle} />
-              <Button 
-                  bg={'teal.100'}
-                  opacity={0.9}
-                  _hover={{ bg: 'teal.100' }}
-                  border={'1px solid'}
-                  borderColor={'teal'}
-                  color={'teal'} 
-                  p={1} 
-                  onClick={onUpdateTitle}>
-                    <FaCheck size={20} />
+              <Button
+                bg={'teal.100'}
+                opacity={0.9}
+                _hover={{ bg: 'teal.100' }}
+                border={'1px solid'}
+                borderColor={'teal'}
+                color={'teal'}
+                p={1}
+                onClick={onUpdateTitle}>
+                <FaCheck size={20} />
               </Button>
-              <Button 
-                  bg={'teal.100'}
-                  opacity={0.9}
-                  _hover={{ bg: 'teal.100' }}
-                  border={'1px solid'}
-                  borderColor={'teal'}
-                  color={'teal'}
-                  p={1} 
-                  onClick={onExitEditTitle}>
-                    <IoClose size={25} />
+              <Button
+                bg={'teal.100'}
+                opacity={0.9}
+                _hover={{ bg: 'teal.100' }}
+                border={'1px solid'}
+                borderColor={'teal'}
+                color={'teal'}
+                p={1}
+                onClick={onExitEditTitle}>
+                <IoClose size={25} />
               </Button>
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
-          <Button colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25}/></Button>
+          <Button colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25} /></Button>
 
           {ifChatBetweenTwoIsSet && (
             <>
@@ -430,42 +430,42 @@ const Chat = (): JSX.Element => {
       >
         {ifIsLeftIsSet &&
           <Stack
-          overflowY="auto"
-          css={{
-            '&::-webkit-scrollbar': {
-              width: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              width: '6px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'black',
-              borderRadius: '24px',
-            },
-          }}>
-          {!messagesAreLoaded ? (
-            <Center height="100vh">
-              <Spinner
-              thickness='4px'
-              speed='0.65s'
-              emptyColor='gray.200'
-              color='blue.500'
-              size='xl'
-              />
-            </Center>
-          ) : (
-            <>
-            {messages.length > 0 ?(
-              <Box h={'auto'}>
-                <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
-              </Box>
+            overflowY="auto"
+            css={{
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'black',
+                borderRadius: '24px',
+              },
+            }}>
+            {!messagesAreLoaded ? (
+              <Center height="100vh">
+                <Spinner
+                  thickness='4px'
+                  speed='0.65s'
+                  emptyColor='gray.200'
+                  color='blue.500'
+                  size='xl'
+                />
+              </Center>
             ) : (
-            <Center>
-              <Image src={'/no_messages.jpg'} h={'420px'} w={'420px'} opacity={0.9}/>
-            </Center>
+              <>
+                {messages.length > 0 ? (
+                  <Box h={'auto'}>
+                    <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
+                  </Box>
+                ) : (
+                  <Center>
+                    <Image borderRadius={'50%'} src={'/no_messages.jpg'} h={'420px'} w={'420px'} opacity={0.9} />
+                  </Center>
+                )}
+              </>
             )}
-            </>
-          )} 
           </Stack>
         }
       </Stack>
@@ -517,7 +517,7 @@ const Chat = (): JSX.Element => {
               </Flex>
             </Flex>}
             <Stack spacing={4} direction={{ base: 'column', md: 'row' }} w={'full'} alignItems={'center'}>
-              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc}/>}
+              {channelId && <SendImagePopover setImage={setImage} setImageSrc={setImageSrc} />}
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}
@@ -535,7 +535,7 @@ const Chat = (): JSX.Element => {
                 onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
-              <SendButton onSendMessage={onSendMessage}/>
+              <SendButton onSendMessage={onSendMessage} />
             </Stack>
           </Stack>
           ) : (
