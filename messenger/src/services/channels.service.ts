@@ -261,3 +261,7 @@ export const chatBetweenTwo = (channelId: string) => {
 
   return update(ref(db), updateChaTIsBetweenTwo);
 }
+
+export const updateChatIsNotes = (channelId: string) => {
+  return update(ref(db), {[`/channels/${channelId}/isNotes`]: true})
+}

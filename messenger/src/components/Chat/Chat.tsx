@@ -86,6 +86,8 @@ const Chat = (): JSX.Element => {
 
   const [messagesAreLoaded, setMessagesAreLoaded] = useState(false);
 
+  const [notes, setNotes] = useState(false);
+
   useEffect(() => {
     setChannelId(params.id);
   }, [params.id, params, isLeft]);
@@ -129,6 +131,10 @@ const Chat = (): JSX.Element => {
         setTitle(result.title);
         setNewTitle(result.title);
         setMembers(Object.keys(result.members));
+
+        if(Object.keys(result).includes('isNotes')){
+          setNotes(true);
+        }
 
         if (Object.keys(result).includes('isBetweenTwo')) {
           setChatBetweenTwo(true);
@@ -380,7 +386,7 @@ const Chat = (): JSX.Element => {
           {!editTitle ? (
             <Flex flex={1}>
               <Heading borderBottom={'2px solid'} borderColor={'rgb(52,209,201)'} color={'rgb(52,209,201)'}>{title}</Heading>
-              {!chatBetweenTwo &&
+              {!chatBetweenTwo && !notes &&
                 <Button color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onEditTitle}><GrEdit size={20} /></Button>
               }
             </Flex>
@@ -412,16 +418,16 @@ const Chat = (): JSX.Element => {
             </Flex>
           )}
           {team && <TeamInfo {...team} />}
-          <Button mr={2} colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25} /></Button>
+          {!notes && <Button mr={2} colorScheme='teal' onClick={() => navigate('/video', { state: { channelId: channelId } })}><FaVideo size={25} /></Button>}
 
-          {ifChatBetweenTwoIsSet && (
+          {ifChatBetweenTwoIsSet && !notes && (
             <>
               {members.length > 0 && !chatBetweenTwo &&
                 <UsersDrawer {...UserDrawerProps} />
               }
             </>
           )}
-          {channelId && <ChatMoreOptions messages={messages} channelId={channelId} />}
+          {channelId && !notes && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack
