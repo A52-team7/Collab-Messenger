@@ -1,27 +1,59 @@
-# React + TypeScript + Vite
+<img src="https://webassets.telerikacademy.com/images/default-source/logos/telerik-academy.svg" alt="logo" width="300px" style="margin-top: 20px;"/>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Chat'n Blab
+Chat'n Blab is a modern solution for people and teams in need of a real-time solution for communication and collaboration. It allows users to share information, link resources and potentially discuss ideas over voice and video.
 
-Currently, two official plugins are available:
+### 1. Project information
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+     - Library: React
+     - Language: TypeScript
+     - UI library: Chakra UI
+     - Platform and version: Node 14.0+
 
-## Expanding the ESLint configuration
+### 2. Local Setup and Run
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To get the project up and running, follow these steps:
 
-- Configure the top-level `parserOptions` property like this:
+1. Download the app from gitHub: https://github.com/A52-team7/Collab-Messenger
+2. Go inside the `messenger` folder.
+3. Run `npm install` to restore all dependencies.
+4. After that, run script to start app `npm run dev`
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+### 3. Functionalities
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Authentication: User authentication is handled by Firebase Realtime Database.
+
+### 4. Public part
+- The public part is accessible for without authentication. 
+- Anonymous users can register and login.
+
+### 5. Private part
+
+- Accessible only if the user is authenticated.
+- Registered users have a private area accessible after successful login, where they can see all the chats and teams they have been added to.
+
+#### Individual user requirements:
+Users can see and edit their personal information – name, avatar picture, etc.
+- Users can search for other users by their name, team(s) they belong to, and/or email.
+- Users have a status (online/offline/busy/away).
+
+#### Team requirements:
+- A team can be created by a user and that user must be the team’s owner.
+- One user can be added to multiple teams.
+- Only the team’s owner can add to or remove other users from the team.
+- A team have its own page/view where information about the team could be visible, and all team’s channels are displayed together.
+- Users can organize team meetings with a starting date and hour and a specified duration.
+
+#### Chat requirements:
+- A single user can create a chat (with unrelated users) or a channel (with their own team).
+- Users can leave any chat and channel they have been added to. Upon leaving they should stop receiving new messages from that chat/channel.
+- Every chat/channel contain all the messages sent in it and display the messages in chronological order.
+- Users can react to individual messages.
+- Users can edit their sent message. 
+- Messages contain media such as static pictures and youtube link
+
+
+## Authors and acknowledgment
+[Desislava Petrova] (https://github.com/desi-petrova)
+[Hristina Georgieva] (https://github.com/hristina-georgieva)
+[Mihail Uymaz] (https://github.com/m-uymaz)
