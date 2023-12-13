@@ -24,7 +24,7 @@ const EmojiPopover = ({ onGetEmoji }: EmojiPopoverProps) => {
 
 
   return (
-    <Popover placement="top">
+    <Popover>
       <PopoverTrigger>
         <Button
           bg={'none'}

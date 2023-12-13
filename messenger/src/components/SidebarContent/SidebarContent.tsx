@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppContext from '../../context/AppContext';
-import { updateUserData } from '../../services/users.service';
 import {
   Box,
   Flex,
@@ -16,8 +15,7 @@ import { RiTeamFill } from "react-icons/ri";
 import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constants';
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
-import { unseenTeamsChats } from '../../services/channels.service';
-import { FaExclamationCircle } from "react-icons/fa";
+import CalendarBtn from '../CalendarBtn/CalendarBtn';
 
 interface SidebarContentProps {
   onClose: () => void
@@ -112,7 +110,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
       </Flex>
       {user &&
         <>
-          <Flex alignItems='center' justifyContent={'space-around'}>
+          <Flex alignItems='center' justifyContent={'space-around'} mt={5} mb={5}>
             <Box>
               <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
                 id={'messages-btn'}
@@ -127,8 +125,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                   <FaExclamationCircle size={25} color={'yellow'} />
                 </Box>} */}
               </Button>
-              <FormLabel color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
+              <FormLabel mr={0} color={'white'} htmlFor={'messages-btn'}>CHATS</FormLabel>
             </Box>
+
+            <CalendarBtn />
+
             <Box>
               <Button position={'relative'} borderRadius={'50%'} px={3} py={6}
                 id={'teams-btn'}
@@ -144,7 +145,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
                     <FaExclamationCircle size={25} color={'yellow'} />
                   </Box>} */}
               </Button>
-              <FormLabel color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
+              <FormLabel mr={0} color={'white'} htmlFor={'teams-btn'}>TEAMS</FormLabel>
             </Box>
           </Flex>
           <Box minW={'210px'}>

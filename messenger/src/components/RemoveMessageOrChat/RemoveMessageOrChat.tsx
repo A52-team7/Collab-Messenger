@@ -48,7 +48,7 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
     return (
       <>
         {!isFromChat ? (
-            <Button p={1} variant='unstyled' size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
+            <Button p={1} mt={'-2px'} variant='unstyled' size={'xs'} color={'white'}  _hover={{ transform: 'scale(1.3)', color: 'white' }} bg={'none'} onClick={onOpen}><AiOutlineDelete size={20} /></Button>
         ) : (
             <Button  
             variant='unstyled' 
@@ -67,7 +67,7 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
         >
           <AlertDialogOverlay />
   
-          <AlertDialogContent>
+          <AlertDialogContent bg={'grey'}>
             {channelId ? (
                 <>
                     <AlertDialogHeader>Delete chat?</AlertDialogHeader>
@@ -84,7 +84,14 @@ const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMe
                 </>
             )}
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button
+              ref={cancelRef} 
+              onClick={onClose}
+              border={'2px solid'}
+              borderColor={'teal.500'}
+              bg={'none'}
+              color={'teal.500'}
+              _hover={{ opacity: 0.8 }}>
                 No
               </Button>
               <Button colorScheme='red' ml={3} onClick={onDeleteMessageOrChat}>
