@@ -7,7 +7,7 @@ import { GoReply } from "react-icons/go";
 import ReactionPopover from "../ReactionPopover/ReactionPopover";
 import Linkify from 'react-linkify';
 import { AiOutlineEdit } from "react-icons/ai";
-import { ADD_PERSON, CHANGE_TITLE, REMOVE_PERSON, REPLY } from "../../common/constants";
+import { ADD_PERSON, CHANGE_TITLE, EVENT, REMOVE_PERSON, REPLY } from "../../common/constants";
 import { ReactionArray, addReactionToMessage, deleteMessage, getMessageById, getMessageReactionsLive, removeReactionFromMessage, updateContentOfMessage } from "../../services/messages";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonRemoveOutline } from "react-icons/io5";
@@ -18,6 +18,8 @@ import { IoClose } from "react-icons/io5";
 import EmojiPopover from "../EmojiPopover/EmojiPopover";
 import RemoveMessageOrChat from "../RemoveMessageOrChat/RemoveMessageOrChat";
 import ImageModal from "../ImageModal/ImageModal";
+import { MdEventAvailable } from "react-icons/md";
+
 export interface Author {
   handle: string;
   uid: string;
@@ -160,6 +162,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
           {message.typeOfMessage === ADD_PERSON && <IoPersonAddSharp color={'white'} />}
           {message.typeOfMessage === REMOVE_PERSON && <IoPersonRemoveOutline color={'white'} />}
           {message.typeOfMessage === CHANGE_TITLE && <GrEdit color={'white'} />}
+          {message.typeOfMessage === EVENT && <MdEventAvailable color={'white'} />}
           <Text ml={2} color={'white'}>{message.content}</Text>
         </Flex>
       ) : (
