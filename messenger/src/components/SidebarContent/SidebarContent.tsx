@@ -9,6 +9,9 @@ import {
   useColorModeValue,
   FormLabel,
   Image,
+  Text,
+  HStack,
+  Center,
 } from '@chakra-ui/react';
 import { BsChatTextFill } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
@@ -16,6 +19,8 @@ import { SIDEBAR_SHOW_MESSAGES, SIDEBAR_SHOW_TEAMS } from '../../common/constant
 import UserTeams from '../UserTeams/UserTeams'
 import MyChatsSideNavBar from '../MyChatsSideNavBar/MyChatsSideNavBar';
 import CalendarBtn from '../CalendarBtn/CalendarBtn';
+import { GrContactInfo } from "react-icons/gr";
+import About from '../../views/About/About'
 
 interface SidebarContentProps {
   onClose: () => void
@@ -155,8 +160,34 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
               <UserTeams onClose={onClose} />
             }
           </Box>
+         <Center> <Button 
+      variant='unstyled'
+     color={'white'}
+     _hover={{ opacity: '0.8' }}
+     leftIcon={<GrContactInfo size={'30px'}/>}
+     position={'fixed'}
+     bottom={'0'}
+     display="flex"
+     alignItems="center"
+     justifyContent="center"
+     fontSize="xl"
+     onClick={() => navigate('/about')}
+     >
+     About us
+     </Button>  
+     </Center>
         </>}
+
+     {/* <Button 
+     variant='unstyled'
+     color={'white'}
+     _hover={{ opacity: '0.8' }}
+     >
+     <GrContactInfo size={'20px'} /><Text>About</Text>
+     </Button>   */}
+
     </Box >
+  
   );
 }
 

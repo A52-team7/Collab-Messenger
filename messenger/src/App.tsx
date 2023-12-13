@@ -18,6 +18,7 @@ import EditTeamInfo from './components/EditTeamInfo/EditTeamInfo';
 import GroupVideoMain from './components/GroupVideoMain/GroupVideoMain';
 import NewEvent from './components/NewEvent/NewEvent';
 import MyCalendar from './components/MyCalendar/MyCalendar';
+import About from './views/About/About';
 
 function App(): JSX.Element {
   const [userAuth, loading] = useAuthState(auth);
@@ -66,6 +67,7 @@ function App(): JSX.Element {
       {!appState.loading && <Body>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/about' element={<About />} />
           <Route path='/register' element={!appState.user && <Register />} />
           <Route path='/login' element={!appState.user && <Login />} />
           <Route path='/new-chat' element={<AuthenticatedRoute><NewChat /></AuthenticatedRoute>} />
