@@ -12,6 +12,11 @@ import {
   HStack,
   FormLabel,
   Switch,
+  Alert,
+  AlertIcon,
+  CloseButton,
+  AlertTitle,
+  useDisclosure,
 } from '@chakra-ui/react'
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -54,7 +59,12 @@ const NewEvent = () => {
   const navigate = useNavigate();
   const { userData } = useContext<UserState>(AppContext);
   const channelId = location.state?.channelId;
-  //const [channel, setChannel] = useState<Channel>({})
+
+  const {
+    isOpen: isSave,
+    onClose,
+    onOpen,
+  } = useDisclosure({ defaultIsOpen: false })
 
   useEffect(() => {
     getChannelById(channelId)
@@ -128,6 +138,18 @@ const NewEvent = () => {
          })
         .catch(error => console.error(error.message))
       })
+      .then(() =>{
+        setNewEvent({
+          title: '',
+          members: {},
+          meetingLink: '',
+          createRoom: false,
+        })
+        onChangeEnd(new Date())
+        onChangeStart(new Date())
+      })
+      .then(() => onOpen())
+      .catch(error => console.error(error.message))
       
   }
 
@@ -205,7 +227,7 @@ const NewEvent = () => {
         <FormControl  isRequired>
         <HStack justifyContent={'space-between'}>
           <FormLabel textAlign={'center'} htmlFor='isChecked'>Create a meeting room?</FormLabel>
-          <Switch  onChange={updateNewEvent('createRoom')} colorScheme='teal' size='md'/>
+          <Switch  onChange={updateNewEvent('createRoom')} colorScheme='teal' size='md' isChecked={newEvent.createRoom}/>
           </HStack>
           </FormControl>
 
@@ -220,6 +242,22 @@ const NewEvent = () => {
         </FormControl>
 
         <Stack spacing={6} direction={['column', 'row']}>
+        <Box>
+          {isSave &&
+            <Alert status={'success'}
+              textAlign={'center'}
+              w={'fit-content'}
+              rounded={'xl'}>
+              <AlertIcon />
+              <Box>
+                <AlertTitle>New event added successfully</AlertTitle>
+              </Box>
+              <CloseButton
+                rounded={'xl'}
+                onClick={onClose}
+              />
+            </Alert>}
+        </Box>
         <Button
           w='full'
           border={'2px solid'}
