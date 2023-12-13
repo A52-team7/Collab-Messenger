@@ -44,10 +44,10 @@ export default function Call() {
           />
         )}
         {/* Videos of remote participants and screen shares */}
-        {remoteParticipantIds.length > 0 || screens.length > 0 && (
+        {(remoteParticipantIds.length > 0 || screens.length > 0) && (
           <>
-            {remoteParticipantIds.map((id) => (
-              <Tile key={id} id={id} />
+            {remoteParticipantIds.map((id, mapIndex) => (
+              <Tile key={id} id={id} mapIndex={mapIndex} />
             ))}
             {screens.map((screen) => (
               <Tile key={screen.screenId} id={screen.session_id} isScreenShare />
@@ -57,7 +57,7 @@ export default function Call() {
       </Flex>
       {
         // When there are no remote participants or screen shares
-        isAlone &&
+        (remoteParticipantIds.length < 1) &&
         <Box mt={'auto'} p={10} textAlign={'center'}>
           <Heading color={'rgb(237,254,253)'}>Waiting for others</Heading>
         </Box>

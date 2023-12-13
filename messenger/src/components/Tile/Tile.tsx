@@ -2,8 +2,9 @@ import { Box } from '@chakra-ui/react';
 import { DailyVideo, useVideoTrack } from '@daily-co/daily-react';
 import Username from '../Username/Username';
 
-const Tile = ({ id, isScreenShare, isLocal, isAlone }) => {
+const Tile = ({ id, isScreenShare, mapIndex, isLocal, isAlone }) => {
   const videoState = useVideoTrack(id);
+  const borderColor = (mapIndex + 2) % 2 === 0 ? 'teal.300' : 'rgb(188,124,213)'
 
   let containerCssClasses = isScreenShare ? 'tile-screenshare' : 'tile-video';
 
@@ -21,7 +22,11 @@ const Tile = ({ id, isScreenShare, isLocal, isAlone }) => {
   }
 
   return (
-    <Box m={1} p={1} minW={'30%'} maxW={'50%'} className={containerCssClasses} border={'2px solid'} borderColor={'teal.300'} rounded={'lg'}>
+    <Box
+      minW={'30%'} maxW={'50%'}
+      m={1} p={1}
+      border={'2px solid'} borderColor={borderColor}
+      rounded={'lg'}>
       <DailyVideo automirror sessionId={id} type={isScreenShare ? 'screenVideo' : 'video'} />
       {!isScreenShare && <Username id={id} isLocal={isLocal} />}
     </Box>

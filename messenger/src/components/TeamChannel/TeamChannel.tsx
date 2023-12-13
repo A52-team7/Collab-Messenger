@@ -41,7 +41,6 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
       border={'1px solid'}
       borderColor={'white'}
       borderRadius={'5px'}
-      fontWeight={'bold'}
       bg={activeBtn === channelId ? 'teal.600' : 'none'}
       _hover={{ cursor: 'pointer', bg: 'teal.600' }}
     >
@@ -50,7 +49,6 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
         textAlign={'center'}
         m={'auto'}
         color={'white'}
-        bg={userHasSeen ? 'green' : 'red'}
         fontWeight={userHasSeen ? '' : 'bold'}
         onClick={() => handleOpenChannel(channelId)}>
         {channelTitle} ({userHasSeen ? 'seen' : 'not seen'})
