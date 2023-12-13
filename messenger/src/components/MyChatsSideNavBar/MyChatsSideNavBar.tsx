@@ -1,11 +1,12 @@
-import { Box, Button, Flex, Stack, Text, HStack, Heading } from '@chakra-ui/react'
+import { Box, Button, Flex, Stack, HStack, Heading, Center, Divider } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { getChannelById } from '../../services/channels.service';
 import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
-import { getUserChannelsLive } from '../../services/users.service';
+import { getUserByHandle, getUserChannelsLive } from '../../services/users.service';
 import MyChat from '../MyChat/MyChat';
 import { FiPlusSquare } from "react-icons/fi";
+import SingleChatAvatar from '../SingleChatAvatar/SingleChatAvatar';
 
 export interface Channel {
   id: string;
@@ -27,6 +28,23 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [activeBtn, setActiveBtn] = useState('');
   const navigate = useNavigate();
+
+  const [hasMyNotes, setHasMyNotes] = useState(false);
+  const [myNotes, setMyNotes] = useState<Channel>();
+
+
+  useEffect(() => {
+    if (userData === null) return;
+    getUserByHandle(userData?.handle)
+    .then((result) => {
+      setHasMyNotes(Object.keys(result.val()).includes('myNotes'));
+      getChannelById(result.val().myNotes)
+      .then((res) => setMyNotes(res))
+      .catch(e => console.error(e));
+    })
+    .catch(e => console.error(e));
+  }, []);
+
 
   useEffect(() => {
     if (userData === null) return;
@@ -62,7 +80,17 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
           <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
         </HStack>
       </Flex>
-
+      
+      {hasMyNotes && myNotes && 
+      <>
+        <Box>
+          <Center>
+            <MyChat channel={myNotes} activeBtn={activeBtn} />
+          </Center>
+        </Box>
+        <Divider mt={5}/>
+      </>
+      }
       <Stack
         w={'inherit'}
         maxH={'60vh'}
