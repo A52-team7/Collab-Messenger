@@ -27,10 +27,10 @@ interface SidebarContentProps {
   display?: object
 }
 
-interface unseenChatTeamBtnState {
-  chats: boolean;
-  teams: boolean;
-}
+// interface unseenChatTeamBtnState {
+//   chats: boolean;
+//   teams: boolean;
+// }
 
 
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {

@@ -7,6 +7,7 @@ export interface AvatarChatsInterface {
   channel: Channel;
   seenState: boolean | null, title: string;
   activeBtn: string;
+  imageSrc?: string;
 }
 
 const GroupChatAvatar = ({ channel, seenState, title, activeBtn }: AvatarChatsInterface) => {
