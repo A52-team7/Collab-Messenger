@@ -126,6 +126,7 @@ export default function HairCheck({ joinCall, cancelCall }) {
 
       <Flex mt={5}>
         <Button
+          mr={2}
           w='full'
           border={'2px solid'}
           borderColor={'teal.500'}
@@ -137,6 +138,7 @@ export default function HairCheck({ joinCall, cancelCall }) {
           Back to start
         </Button>
         <Button
+          ml={2}
           bg={'teal.500'}
           color={'white'}
           w='full'
