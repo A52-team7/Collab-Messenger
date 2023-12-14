@@ -75,7 +75,7 @@ const Login = () => {
       bg={'none'}
       onKeyDown={e => onKeyEnter(e)}>
       <Stack spacing={8}
-        w={{ base: '90%', sm: '80%', lg: '60%', xl: '40%' }}
+        w={{ base: '90%', sm: '80%', lg: '60%', xl: '35%' }}
         mx={'auto'}
         minW={'28vw'}
         maxW={'lg'}
