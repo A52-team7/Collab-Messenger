@@ -34,7 +34,7 @@ export default function Call() {
   const renderCallScreen = () => (
     // className = { screens.length > 0 ? 'is-screenshare' : 'call' }
     <Box>
-      <Flex>
+      <Flex flexWrap={'wrap'} justifyContent={'center'}>
         {/* Your self view */}
         {localSessionId && (
           <Tile
