@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getChannelById } from '../../services/channels.service';
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar';
+import { useLocation } from 'react-router-dom';
 import { getTeamChannelsLive, getTeamById } from '../../services/teams.service';
 import TeamChannel from '../TeamChannel/TeamChannel';
 import { Box } from '@chakra-ui/react';
@@ -23,6 +24,29 @@ const TeamChannels = ({ id }: Id) => {
     generalChannel: '',
   });
   const [activeBtn, setActiveBtn] = useState('');
+  const location = useLocation();
+
+  const handleActiveBtn = (chanelId: string) => {
+    window.localStorage.setItem('teamsActiveBtn', chanelId);
+    window.localStorage.removeItem('chatsActiveBtn');
+    setActiveBtn(chanelId);
+  }
+
+  useEffect(() => {
+    const pathArray = location.pathname.split('/');
+
+    if (pathArray[1] !== 'chat' && pathArray[1] !== 'video') {
+      window.localStorage.removeItem('teamsActiveBtn');
+      setActiveBtn('');
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const activeFromLS = window.localStorage.getItem('teamsActiveBtn');
+    if (activeFromLS) {
+      setActiveBtn(activeFromLS);
+    }
+  }, [activeBtn]);
 
   useEffect(() => {
 
@@ -45,7 +69,7 @@ const TeamChannels = ({ id }: Id) => {
 
   return channels.map((channel: Channel) => <Box
     key={channel.id}
-    onClick={() => setActiveBtn(channel.id)}>
+    onClick={() => handleActiveBtn(channel.id)}>
     <TeamChannel channelId={channel.id} channelTitle={channel.title} team={team} activeBtn={activeBtn} />
   </Box>)
 }
