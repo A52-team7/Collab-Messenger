@@ -1,7 +1,5 @@
 import { Box, Center, Image, Text } from '@chakra-ui/react';
 import HomeBallonUp from '../../components/HomeBalloonUp/HomeBalloonUp';
-import HomeBallonDown from '../../components/HomeBallonDown/HomeBaloonDown';
-
 
 const Home = (): JSX.Element  =>{
 

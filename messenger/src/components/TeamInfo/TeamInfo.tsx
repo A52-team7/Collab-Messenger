@@ -22,7 +22,7 @@ import { Team } from '../CreateTeam/CreateTeam';
 import { FcAbout } from "react-icons/fc";
 import { User } from '../SearchUsers/SearchUsers';
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar'
-import { getTeamTitleLive, getTeamMemberLive } from '../../services/teams.service';
+import { getTeamTitleLive, getTeamMemberLive, getTeamChannelsLive } from '../../services/teams.service';
 
 
 const TeamInfo = (team: Team) => {
@@ -54,9 +54,12 @@ const TeamInfo = (team: Team) => {
 
     if (team.channels === undefined) {
       setAllChannels([]);
-    } else {
+    } 
+
+      getTeamChannelsLive(team.id, (data) =>{
+        console.log(data)
       Promise.all(
-        Object.keys(team.channels).map(
+        data.map(
           (channel) => {
             return getChannelById(channel)
           }))
@@ -71,7 +74,7 @@ const TeamInfo = (team: Team) => {
           setAllChannels(myChannel)
 
         })
-    }
+      })
   }, [team, userData])
 
   useEffect(() => {
@@ -110,7 +113,7 @@ const TeamInfo = (team: Team) => {
                 <Avatar size='2xl' name={team.name} src={team.teamPhoto} mx="auto" my={10} />{' '}
               </WrapItem>
             </Wrap>
-            <Text textAlign="center" mx="auto" my={4} border={'1px solid rgb(187,125,217)'}>{team.description}</Text>
+            <Text textAlign="center" mx="auto" my={4} p={2} border={'1px solid rgb(187,125,217)'}>{team.description}</Text>
             <Tabs isFitted variant='enclosed' borderColor={'rgb(187,125,217)'}>
               <TabList mb='1em' >
                 <Tab >Owner</Tab>
