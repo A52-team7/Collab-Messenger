@@ -1,4 +1,4 @@
-import { Box, Button, Stack} from '@chakra-ui/react';
+import { Box, Button, Stack } from '@chakra-ui/react';
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -30,7 +30,7 @@ interface EventBoxProps {
 }
 
 
-const MyEventBox = ({ event } : EventBoxProps) => {
+const MyEventBox = ({ event }: EventBoxProps) => {
   const navigate = useNavigate();
 
   return (<Stack overflowY="auto" css={{
@@ -45,13 +45,13 @@ const MyEventBox = ({ event } : EventBoxProps) => {
       borderRadius: '24px',
     },
   }} >
-  <strong>{event.title}</strong>
-  <br />
-  {event.createRoom && (<Button 
-  colorScheme='teal' 
-  onClick={() => navigate('/video', { state: { channelId: event.channelId, eventId: event.id } })}>
-    Join</Button>)}
-   </Stack>)
+    <strong>{event.title}</strong>
+    <br />
+    {event.createRoom && (<Button
+      colorScheme='teal'
+      onClick={() => navigate('/video', { state: { channelId: event.channelId, eventId: event.id } })}>
+      Join</Button>)}
+  </Stack>)
 }
 
 
@@ -80,7 +80,7 @@ const MyCalendar = () => {
         defaultDate={new Date()}
         defaultView="month"
         events={myEvent}
-        style={{ height: "100vh" }}
+        style={{ height: 'calc(100vh - 56px)' }}
         components={{
           event: MyEventBox
         }}
