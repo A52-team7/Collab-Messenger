@@ -312,13 +312,13 @@ const UserDetails = (): JSX.Element => {
               </Box>
             }
             {profilePhotoSrc &&
-              <Flex ml={2} mt={-5} textAlign={'center'} justifyContent={'center'} alignItems={'center'}>
+              <Flex w={'140px'} ml={2} mt={-5} textAlign={'center'} justifyContent={'center'} alignItems={'center'}>
                 <Text fontWeight={'bold'} fontSize={'sm'} color={'black'} isTruncated>{profilePhotoSrc.name}</Text>
                 <Tooltip hasArrow label={'Remove file'} bg={'rgb(237,254,253)'} color='black'>
                   <Button
                     bg={'none'}
                     size={'sm'}
-                    color={'green.400'}
+                    color={'red.500'}
                     p={0}
                     _hover={{ opacity: 0.7 }}
                     onClick={removeFilePhoto}>
