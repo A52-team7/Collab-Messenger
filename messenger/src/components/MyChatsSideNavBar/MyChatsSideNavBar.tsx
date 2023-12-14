@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Stack, HStack, Heading, Center, Divider } from '@chakra-ui/react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getChannelById } from '../../services/channels.service';
 import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
@@ -31,18 +31,29 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
   const [hasMyNotes, setHasMyNotes] = useState(false);
   const [myNotes, setMyNotes] = useState<Channel>();
 
-  useEffect(() => {
-    const activeFromLS = window.localStorage.getItem('chatsActiveBtn');
-    if (activeFromLS) {
-      setActiveBtn(activeFromLS);
-    }
-  }, [activeBtn]);
+  const location = useLocation();
 
   const handleActiveBtn = (chanelId: string) => {
     window.localStorage.setItem('chatsActiveBtn', chanelId);
     window.localStorage.removeItem('teamsActiveBtn');
     setActiveBtn(chanelId);
   }
+
+  useEffect(() => {
+    const pathArray = location.pathname.split('/');
+
+    if (pathArray[1] !== 'chat' && pathArray[1] !== 'video') {
+      window.localStorage.removeItem('chatsActiveBtn');
+      setActiveBtn('');
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const activeFromLS = window.localStorage.getItem('chatsActiveBtn');
+    if (activeFromLS) {
+      setActiveBtn(activeFromLS);
+    }
+  }, [activeBtn]);
 
 
   useEffect(() => {
