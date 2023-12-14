@@ -1,28 +1,31 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   useDevices,
-  useDaily,
+  // useDaily,
   useDailyEvent,
   DailyVideo,
   useLocalSessionId,
-  useParticipantProperty,
+  // useParticipantProperty,
 } from '@daily-co/daily-react';
 import UserMediaError from '../UserMediaError/UserMediaError';
+import AppContext from '../../context/AppContext';
+import { useContext } from 'react';
 
 import { Box, Button, Center, Flex, FormLabel, Heading, Input, Select } from '@chakra-ui/react';
 
 export default function HairCheck({ joinCall, cancelCall }) {
   const localSessionId = useLocalSessionId();
-  const initialUsername = useParticipantProperty(localSessionId, 'user_name');
+  // const initialUsername = useParticipantProperty(localSessionId, 'user_name');
   const { currentCam, currentMic, currentSpeaker, microphones, speakers, cameras, setMicrophone, setCamera, setSpeaker } = useDevices();
-  const callObject = useDaily();
-  const [username, setUsername] = useState(initialUsername);
+  // const callObject = useDaily();
+  const { userData } = useContext(AppContext);
+  const [username, setUsername] = useState(userData?.firstName + ' ' + userData?.lastName);
 
   const [getUserMediaError, setGetUserMediaError] = useState(false);
 
-  useEffect(() => {
-    setUsername(initialUsername);
-  }, [initialUsername]);
+  // useEffect(() => {
+  //   setUsername(initialUsername);
+  // }, [initialUsername]);
 
   useDailyEvent(
     'camera-error',
@@ -31,10 +34,10 @@ export default function HairCheck({ joinCall, cancelCall }) {
     }, []),
   );
 
-  const handleChange = (e) => {
-    setUsername(e.target.value);
-    callObject.setUserName(e.target.value);
-  };
+  // const handleChange = (e) => {
+  //   setUsername(e.target.value);
+  //   callObject.setUserName(e.target.value);
+  // };
 
   const handleJoin = (e) => {
     e.preventDefault();
@@ -76,18 +79,6 @@ export default function HairCheck({ joinCall, cancelCall }) {
       </Box>
 
       {/* Username */}
-      <Box>
-        <FormLabel htmlFor="username" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Your name:</FormLabel>
-        <Input
-          bg={'white'}
-          name="username"
-          type="text"
-          placeholder="Enter username"
-          onChange={handleChange}
-          value={username || ' '}
-        />
-      </Box>
-
       {/* Microphone select */}
       <Box>
         <FormLabel htmlFor="micOptions" fontSize={'12px'} lineHeight={'14px'} m={'1em 0 0.5em 0'}>Microphone:</FormLabel>
@@ -135,7 +126,7 @@ export default function HairCheck({ joinCall, cancelCall }) {
           _hover={{ opacity: 0.8 }}
           onClick={cancelCall}
           type="button">
-          Back to start
+          Back
         </Button>
         <Button
           ml={2}
