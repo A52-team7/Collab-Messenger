@@ -149,3 +149,7 @@ export const getTeamPhotoLive = (teamId: string, listener: TitleListener) => {
     return listener(photo);
   })
 }
+
+export const getAllTeams = ()=> {
+  return get(query(ref(db, 'teams')));
+};
