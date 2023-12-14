@@ -35,6 +35,7 @@ const UserTeams = ({ onClose }: UserTeamsProps) => {
   const [myTeam, setMyTeam] = useState<Team[]>([]);
   const navigate = useNavigate();
 
+  
 
   useEffect(() => {
     if (userData === null) return;

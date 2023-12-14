@@ -31,17 +31,30 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
   const [hasMyNotes, setHasMyNotes] = useState(false);
   const [myNotes, setMyNotes] = useState<Channel>();
 
+  useEffect(() => {
+    const activeFromLS = window.localStorage.getItem('chatsActiveBtn');
+    if (activeFromLS) {
+      setActiveBtn(activeFromLS);
+    }
+  }, [activeBtn]);
+
+  const handleActiveBtn = (chanelId: string) => {
+    window.localStorage.setItem('chatsActiveBtn', chanelId);
+    window.localStorage.removeItem('teamsActiveBtn');
+    setActiveBtn(chanelId);
+  }
+
 
   useEffect(() => {
     if (userData === null) return;
     getUserByHandle(userData?.handle)
-    .then((result) => {
-      setHasMyNotes(Object.keys(result.val()).includes('myNotes'));
-      getChannelById(result.val().myNotes)
-      .then((res) => setMyNotes(res))
+      .then((result) => {
+        setHasMyNotes(Object.keys(result.val()).includes('myNotes'));
+        getChannelById(result.val().myNotes)
+          .then((res) => setMyNotes(res))
+          .catch(e => console.error(e));
+      })
       .catch(e => console.error(e));
-    })
-    .catch(e => console.error(e));
   }, []);
 
 
@@ -79,16 +92,16 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
           <Button variant='unstyled' color={'white'} _hover={{ transform: 'scale(1.3)', color: 'white' }} onClick={onCreate}><FiPlusSquare size={20} /></Button>
         </HStack>
       </Flex>
-      
-      {hasMyNotes && myNotes && 
-      <>
-        <Box>
-          <Center>
-            <MyChat channel={myNotes} activeBtn={activeBtn} />
-          </Center>
-        </Box>
-        <Divider mt={5}/>
-      </>
+
+      {hasMyNotes && myNotes &&
+        <>
+          <Box>
+            <Center>
+              <MyChat channel={myNotes} activeBtn={activeBtn} />
+            </Center>
+          </Box>
+          <Divider mt={5} />
+        </>
       }
       <Stack
         w={'inherit'}
@@ -113,7 +126,7 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
             key={channel.id}
             justifyContent={'center'}
             onClick={() => {
-              setActiveBtn(channel.id);
+              handleActiveBtn(channel.id);
               onClose();
             }} >
             <MyChat channel={channel} activeBtn={activeBtn} />

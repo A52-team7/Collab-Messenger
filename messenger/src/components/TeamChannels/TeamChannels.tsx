@@ -25,6 +25,19 @@ const TeamChannels = ({ id }: Id) => {
   const [activeBtn, setActiveBtn] = useState('');
 
   useEffect(() => {
+    const activeFromLS = window.localStorage.getItem('teamsActiveBtn');
+    if (activeFromLS) {
+      setActiveBtn(activeFromLS);
+    }
+  }, [activeBtn]);
+
+  const handleActiveBtn = (chanelId: string) => {
+    window.localStorage.setItem('teamsActiveBtn', chanelId);
+    window.localStorage.removeItem('chatsActiveBtn');
+    setActiveBtn(chanelId);
+  }
+
+  useEffect(() => {
 
     getTeamChannelsLive(id, (data: string[]) => {
       Promise.all(
@@ -45,7 +58,7 @@ const TeamChannels = ({ id }: Id) => {
 
   return channels.map((channel: Channel) => <Box
     key={channel.id}
-    onClick={() => setActiveBtn(channel.id)}>
+    onClick={() => handleActiveBtn(channel.id)}>
     <TeamChannel channelId={channel.id} channelTitle={channel.title} team={team} activeBtn={activeBtn} />
   </Box>)
 }
