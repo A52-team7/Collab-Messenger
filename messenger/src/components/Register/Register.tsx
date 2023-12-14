@@ -41,7 +41,7 @@ const formInitialState = {
 }
 
 const formErrorsInitialState = {
-  error: true,
+  error: false,
   fieldErr: false,
   firstNameLengthErr: false,
   lastNameLengthErr: false,
@@ -87,7 +87,7 @@ const Register = () => {
 
     setError({ ...errors });
 
-    if (formErrors.error) return;
+    if (errors.error) return;
 
     getUserByHandle(form.handle)
       .then(snapshot => {
@@ -102,11 +102,11 @@ const Register = () => {
 
         return createUserHandle(form.handle, credential.user.uid, credential.user.email, form.firstName, form.lastName, form.phoneNumber)
           .then(() => {
-            addChannel(form.handle, 'My notes', {[form.handle]: true})
-            .then(result => {
-              updateChatIsNotes(result.id);
-              updateMyNotes(form.handle, result.id);
-            })
+            addChannel(form.handle, 'My notes', { [form.handle]: true })
+              .then(result => {
+                updateChatIsNotes(result.id);
+                updateMyNotes(form.handle, result.id);
+              })
             setContext(prevState => ({
               ...prevState,
               user: credential.user
@@ -122,18 +122,24 @@ const Register = () => {
       });
   }
 
+  const onKeyEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter') return;
+    onRegister();
+  }
+
   return (
     <Flex
       maxH={'fit-content'}
       justify={'center'}
       bg={'none'}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} backgroundColor={'grey'} rounded={'lg'}>
-        <Box align={'center'} mt={5}>
+        <Box mt={5}>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Register
           </Heading>
         </Box>
         <Box
+          onKeyDown={e => onKeyEnter(e)}
           rounded={'lg'}
           bg={'grey'}
           boxShadow={'lg'}
@@ -150,12 +156,12 @@ const Register = () => {
                   </Center>
                   <Input type='text'
                     placeholder={formErrors.fieldErr && !form.firstName ? `${MSG_FIELD_REQUIRED}` : ''}
-                    textAlign={'center'} 
-                    bg={'white'} 
-                    rounded="md" 
+                    textAlign={'center'}
+                    bg={'white'}
+                    rounded="md"
                     value={form.firstName}
                     onChange={updateForm('firstName')}
-                    
+
                   />
                   {
                     formErrors.firstNameLengthErr &&
@@ -176,8 +182,8 @@ const Register = () => {
                   <Input
                     type='text'
                     placeholder={formErrors.fieldErr && !form.lastName ? `${MSG_FIELD_REQUIRED}` : ''}
-                    textAlign={'center'} 
-                    bg={'white'} 
+                    textAlign={'center'}
+                    bg={'white'}
                     rounded="md"
                     value={form.lastName}
                     onChange={updateForm('lastName')} />
@@ -204,11 +210,11 @@ const Register = () => {
                   max={32}
                   min={0}
                   borderColor={'gray.500'}
-                  >
+                >
                   <NumberInputField
                     placeholder={'Phone number'}
-                    textAlign={'center'} 
-                    bg={'white'} 
+                    textAlign={'center'}
+                    bg={'white'}
                     rounded="md"
                     value={form.phoneNumber}
                     onChange={updateForm('phoneNumber')} />
@@ -223,8 +229,8 @@ const Register = () => {
                 </Center>
                 <Input type='email'
                   placeholder={formErrors.fieldErr && !form.email ? `${MSG_FIELD_REQUIRED}` : 'example@email.com'}
-                  textAlign={'center'} 
-                  bg={'white'} 
+                  textAlign={'center'}
+                  bg={'white'}
                   rounded="md"
                   value={form.email}
                   onChange={updateForm('email')} />
@@ -242,9 +248,9 @@ const Register = () => {
                 </Center>
                 <Input type='text'
                   placeholder={formErrors.fieldErr && !form.handle ? `${MSG_FIELD_REQUIRED}` : ''}
-                  textAlign={'center'} 
-                    bg={'white'} 
-                    rounded="md"
+                  textAlign={'center'}
+                  bg={'white'}
+                  rounded="md"
                   value={form.handle}
                   onChange={updateForm('handle')} />
                 <Center>
@@ -262,8 +268,8 @@ const Register = () => {
                   <Input type={'password'}
                     placeholder={formErrors.fieldErr && !form.password ? `${MSG_FIELD_REQUIRED}` : ''}
                     boxShadow={'lg'}
-                    textAlign={'center'} 
-                    bg={'white'} 
+                    textAlign={'center'}
+                    bg={'white'}
                     rounded="md"
                     value={form.password}
                     onChange={updateForm('password')} />
