@@ -41,6 +41,11 @@ const Login = () => {
     });
   }
 
+  const onKeyEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter') return;
+    onLogin();
+  }
+
   const onLogin = () => {
     if (!form.email || !form.password) return setError({ ...formErrors, fieldErr: true });
     setLoadingState(true);
@@ -67,8 +72,10 @@ const Login = () => {
     <Flex
       maxH={'fit-content'}
       justify={'center'}
-      bg={'none'}>
+      bg={'none'}
+      onKeyDown={e => onKeyEnter(e)}>
       <Stack spacing={8}
+        w={{ base: '90%', sm: '80%', lg: '60%', xl: '40%' }}
         mx={'auto'}
         minW={'28vw'}
         maxW={'lg'}
