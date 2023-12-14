@@ -9,6 +9,8 @@ import { getEventById } from '../../services/events.service'
 import { useNavigate } from 'react-router-dom';
 import { ReactNode } from 'react';
 
+import './MyCalendar.css';
+
 
 const localizer = momentLocalizer(moment);
 

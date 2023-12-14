@@ -1,0 +1,38 @@
+.rbc-calendar {
+  background-color: #2f2f2f;
+  color: #fff;
+}
+
+.rbc-off-range {
+  background-color: #404040;
+}
+
+.rbc-off-range-bg {
+  background: #404040;
+}
+
+.rbc-header {
+  background-color: #4f4f4f;
+  color: #fff;
+  border-bottom: 1px solid #404040;
+}
+
+.rbc-today {
+  background-color: #404040;
+}
+
+.rbc-event {
+  background-color: #3174ad;
+  border-color: #3174ad;
+  color: #fff;
+}
+
+.rbc-toolbar button {
+  color: #fff;
+  background-color: #4f4f4f;
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  background-color: #3174ad;
+}
