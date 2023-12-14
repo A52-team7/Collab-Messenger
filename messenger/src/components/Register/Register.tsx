@@ -61,6 +61,7 @@ const Register = () => {
     if (field === 'lastName') setError({ ...formErrors, lastNameLengthErr: false });
     if (field === 'handle') setError({ ...formErrors, userNameTakenErr: false });
     if (field === 'email') setError({ ...formErrors, emailTakenErr: false, emailFormatErr: false });
+
     setForm({
       ...form,
       [field]: e.target.value
@@ -204,21 +205,13 @@ const Register = () => {
                     <PhoneIcon color='gray.400' />
                   </InputLeftElement>
                 </Box>
-                <NumberInput
-                  w={'90%'}
-                  margin={'auto'}
-                  max={32}
-                  min={0}
-                  borderColor={'gray.500'}
-                >
-                  <NumberInputField
-                    placeholder={'Phone number'}
-                    textAlign={'center'}
-                    bg={'white'}
-                    rounded="md"
-                    value={form.phoneNumber}
-                    onChange={updateForm('phoneNumber')} />
-                </NumberInput>
+                <Input
+                  placeholder={'Phone'}
+                  textAlign={'center'}
+                  bg={'white'}
+                  rounded="md"
+                  value={form.phoneNumber}
+                  onChange={updateForm('phoneNumber')} />
               </InputGroup>
             </Stack>
 
