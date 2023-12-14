@@ -427,7 +427,7 @@ const Chat = (): JSX.Element => {
               }
             </>
           )}
-          {channelId && !notes && <ChatMoreOptions messages={messages} channelId={channelId} />}
+          {channelId && messages && !notes && <ChatMoreOptions messages={messages} channelId={channelId} />}
         </Flex>
       }
       <Stack
@@ -461,7 +461,7 @@ const Chat = (): JSX.Element => {
               </Center>
             ) : (
               <>
-                {messages.length > 0 ? (
+                {messages && messages.length > 0 ? (
                   <Box h={'auto'}>
                     <MessagesList {...{ messages, setReplyIsVisible, setMessageToReply }} />
                   </Box>
@@ -546,10 +546,18 @@ const Chat = (): JSX.Element => {
           </Stack>
           ) : (
             <>
-              {channelId && (<Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} />)}
+              {channelId && (
+                  <>
+                    {!team ? (
+                      <Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} members={members}/>
+                    ) : (
+                      <Reply channelId={channelId} messageToReply={messageToReply} setReplyIsVisible={setReplyIsVisible} members={members} team={team}/>
+                    )}
+                  </>
+                  )}
+                </>
+              )}
             </>
-          )}
-        </>
       )}
     </Flex>
   )
