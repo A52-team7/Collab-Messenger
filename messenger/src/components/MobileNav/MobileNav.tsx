@@ -96,18 +96,18 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                   src={userData.profilePhoto} >
                   <UserStatus />
                 </Avatar>
-                <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 8 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
-                  <HStack
+                <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 4 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
+                  <Flex
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='flex-start'
                     spacing='1px'>
-                    <Text fontSize='sm' color={'grey'}>{userData.handle}</Text>
-                    <Text fontSize='xs' color={'grey'}>
-                    </Text>
-                  </HStack>
-                  <Box display={{ base: 'none', md: 'flex' }}>
-                    <FiChevronDown color={'grey'} />
-                  </Box>
+                    <Text fontSize='sm' color={'grey'} ml={-3} mr={1}>{userData.handle}</Text>
+                    {/* <Text fontSize='xs' color={'grey'}>
+                    </Text> */}
+                    <Box display={{ base: 'none', md: 'flex' }} mt={1}>
+                      <FiChevronDown color={'grey'} />
+                    </Box>
+                  </Flex>
                 </MenuButton>
               </HStack>)
               :
