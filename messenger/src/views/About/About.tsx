@@ -9,7 +9,10 @@ import {
     Heading,
     Text,
     Center,
+    Box,
+    Link,
     } from '@chakra-ui/react'
+    import { FaGithub } from "react-icons/fa";
 
 const About = () => {
 
@@ -23,20 +26,23 @@ return (
      bg={'none'}
 >
     <Center>
-<Card maxW='lg' m={'30px'} >
+<Card h={'342px'} m={'30px'} w={'216px'}>
   <CardBody bg={'grey'} rounded={'10px'}>
+  <Box display="flex" justifyContent="center" alignItems="center" w="100%" height="200px">
     <Image
       src='Desi.jpg'
       alt='Desislava Petrova'
-      w='180px'
-      h='200px'
-      borderRadius='md'
-      rounded={'50%'}
+      w='auto'
+      h='100%'
+      rounded="full"
     />
-    <Stack mt='6' spacing='3'>
+    </Box>
+    <Stack mt='6' spacing='3' justifyContent={'center'} alignItems={'center'}>
       <Heading size='md' textAlign={'center'}>Desislava Petrova</Heading>
       <Text textAlign={'center'}>
-        Text
+        <Link href='https://github.com/desi-petrova' target="_blank">
+          <FaGithub size={30}/>
+        </Link>
       </Text>
       <Text color='blue.600' fontSize='2xl'>
         
@@ -44,20 +50,23 @@ return (
     </Stack>
   </CardBody>
 </Card>
-<Card maxW='lg'>
+<Card w={'216px'} h={'342px'}>
   <CardBody bg={'grey'} rounded={'10px'}>
-    <Image
-      src=''
-      alt='Mihail Uymaz'
-      w='180px'
-      h='200px'
-      rounded={'50%'}
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
+    <Box display="flex" justifyContent="center" alignItems="center" w="100%" height="200px">
+      <Image
+        src='misho.PNG'
+        alt='Mihail Uymaz'
+        w='auto'
+        h='100%'
+        rounded="full"
+      />
+      </Box>
+    <Stack mt='6' spacing='3' justifyContent={'center'} alignItems={'center'}>
       <Heading size='md' textAlign={'center'}>Mihail Uymaz</Heading>
       <Text textAlign={'center'}>
-      Text
+        <Link href='https://github.com/m-uymaz' target="_blank">
+          <FaGithub size={30}/>
+        </Link>
       </Text>
       <Text color='blue.600' fontSize='2xl'>
         
@@ -65,20 +74,23 @@ return (
     </Stack>
   </CardBody>
 </Card>
-<Card maxW='lg' m={'30px'}>
+<Card m={'30px'} w={'216px'} h={'342px'}>
   <CardBody bg={'grey'} rounded={'10px'}>
+  <Box display="flex" justifyContent="center" alignItems="center" w="100%" height="200px">
     <Image
-      src=''
+      src='hrisi.jpg'
       alt='Hristina Georgieva'
-      w='180px'
-      h='200px'
-      rounded={'50%'}
-      borderRadius='lg'
+      w='auto'
+      h='100%'
+      rounded="full"
     />
-    <Stack mt='6' spacing='3'>
+    </Box>
+    <Stack mt='6' spacing='3' justifyContent={'center'} alignItems={'center'}>
       <Heading size='md' textAlign={'center'}>Hristina Georgieva</Heading>
       <Text textAlign={'center'}>
-      Text
+      <Link href='https://github.com/hristina-georgieva' target="_blank">
+          <FaGithub size={30}/>
+        </Link>
       </Text>
     </Stack>
   </CardBody>
