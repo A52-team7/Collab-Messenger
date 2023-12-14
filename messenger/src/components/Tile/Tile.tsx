@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { DailyVideo, useVideoTrack } from '@daily-co/daily-react';
 import { Button } from '@chakra-ui/react';
-import './Tile.css';
 import { BsArrowsFullscreen } from "react-icons/bs";
 import Username from '../Username/Username';
 
@@ -33,14 +32,14 @@ const Tile = ({ id, isScreenShare, mapIndex, isLocal, isAlone }: TileProps) => {
     }
   };
 
-  let containerCssClasses = isScreenShare ? 'tile-screenshare' : 'tile-video';
+  // let containerCssClasses = isScreenShare ? 'tile-screenshare' : 'tile-video';
 
-  if (isLocal) {
-    containerCssClasses += ' self-view';
-    if (isAlone) {
-      containerCssClasses += ' alone';
-    }
-  }
+  // if (isLocal) {
+  //   containerCssClasses += ' self-view';
+  //   if (isAlone) {
+  //     containerCssClasses += ' alone';
+  //   }
+  // }
 
   return (
     <Box
@@ -50,7 +49,7 @@ const Tile = ({ id, isScreenShare, mapIndex, isLocal, isAlone }: TileProps) => {
       m={1} p={1}
       border={'2px solid'} borderColor={borderColor}
       rounded={'lg'}>
-      <DailyVideo id='DailyVideo' ref={shareScreenRef} automirror sessionId={id} type={isScreenShare ? 'screenVideo' : 'video'} />
+      <DailyVideo fit='cover' style={{ width: '100%', height: '100%' }} ref={shareScreenRef} automirror sessionId={id} type={isScreenShare ? 'screenVideo' : 'video'} />
       {!isScreenShare && <Username id={id} isLocal={isLocal} />}
       {isScreenShare &&
         <Button
