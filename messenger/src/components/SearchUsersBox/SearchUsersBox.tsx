@@ -93,7 +93,7 @@ const SearchUsersBox = ({
       onClick={handleClick}
       _hover={{
         color: 'white',
-        backgroundColor: 'gray.500'
+        backgroundColor: 'teal.600'
       }}
     >
       <Flex alignItems={'center'}>
