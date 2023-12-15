@@ -110,7 +110,7 @@ const SearchUsers = ({ searchType, updateNewMember, team }: AddUSerSearchProps):
           h={'fit-content'}
           w={'inherit'}
           maxH={'200px'}
-          bg={searchType === ADD_USERS ? 'gray.300' : 'gray.100'}
+          bg={searchType === ADD_USERS ? 'gray.300' : 'gray.300'}
           overflowY={'scroll'}
           tabIndex={-1}
           zIndex={99}

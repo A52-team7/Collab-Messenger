@@ -87,6 +87,7 @@ const SearchUsersBox = ({
 
   return (
     <Box w={'inherit'}
+      bg={'gray.300'}
       mt={1}
       maxH={"150px"}
       onClick={handleClick}
@@ -95,15 +96,19 @@ const SearchUsersBox = ({
         backgroundColor: 'gray.500'
       }}
     >
-      <Flex>
-        <Avatar size={'sm'} name={(firstName + ' ' + lastName)} src={imageSrc} />
-        <Text w={'inherit'} px={1}>
-          {firstName} {lastName}
-        </Text>
+      <Flex alignItems={'center'}>
+        <Box>
+          <Avatar size={'md'} name={(firstName + ' ' + lastName)} src={imageSrc} />
+        </Box>
+        <Box>
+          <Text w={'inherit'} px={1}>
+            {firstName} {lastName}
+          </Text>
+          <Text fontSize={13} px={1}>
+            ({userName}) {email}
+          </Text>
+        </Box>
       </Flex>
-      <Text fontSize={13} px={1}>
-        ({userName}) {email}
-      </Text>
     </Box>
   );
 };
