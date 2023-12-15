@@ -35,7 +35,7 @@ interface EventBoxProps {
 const MyEventBox = ({ event }: EventBoxProps) => {
   const navigate = useNavigate();
 
-  return (<Stack overflowY="auto" css={{
+  return (<Stack textAlign={'center'} overflowY="auto" css={{
     '&::-webkit-scrollbar': {
       width: '8px',
     },
@@ -48,8 +48,9 @@ const MyEventBox = ({ event }: EventBoxProps) => {
     },
   }} >
     <strong>{event.title}</strong>
-    <br />
     {event.createRoom && (<Button
+      size={'sm'}
+      fontSize={'md'}
       colorScheme='teal'
       onClick={() => navigate('/video', { state: { channelId: event.channelId, eventId: event.id } })}>
       Join</Button>)}
