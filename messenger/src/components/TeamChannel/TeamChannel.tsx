@@ -51,7 +51,7 @@ const TeamChannel = ({ channelId, channelTitle, team, activeBtn }: TeamChannelPr
         color={'white'}
         fontWeight={userHasSeen ? '' : 'bold'}
         onClick={() => handleOpenChannel(channelId)}>
-        {channelTitle} ({userHasSeen ? 'seen' : 'not seen'})
+        {channelTitle}
       </Text>
       {
         !userHasSeen && <Box
