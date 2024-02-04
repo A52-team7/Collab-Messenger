@@ -15,10 +15,9 @@ export default function HomeScreen({ createCall, startHairCheck }) {
           <Heading w={'fit-content'} borderBottom={'2px solid black'}>Start a video call</Heading>
         </Center>
         <Text className="small">Select “Allow” to use your camera and mic for this call if prompted</Text>
-        <Text>Start the demo with a new unique room by clicking the button below.</Text>
         <Button
           fontWeight={'bold'}
-          mt={10}
+          mt={5}
           bg={'teal.500'}
           color={'white'}
           border={'2px solid'}
