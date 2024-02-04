@@ -69,7 +69,7 @@ const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
                 </Button>
                 {!selfRemove ? (
                 <Button colorScheme='red' onClick={onDelete} ml={3}>
-                  Delete
+                  Remove
                 </Button>
                 ) : (
                   <Button colorScheme='red' onClick={onDelete} ml={3}>

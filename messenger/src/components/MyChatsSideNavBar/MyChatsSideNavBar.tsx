@@ -116,7 +116,7 @@ const MyChatsSideNavBar = ({ onClose }: MyChatsSideNavBarProps) => {
       }
       <Stack
         w={'inherit'}
-        maxH={'60vh'}
+        maxH={'40vh'}
         mt={5}
         overflowY="auto"
         css={{

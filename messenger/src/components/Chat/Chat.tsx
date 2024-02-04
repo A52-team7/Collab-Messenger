@@ -90,6 +90,7 @@ const Chat = (): JSX.Element => {
 
   useEffect(() => {
     setChannelId(params.id);
+    setNotes(false);
   }, [params.id, params, isLeft]);
 
   useEffect(() => {
