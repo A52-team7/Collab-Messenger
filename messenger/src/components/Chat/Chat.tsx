@@ -48,6 +48,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import SendButton from '../SendButton/SendButton';
 import { FaVideo } from "react-icons/fa";
+import GifsPopover from '../GifsPopover/GifsPopover';
 
 const Chat = (): JSX.Element => {
 
@@ -114,6 +115,8 @@ const Chat = (): JSX.Element => {
 
 
   const [emoji, setEmoji] = useState<string>('');
+  const [gif, setGif] = useState<string>('');
+
 
 
   useEffect(() => {
@@ -123,6 +126,33 @@ const Chat = (): JSX.Element => {
       setEmoji('');
     }
   }, [emoji]);
+
+  useEffect(() => {
+    if(gif){
+      if (channelId && userData) {
+        addMessage(gif, userData.handle, channelId, false, USER_MESSAGE)
+          .then(result => {
+            channelMessage(channelId, result.id);
+            userMessage(result.id, userData.handle);
+            setAllInChannelToUnseen(channelId, userData.handle);
+          })
+          .then(() => {
+            if (userData) {
+              if (team) {
+                setAllUsersUnseen(members, userData.handle, 'teams');
+              } else {
+                setAllUsersUnseen(members, userData.handle, 'chats');
+              }
+            }
+          })
+          .then(() => setGif(''))
+          .catch(e => console.error(e));
+      }
+    }
+  }, [gif]);
+
+  console.log(gif);
+  
 
 
   useEffect(() => {
@@ -314,6 +344,10 @@ const Chat = (): JSX.Element => {
 
   const onGetEmoji = (emoji: string) => {
     setEmoji(emoji);
+  }
+
+  const onGetGif = (gif: string) => {
+    setGif(gif);
   }
 
   const updateNewTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -542,6 +576,7 @@ const Chat = (): JSX.Element => {
                 onKeyDown={onSendMessage}
               />
               <EmojiPopover onGetEmoji={onGetEmoji} />
+              <GifsPopover onGetGif={onGetGif}/>
               <SendButton onSendMessage={onSendMessage} />
             </Stack>
           </Stack>

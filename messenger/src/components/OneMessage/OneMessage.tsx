@@ -1,4 +1,4 @@
-import { AspectRatio, Avatar, Box, Button, Flex, Input, Text } from "@chakra-ui/react";
+import { AspectRatio, Avatar, Box, Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../context/AppContext';
 import { Message } from "../MessagesList/MessagesList";
@@ -220,9 +220,20 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
                           <ImageModal imageSrc={decoratedHref}/>
                         </Box>
                       ) : (
-                        <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
-                          {decoratedText}
-                        </a>
+                        <>
+                          {decoratedHref.includes('giphy') ? (
+                            <Stack position="relative">
+                              <AspectRatio w='350px' ratio={1}>
+                                <iframe title={decoratedText} src={decoratedHref} allowFullScreen />
+                              </AspectRatio>
+                              <Box position="absolute" top="0" left="0" w="100%" h="100%" />
+                            </Stack>
+                          ) : (
+                            <a href={decoratedHref} target="_blank" key={key} rel="noopener noreferrer">
+                              {decoratedText}
+                            </a>
+                          )}
+                        </>
                       )}
                     </>
                     )}
