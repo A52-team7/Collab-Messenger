@@ -2,9 +2,9 @@ import { Button } from "@chakra-ui/button";
 import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/popover";
 import { HiOutlineGif } from "react-icons/hi2";
 import { HiGif } from "react-icons/hi2";
-import { useEffect, useState } from 'react';
-import { loadTrending } from "../../services/gifs.service";
-import { Box, Stack, UnorderedList, useDisclosure } from "@chakra-ui/react";
+import { useEffect, useState, useRef } from 'react';
+import { loadSearchGifs, loadTrending } from "../../services/gifs.service";
+import { Box, Input, Stack, UnorderedList, useDisclosure } from "@chakra-ui/react";
 import SingleGif, { Gif } from "../SingleGif/SingleGif";
 
 export interface GifsPopoverProps {
@@ -16,8 +16,12 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
   const [visibleColor, setVisibleColor] = useState(false);
   const [trending, setTrending] = useState<Gif[]>();
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [foundGifs, setFoundGifs] = useState<Gif[]>();
+  const [areFound, setAreFound] = useState(false);
 
   const { isOpen, onClose, onToggle } = useDisclosure();
+
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect (() => {
     loadTrending()
@@ -40,6 +44,20 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
   const onGetGifAndClosePopover = (gif: string) => {
     onGetGif(gif);
     onClose();
+    setAreFound(false);
+    searchInputRef.current.value = ''
+  }
+
+  const onSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+        const termForSearch = searchInputRef.current?.value.trim();
+        loadSearchGifs(termForSearch)
+        .then(found => {
+            setFoundGifs(found.data);
+            setAreFound(true);
+        })
+        .catch(err => console.error(err));        
+    }
   }
 
 
@@ -66,7 +84,7 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
         <PopoverBody>
 
          {hasLoaded && 
-            <Stack height="430px" 
+            <Stack height="435px" 
             overflowY="auto"
             css={{
                 '&::-webkit-scrollbar': {
@@ -80,8 +98,16 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
                   borderRadius: '24px',
                 },
               }}>
+                <Box position={'fixed'} zIndex={100} bg={'white'} w={'93%'}>
+                    <Input 
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search gifs by phrase" 
+                    onKeyDown={onSearch}/>
+                </Box>
                 <UnorderedList styleType='none'>
-                {trending && trending.map((gif: Gif) => (
+                {!areFound ? (
+                    trending && trending.map((gif: Gif) => (
                     <Box
                     display={'flex'}
                     flexWrap={'wrap'}
@@ -89,7 +115,18 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
                     >
                     <SingleGif gif={gif} onGetGif={onGetGifAndClosePopover}/>
                     </Box>
-                ))}
+                ))) : (
+                    foundGifs && foundGifs.map((gif: Gif) => (
+                        <Box
+                        display={'flex'}
+                        flexWrap={'wrap'}
+                        key={gif.id}
+                        >
+                        <SingleGif gif={gif} onGetGif={onGetGifAndClosePopover}/>
+                        </Box>
+                    ))
+                )
+                }
                 </UnorderedList>  
             </Stack>
             } 

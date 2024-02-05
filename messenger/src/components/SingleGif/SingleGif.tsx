@@ -18,7 +18,7 @@ const SingleGif = ({ gif, onGetGif }: SingleGifPopoverProps) => {
 
     return (
 
-        <Stack position="relative" onClick={onSetGif}>
+        <Stack position="relative" onClick={onSetGif} css={{ cursor: 'pointer' }}>
             <AspectRatio w='300px' ratio={1} mt={2} mb={2}>
                 <iframe title={gif.title} src={gif.embed_url}/>
             </AspectRatio>

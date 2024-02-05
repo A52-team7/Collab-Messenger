@@ -151,9 +151,6 @@ const Chat = (): JSX.Element => {
     }
   }, [gif]);
 
-  console.log(gif);
-  
-
 
   useEffect(() => {
     if (!channelId) return;
