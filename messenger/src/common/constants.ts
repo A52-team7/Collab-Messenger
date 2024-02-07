@@ -59,10 +59,3 @@ export const HEART = '❤️';
 export const SMILE = '😆';
 export const HEART_EYES = '😍';
 export const ASTONISHED = '😲';
-
-//gifs constants
-export const API_URL = 'https://api.giphy.com/v1/gifs';
-export const API_KEY = 'api_key=5C0c2pw570qWVbYXL20xi0Mbz67fOH0U';
-export const RATING_G = 'rating=g';
-export const LIMIT_5 = 'limit=5';
-export const LIMIT_25 = 'limit=25';

@@ -1,4 +1,5 @@
-import { API_KEY, API_URL, LIMIT_25, RATING_G } from "../common/constants";
+import { API_KEY, API_URL, LIMIT_25, RATING_G } from "../config/giphyConfig";
+
 
 export const loadTrending = () => {
     const trending =
