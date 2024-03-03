@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
-  useAppMessage,
   useAudioTrack,
   useDaily,
   useLocalSessionId,
@@ -24,7 +23,7 @@ import {
   // ChatHighlighted,
 } from './Icons';
 
-export default function Tray({ leaveCall }) {
+export default function Tray({ leaveCall }: {leaveCall: () => void}) {
   const callObject = useDaily();
   const { isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare();
 

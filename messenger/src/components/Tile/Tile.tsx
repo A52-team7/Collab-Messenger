@@ -13,33 +13,31 @@ interface TileProps {
   isAlone?: boolean;
 }
 
-const Tile = ({ id, isScreenShare, mapIndex, isLocal, isAlone }: TileProps) => {
+interface ExtendedHTMLVideoElement extends HTMLVideoElement {
+  mozRequestFullScreen?: () => Promise<void>;
+  webkitRequestFullscreen?: () => Promise<void>;
+  msRequestFullscreen?: () => Promise<void>;
+}
+
+const Tile = ({ id, isScreenShare, mapIndex, isLocal }: TileProps) => {
   const videoState = useVideoTrack(id);
-  const borderColor = (mapIndex + 2) % 2 === 0 ? 'teal.300' : 'rgb(188,124,213)';
-  const shareScreenRef = useRef();
+  const borderColor = mapIndex ? (mapIndex + 2) % 2 === 0 ? 'teal.300' : 'rgb(188,124,213)' : '';
+  const shareScreenRef = useRef<HTMLVideoElement | null>(null);
 
-  const handleFullScreen = () => {
-    if (shareScreenRef.current) {
-      if (shareScreenRef.current.requestFullscreen) {
-        shareScreenRef.current.requestFullscreen();
-      } else if (shareScreenRef.current.mozRequestFullScreen) {
-        shareScreenRef.current.mozRequestFullScreen();
-      } else if (shareScreenRef.current.webkitRequestFullscreen) {
-        shareScreenRef.current.webkitRequestFullscreen();
-      } else if (shareScreenRef.current.msRequestFullscreen) {
-        shareScreenRef.current.msRequestFullscreen();
-      }
+const handleFullScreen = () => {
+  const videoElem = shareScreenRef.current as ExtendedHTMLVideoElement;
+  if (videoElem) {
+    if (videoElem.requestFullscreen) {
+      videoElem.requestFullscreen();
+    } else if (videoElem.mozRequestFullScreen) {
+      videoElem.mozRequestFullScreen();
+    } else if (videoElem.webkitRequestFullscreen) {
+      videoElem.webkitRequestFullscreen();
+    } else if (videoElem.msRequestFullscreen) {
+      videoElem.msRequestFullscreen();
     }
-  };
-
-  // let containerCssClasses = isScreenShare ? 'tile-screenshare' : 'tile-video';
-
-  // if (isLocal) {
-  //   containerCssClasses += ' self-view';
-  //   if (isAlone) {
-  //     containerCssClasses += ' alone';
-  //   }
-  // }
+  }
+};
 
   return (
     <Box
