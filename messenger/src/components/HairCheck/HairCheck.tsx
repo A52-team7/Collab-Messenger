@@ -11,21 +11,17 @@ import UserMediaError from '../UserMediaError/UserMediaError';
 import AppContext from '../../context/AppContext';
 import { useContext } from 'react';
 
-import { Box, Button, Center, Flex, FormLabel, Heading, Input, Select } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, FormLabel, Heading, Select } from '@chakra-ui/react';
 
-export default function HairCheck({ joinCall, cancelCall }) {
+export default function HairCheck({ joinCall, cancelCall }: {joinCall: (username: string) => void, cancelCall: () => void}) {
   const localSessionId = useLocalSessionId();
   // const initialUsername = useParticipantProperty(localSessionId, 'user_name');
   const { currentCam, currentMic, currentSpeaker, microphones, speakers, cameras, setMicrophone, setCamera, setSpeaker } = useDevices();
   // const callObject = useDaily();
   const { userData } = useContext(AppContext);
-  const [username, setUsername] = useState(userData?.firstName + ' ' + userData?.lastName);
+  const username = userData?.firstName + ' ' + userData?.lastName;
 
   const [getUserMediaError, setGetUserMediaError] = useState(false);
-
-  // useEffect(() => {
-  //   setUsername(initialUsername);
-  // }, [initialUsername]);
 
   useDailyEvent(
     'camera-error',
@@ -34,25 +30,20 @@ export default function HairCheck({ joinCall, cancelCall }) {
     }, []),
   );
 
-  // const handleChange = (e) => {
-  //   setUsername(e.target.value);
-  //   callObject.setUserName(e.target.value);
-  // };
-
-  const handleJoin = (e) => {
+  const handleJoin = (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLDivElement>) => {
     e.preventDefault();
     joinCall(username.trim());
   };
 
-  const updateMicrophone = (e) => {
+  const updateMicrophone = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMicrophone(e.target.value);
   };
 
-  const updateSpeakers = (e) => {
+  const updateSpeakers = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSpeaker(e.target.value);
   };
 
-  const updateCamera = (e) => {
+  const updateCamera = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCamera(e.target.value);
   };
 
@@ -75,7 +66,7 @@ export default function HairCheck({ joinCall, cancelCall }) {
 
       {/* Video preview */}
       <Box m={'auto'} maxW={'425px'}>
-        {localSessionId && <DailyVideo sessionId={localSessionId} mirror />}
+        {localSessionId && <DailyVideo sessionId={localSessionId} mirror type='video'/>}
       </Box>
 
       {/* Username */}
