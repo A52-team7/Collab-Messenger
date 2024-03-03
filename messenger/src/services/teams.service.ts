@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update, push, remove, onValue } from 'firebase/database';
+import { get, ref, query, equalTo, orderByChild, update, push, remove, onValue } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 import { deleteMemberFromChannel, getChannelById, channelMessage } from './channels.service'
 import { ADMIN, FROM, REMOVED, REMOVE_PERSON } from "../common/constants";
