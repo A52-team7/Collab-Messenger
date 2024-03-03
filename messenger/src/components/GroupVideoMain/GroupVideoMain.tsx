@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import DailyIframe, { DailyCall } from '@daily-co/daily-js';
+import DailyIframe, { DailyCall, DailyEvent } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
 import AppContext from '../../context/AppContext';
 
@@ -168,7 +168,7 @@ export const GroupVideoMain = () => {
   useEffect(() => {
     if (!callObject) return;
 
-    const events = ['joined-meeting', 'left-meeting', 'error', 'camera-error'];
+    const events: DailyEvent[] = ['joined-meeting', 'left-meeting', 'error', 'camera-error'];
 
     function handleNewMeetingState() {
       if (callObject) {
