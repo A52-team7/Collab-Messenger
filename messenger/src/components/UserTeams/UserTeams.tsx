@@ -11,9 +11,6 @@ import {
   Text,
   Container,
   Heading,
-  Wrap,
-  WrapItem,
-  Avatar,
 } from '@chakra-ui/react';
 import MoreOptions from '../MoreOptions/MoreOptions'
 import AppContext, { UserState } from '../../context/AppContext'

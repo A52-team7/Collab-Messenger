@@ -55,7 +55,7 @@ const UserDetails = (): JSX.Element => {
     confirmPassword: '',
   });
   const [formErrors, setFormErrors] = useState({ ...formErrorsInitialState });
-  const [profilePicture, setProfilePicture] = useState<string | ArrayBuffer>('');
+  const [profilePicture, setProfilePicture] = useState<string | undefined>('');
   const [profilePhotoSrc, setProfilePhotoSrc] = useState<File | null>(null);
   const [hasFormChanged, setHasFormChanged] = useState(false);
   const [submitChange, setSubmitChange] = useState(false);
@@ -125,9 +125,9 @@ const UserDetails = (): JSX.Element => {
 
       setProfilePhotoSrc(file);
 
-      const reader = new FileReader();
+      const reader: FileReader = new FileReader();
       reader.onloadend = () => {
-        if (reader.result) {
+        if (reader.result && typeof reader.result === 'string') {
           setProfilePicture(reader.result);
         }
       };

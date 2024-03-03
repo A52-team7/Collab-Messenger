@@ -1,27 +1,26 @@
-import { Box, Center, Image, Text } from '@chakra-ui/react';
+import { Box, Center, Image } from '@chakra-ui/react';
 import HomeBallonUp from '../../components/HomeBalloonUp/HomeBalloonUp';
 
 const Home = (): JSX.Element  =>{
-
-    return (
-        <>
-            <Center>
-                <Image src='/heading.png'/>
-            </Center>
-            <Box backgroundImage="url('/blue_balloons_new_new.png')"
-            backgroundPosition="center"
-            backgroundRepeat="no-repeat"
-            backgroundSize='cover'
-            position="fixed"
-            opacity={0.8}
-            mx={200}
-            h={'600px'}
-            w={'800px'}
-            // zIndex="1"
-            >
-                <HomeBallonUp />
-            </Box>
-        </>
+  return (
+    <>
+      <Center>
+        <Image src='/heading.png'/>
+      </Center>
+      <Box backgroundImage="url('/blue_balloons_new_new.png')"
+        backgroundPosition="center"
+        backgroundRepeat="no-repeat"
+        backgroundSize='cover'
+        position="fixed"
+        opacity={0.8}
+        mx={200}
+        h={'600px'}
+        w={'800px'}
+        // zIndex="1"
+         >
+        <HomeBallonUp />
+         </Box>
+    </>
         // <>
         // <HomeBallonUp />
         // <Box 

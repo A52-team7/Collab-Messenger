@@ -1,8 +1,6 @@
 import { 
     Card, 
-    CardHeader, 
     CardBody, 
-    CardFooter,
     Flex,
     Image,
     Stack,
