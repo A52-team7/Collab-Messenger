@@ -8,80 +8,80 @@ interface RemoveUserProps {
 }
 
 const RemoveUser = ({name, onDelete, selfRemove}: RemoveUserProps) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = React.useRef()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  return (
+    <>
+      {!selfRemove ? (
+        <Button
+          bg={'none'}
+          _hover={{ bg: 'teal.300', opacity: 0.8 }}
+          rounded={20}
+          onClick={onOpen}>
+          x
+        </Button>
+      ) : (
+        <Button bg={'teal.500'} _hover={{ opacity: 0.8 }} rounded={20} onClick={onOpen}>
+          Leave chat
+        </Button>
+      )}
   
-    return (
-      <>
-        {!selfRemove ? (
-            <Button 
-            bg={'none'}
-            _hover={{ bg: 'teal.300', opacity: 0.8 }} 
-            rounded={20} 
-            onClick={onOpen}>
-            x
-            </Button>
-        ) : (
-            <Button bg={'teal.500'} _hover={{opacity: 0.8 }} rounded={20} onClick={onOpen}>
-            Leave chat
-            </Button>
-        )}
-  
-        <AlertDialog
-          isOpen={isOpen}
-          leastDestructiveRef={cancelRef}
-          onClose={onClose}
-        >
-          <AlertDialogOverlay>
-            <AlertDialogContent bg={'grey'}>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent bg={'grey'}>
             {!selfRemove ? (
               <AlertDialogHeader fontSize='lg' fontWeight='bold'>
                 Remove {name}
               </AlertDialogHeader>
-                ) : (
-                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                        Leave chat
-                    </AlertDialogHeader>
-                )
+            ) : (
+              <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                Leave chat
+              </AlertDialogHeader>
+            )
             }
-  
+
             {!selfRemove ? (
               <AlertDialogBody>
-                    Are you sure you want to remove {name} from the chat? 
+                Are you sure you want to remove {name} from the chat?
               </AlertDialogBody>
             ) : (
-                <AlertDialogBody>
-                    Are you sure you want to leave the chat? 
-                </AlertDialogBody>
+              <AlertDialogBody>
+                Are you sure you want to leave the chat?
+              </AlertDialogBody>
             )
             }
   
-              <AlertDialogFooter>
-                <Button 
-                ref={cancelRef} 
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
                 onClick={onClose}
                 border={'2px solid'}
                 borderColor={'teal.500'}
                 bg={'none'}
                 color={'teal.500'}
                 _hover={{ opacity: 0.8 }}>
-                  Cancel
-                </Button>
-                {!selfRemove ? (
+                Cancel
+              </Button>
+              {!selfRemove ? (
                 <Button colorScheme='red' onClick={onDelete} ml={3}>
                   Remove
                 </Button>
-                ) : (
-                  <Button colorScheme='red' onClick={onDelete} ml={3}>
+              ) : (
+                <Button colorScheme='red' onClick={onDelete} ml={3}>
                   Leave
                 </Button>
-                )}
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
-      </>
-    )
-  }
+              )}
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
+  );
+}
 
-  export default RemoveUser;
+export default RemoveUser;
