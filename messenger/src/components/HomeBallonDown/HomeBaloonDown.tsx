@@ -1,16 +1,9 @@
 import {
-    Button,
     Flex,
-    FormControl,
-    FormLabel,
     Heading,
-    Input,
-    Stack,
     Box
   } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
-import { getAllChannels } from '../../services/channels.service';
-import { getAllUsersData } from '../../services/users.service';
 import { getAllTeams } from '../../services/teams.service';
 
 const HomeBallonDown = () => {
