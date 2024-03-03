@@ -1,5 +1,5 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import { useContext, useRef } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { channelMessage, getChannelById, removeChat, removeChatForBothUsers } from "../../services/channels.service";
 import AppContext from '../../context/AppContext';
@@ -16,7 +16,7 @@ export interface RemoveMessageOrChatProps {
 
 const RemoveMessageOrChat = ({onDeleteMessage, channelId, isFromChat} : RemoveMessageOrChatProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const cancelRef = React.useRef();
+    const cancelRef = useRef(null);
 
     const { userData } = useContext(AppContext);
     const navigate = useNavigate();
