@@ -1,3 +1,4 @@
+import { Heading, Box, UnorderedList, ListItem } from '@chakra-ui/react';
 import { useMeetingState, useNetwork, useParticipantIds, useRoom } from '@daily-co/daily-react';
 import './MeetingInformation.css';
 
@@ -8,16 +9,16 @@ export default function MeetingInformation() {
   const meetingState = useMeetingState();
 
   return (
-    <section className="meeting-information">
-      <h1>Meeting information</h1>
-      <ul>
-        <li>Meeting state: {meetingState ?? 'unknown'}</li>
-        <li>Meeting ID: {room?.id ?? 'unknown'}</li>
-        <li>Room name: {room?.name ?? 'unknown'}</li>
-        <li>Network status: {network?.threshold ?? 'unknown'}</li>
-        <li>Network topology: {network?.topology ?? 'unknown'}</li>
-        <li>Participant IDs: {allParticipants.join(', ')}</li>
-      </ul>
-    </section>
+    <Box className="meeting-information">
+      <Heading>Meeting information</Heading>
+      <UnorderedList>
+        <ListItem>Meeting state: {meetingState ?? 'unknown'}</ListItem>
+        <ListItem>Meeting ID: {room?.id ?? 'unknown'}</ListItem>
+        <ListItem>Room name: {room?.name ?? 'unknown'}</ListItem>
+        <ListItem>Network status: {network?.threshold ?? 'unknown'}</ListItem>
+        <ListItem>Network topology: {network?.topology ?? 'unknown'}</ListItem>
+        <ListItem>Participant IDs: {allParticipants.join(', ')}</ListItem>
+      </UnorderedList>
+    </Box>
   );
 }
