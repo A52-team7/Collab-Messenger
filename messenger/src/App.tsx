@@ -26,6 +26,7 @@ function App(): JSX.Element {
     user: null,
     userData: null,
     loading: true,
+    callObject: null,
     setContext: () => { },
   });
 
