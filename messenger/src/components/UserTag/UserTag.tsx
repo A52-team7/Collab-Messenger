@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
+import { Avatar, Flex, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from 'react';
 import { getUserByHandle } from "../../services/users.service";
 import { Author } from "../OneMessage/OneMessage";
