@@ -13,13 +13,12 @@ import {
   Flex,
   Box,
   VStack
-} from '@chakra-ui/react'
-import AppContext from '../../context/AppContext.tsx';
-import { useState, useEffect, useContext, useRef } from 'react';
-import { getChannelById } from '../../services/channels.service.ts'
+} from '@chakra-ui/react';
+import { useState, useEffect, useRef } from 'react';
+import { getChannelById } from '../../services/channels.service.ts';
 import { Message } from '../MessagesList/MessagesList.tsx';
 import { User } from '../SearchUsers/SearchUsers.tsx';
-import { getAllUsersData } from '../../services/users.service.ts'
+import { getAllUsersData } from '../../services/users.service.ts';
 import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar.tsx';
 import { MdContentPasteSearch } from "react-icons/md";
 import SearchOneMessage from '../SearchOneMessage/SearchOneMessage';
