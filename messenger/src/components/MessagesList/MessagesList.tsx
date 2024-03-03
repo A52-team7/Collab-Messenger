@@ -1,4 +1,4 @@
-import { Box, Stack, UnorderedList } from "@chakra-ui/react";
+import { Box, UnorderedList } from "@chakra-ui/react";
 import OneMessage from "../OneMessage/OneMessage";
 import AppContext from "../../context/AppContext";
 import { useRef, useEffect, useContext } from 'react';

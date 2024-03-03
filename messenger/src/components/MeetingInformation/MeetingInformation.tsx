@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMeetingState, useNetwork, useParticipantIds, useRoom } from '@daily-co/daily-react';
 import './MeetingInformation.css';
 

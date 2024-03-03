@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext, useRef } from 'react';
+import { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { DailyAudio, DailyProvider } from '@daily-co/daily-react';
@@ -8,7 +8,7 @@ import { Box, Flex, Textarea } from '@chakra-ui/react';
 
 import api from '../../services/api';
 import { getChannelVideoSession, addChannelVideoSession, addEventMeetingLink } from '../../services/video.service';
-import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from '../../services/utils';
+import { pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
 import Call from '../Call/Call';
@@ -58,8 +58,6 @@ export const GroupVideoMain = () => {
   }, []);
 
   const startHairCheck = useCallback(async (url: string) => {
-    console.log(callObject);
-
     if (callObject) return;
     const newCallObject = DailyIframe.createCallObject();
     setRoomUrl(url);
@@ -163,7 +161,7 @@ export const GroupVideoMain = () => {
     if (roomUrl) {
       const pageUrl = pageUrlFromRoomUrl(roomUrl);
       if (pageUrl === window.location.href) return;
-      window.history.replaceState(null, null, pageUrl);
+      window.history.replaceState(null, roomUrl, pageUrl);
     }
   }, [roomUrl]);
 

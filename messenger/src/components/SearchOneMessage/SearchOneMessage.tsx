@@ -1,9 +1,6 @@
 import {
-    Button,
     Text,
-    Flex,
     VStack,
-    WrapItem,
     Avatar,
     Wrap,
     HStack

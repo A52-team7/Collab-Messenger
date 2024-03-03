@@ -20,8 +20,6 @@ import {
   Center,
   InputLeftElement,
   FormErrorMessage,
-  NumberInputField,
-  NumberInput
 } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons';
 import {

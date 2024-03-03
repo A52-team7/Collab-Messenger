@@ -2,7 +2,7 @@ import { Text, Box, Flex, Avatar } from "@chakra-ui/react";
 import { ADD_USERS } from "../../common/constants";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { addChannel, chatBetweenTwo, getAllChannels, setChannelToSeen } from '../../services/channels.service';
+import { addChannel, chatBetweenTwo, getAllChannels } from '../../services/channels.service';
 import { userChannel } from "../../services/users.service";
 import { useNavigate } from "react-router-dom";
 

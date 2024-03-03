@@ -1,7 +1,7 @@
 import { get, set, ref, query, equalTo, orderByChild, update, DataSnapshot, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig';
 
-export const getUserByHandle = (handle: string): Promise<DataSnapshot> => {
+export const getUserByHandle = (handle: string[]): Promise<DataSnapshot> => {
   return get(ref(db, `users/${handle}`));
 };
 

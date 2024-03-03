@@ -1,7 +1,7 @@
 import { Box, Text, Heading, Button, Center } from "@chakra-ui/react";
 
 
-export default function HomeScreen({ createCall, startHairCheck }) {
+export default function HomeScreen({ createCall, startHairCheck }: {createCall: () => Promise<string>, startHairCheck: (url: string) => void}) {
   const startDemo = () => {
     createCall().then((url) => {
       startHairCheck(url);

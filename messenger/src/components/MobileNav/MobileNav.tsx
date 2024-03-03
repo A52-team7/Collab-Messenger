@@ -12,7 +12,6 @@ import {
   MenuItem,
   MenuButton,
   Avatar,
-  VStack,
   Flex,
   IconButton,
   Text,
@@ -99,8 +98,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileNavProps) => {
                 <MenuButton ml={5} pr={{ base: 0, md: 0, lg: 4 }} transition='all 0.3s' _focus={{ boxShadow: 'none' }}>
                   <Flex
                     display={{ base: 'none', md: 'flex' }}
-                    alignItems='flex-start'
-                    spacing='1px'>
+                    alignItems='flex-start'>
                     <Text fontSize='sm' color={'grey'} ml={-3} mr={1}>{userData.handle}</Text>
                     {/* <Text fontSize='xs' color={'grey'}>
                     </Text> */}
