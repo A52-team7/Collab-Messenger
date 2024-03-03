@@ -5,7 +5,6 @@ import {
   Stack,
   Button,
   Heading,
-  Textarea,
   Box,
   Input,
   FormControl,
@@ -30,7 +29,6 @@ import { createEvent } from '../../services/events.service'
 import { Timestamp } from "firebase/firestore";
 import { updateUserEvent } from '../../services/users.service'
 import { getChannelById, channelMessage } from '../../services/channels.service';
-import { Channel } from '../MyChatsSideNavBar/MyChatsSideNavBar';
 import {addMessage} from '../../services/messages';
 import {NEW_EVENT, FOR, ADDED, ADMIN, EVENT } from '../../common/constants';
 
