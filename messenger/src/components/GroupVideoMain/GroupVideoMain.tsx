@@ -6,8 +6,8 @@ import AppContext from '../../context/AppContext';
 
 import { Box, Flex, Textarea } from '@chakra-ui/react';
 
-import api from '../../services/api';
-import { getChannelVideoSession, addChannelVideoSession, addEventMeetingLink } from '../../services/video.service';
+import { deleteRoom, createRoom } from '../../services/api';
+import { getChannelVideoSession, addChannelVideoSession, addEventMeetingLink, removeChannelVideoSession } from '../../services/video.service';
 import { pageUrlFromRoomUrl } from '../../services/utils';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
@@ -27,11 +27,11 @@ const STATE_HAIRCHECK = 'STATE_HAIRCHECK';
 export const GroupVideoMain = () => {
   const [appState, setAppState] = useState(STATE_IDLE);
   const [roomUrl, setRoomUrl] = useState<string | null>(null);
-  // const [callObject, setCallObject] = useState<DailyCall | null>(null);
   const [apiError, setApiError] = useState(false);
   const { callObject, setContext } = useContext(AppContext);
 
   const callObjectRef = useRef<DailyCall | null>(null);
+  const roomRef = useRef<string | null>(null);
 
   const location = useLocation();
 
@@ -44,10 +44,10 @@ export const GroupVideoMain = () => {
    * We'll need this URL when pre-authorizing (https://docs.daily.co/reference/rn-daily-js/instance-methods/pre-auth)
    * or joining (https://docs.daily.co/reference/rn-daily-js/instance-methods/join) a call.
    */
+
   const createCall = useCallback(() => {
     setAppState(STATE_CREATING);
-    return api
-      .createRoom()
+      return createRoom()
       .then((room) => room.url)
       .catch((error) => {
         console.error('Error creating room', error);
@@ -105,6 +105,10 @@ export const GroupVideoMain = () => {
       callObject.leave()
         .then(() => navigate(`/chat/${channelId}`))
     }
+    if (roomRef.current) {
+      deleteRoom(roomRef.current);
+      removeChannelVideoSession(channelId);
+    }
   }, [callObject, appState]);
 
   /**
@@ -115,12 +119,18 @@ export const GroupVideoMain = () => {
   // I am updating the ref to callObject
   useEffect(() => {
     callObjectRef.current = callObject;
+    roomRef.current = roomUrl;
   }, [callObject]);
 
-  // I am using the ref to clear the callObject. Still not sure why?!? But it works!
+  
   useEffect(() => {
     return () => {
       if (callObjectRef.current) {
+        if (Object.keys(callObjectRef.current.participants()).length === 0 && roomRef.current) {
+          deleteRoom(roomRef.current);
+          removeChannelVideoSession(channelId);
+        }
+
         callObjectRef.current.destroy()
           .then(() => {
             setContext(prevState => ({
