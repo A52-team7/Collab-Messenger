@@ -27,13 +27,13 @@ const Reply = ({channelId, messageToReply, team, members, setReplyIsVisible} : R
   const {userData} = useContext(AppContext);
   const [newMessage, setNewMessage] = useState<string>('');
 
-  const [emoji, setEmoji] = useState<string>('');
+  const [emoji, setEmoji] = useState <object | null>(null);
 
   const [image, setImage] = useState<string | undefined>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
 
   useEffect(() => {
-    if(emoji){
+    if(emoji && 'native' in emoji){
       setNewMessage(newMessage => newMessage+ emoji.native);
     }
   }, [emoji]);
@@ -155,7 +155,7 @@ const Reply = ({channelId, messageToReply, team, members, setReplyIsVisible} : R
          }
       }
 
-      const onGetEmoji = (emoji: string) => {
+      const onGetEmoji = (emoji: object | null) => {
         setEmoji(emoji);
       }
 
