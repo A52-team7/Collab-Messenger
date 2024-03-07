@@ -96,12 +96,12 @@ export const removeReactionFromMessage = (messageId: string, reaction: string, h
   remove(ref(db, `messages/${messageId}/reactions/${reaction}/${handle}`));
 }
 
-export interface ReactionItem {
+export interface ReactionItemInterface {
   0: string;
   1: string[];
 }
 export interface ReactionArray {
-  reactions: ReactionItem[] | null;
+  reactions: ReactionItemInterface[] | null;
 }
 
 export interface ReactionsListener { (reactions: ReactionArray): void }
@@ -111,8 +111,8 @@ export const getMessageReactionsLive = (messageId: string, listener: ReactionsLi
   return onValue(ref(db, `messages/${messageId}/reactions`), (snapshot) => {
     if (!snapshot.exists()) return listener({ reactions: null });
 
-    const reactions: ReactionItem[] = Object.keys(snapshot.val()).map((reaction) => {
-      return [reaction, Object.keys(snapshot.val()[reaction])] as ReactionItem;
+    const reactions: ReactionItemInterface[] = Object.keys(snapshot.val()).map((reaction) => {
+      return [reaction, Object.keys(snapshot.val()[reaction])] as ReactionItemInterface;
     });
 
     const reactionArray: ReactionArray = {
@@ -132,7 +132,7 @@ export const deleteMessage = (messageId: string) => {
       remove(ref(db, `channels/${message.toChannel}/messages/${messageId}`));
 
       if (Object.keys(message).includes('reactions')) {
-        const reactionsOfMessage: ReactionItem[] = Object.keys(message.reactions).map((reaction) => {
+        const reactionsOfMessage: ReactionItemInterface[] = Object.keys(message.reactions).map((reaction) => {
           return [reaction, Object.keys(message.reactions[reaction])];
         });
 

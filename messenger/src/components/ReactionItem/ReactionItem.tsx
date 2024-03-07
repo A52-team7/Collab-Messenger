@@ -1,11 +1,11 @@
 import { Button, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useDisclosure } from "@chakra-ui/react";
-import { ReactionItem } from "../../services/messages";
+import { ReactionItemInterface } from "../../services/messages";
 import { useContext, useState, useEffect } from 'react';
 import AppContext from '../../context/AppContext';
 import { getUserByHandle } from "../../services/users.service";
 
 export interface ReactionItemProps{
-    reaction: ReactionItem;
+    reaction: ReactionItemInterface;
     onAddReaction: (reaction: string) => void;
     onRemoveReaction: (reaction: string) => void;
     isOnUserMessage: boolean;
