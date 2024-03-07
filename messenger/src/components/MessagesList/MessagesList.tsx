@@ -7,7 +7,7 @@ export interface Message {
   id: string;
   content: string;
   author: string;
-  createdOn: Date;
+  createdOn: Date | '';
   techMessage: boolean;
   typeOfMessage: string;
   toMessage: string;

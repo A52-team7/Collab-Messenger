@@ -180,7 +180,7 @@ const NewChat = (): JSX.Element => {
         </FormControl>
         <Stack mb={5} w={'500px'}>
           {team && (<FormControl id="privacy" isRequired><FormLabel textAlign={'center'}>Privacy</FormLabel>
-            <Select defaultValue="Private" bg={'white'} onClick={(e: React.MouseEvent<HTMLSelectElement>) => privacyChange(e.target.value)} >
+            <Select defaultValue="Private" bg={'white'} onClick={(e: React.MouseEvent<HTMLSelectElement>) => privacyChange((e.target as HTMLSelectElement).value)} >
               <option value='Standard'>Standard-Everyone on the team has access</option>
               <option value='Private'>Private-Specific teammates have access</option>
             </Select>

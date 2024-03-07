@@ -2,7 +2,6 @@ import {
   Flex,
   Stack,
   Button,
-  useColorModeValue,
   Heading,
   Textarea,
   Box,
@@ -29,7 +28,7 @@ import {
   getLeftMembersLive,
 } from '../../services/channels.service';
 import { addMessage, getMessageById } from '../../services/messages';
-import { useContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import AppContext from '../../context/AppContext';
 import MessagesList, { Message } from '../MessagesList/MessagesList';
 import { ADDED, ADD_PERSON, ADMIN, CHANGED, CHANGE_TITLE, LEFT_CHAT_MESSAGE, TO, USER_MESSAGE } from '../../common/constants';
@@ -67,7 +66,16 @@ const Chat = (): JSX.Element => {
   const [members, setMembers] = useState<string[]>([]);
 
   const [replyIsVisible, setReplyIsVisible] = useState(false);
-  const [messageToReply, setMessageToReply] = useState<Message>({});
+  const [messageToReply, setMessageToReply] = useState<Message>({
+  id: '',
+  content: '',
+  author: '',
+  createdOn: '',
+  techMessage: false,
+  typeOfMessage: '',
+  toMessage: '',
+  toChannel: '',
+  reactions: []});
 
   const [ifIsLeftIsSet, setIfIsLeftIsSet] = useState(false);
   const [isLeft, setIsLeft] = useState<boolean>();
@@ -81,7 +89,7 @@ const Chat = (): JSX.Element => {
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [image, setImage] = useState<string>('');
+  const [image, setImage] = useState<string | undefined>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
 
@@ -114,7 +122,7 @@ const Chat = (): JSX.Element => {
   }, [channelId, userData, isLeft]);
 
 
-  const [emoji, setEmoji] = useState<string>('');
+  const [emoji, setEmoji] = useState<object | null>(null);
   const [gif, setGif] = useState<string>('');
 
 
@@ -122,8 +130,10 @@ const Chat = (): JSX.Element => {
   useEffect(() => {
     if (emoji) {
       if (!textAreaRef.current) return;
-      textAreaRef.current.value += emoji.native;
-      setEmoji('');
+      if ('native' in emoji) {
+        textAreaRef.current.value += emoji.native;
+      }
+      setEmoji(null);
     }
   }, [emoji]);
 
@@ -280,8 +290,8 @@ const Chat = (): JSX.Element => {
     }
   };
 
-  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (event.key === 'Enter' || event.type === 'click') {
+  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement>) => {  
+    if ('key' in event && event.key === 'Enter' || event.type === 'click') {
       if (!textAreaRef.current) return;
       const messageFromArea = textAreaRef.current.value.trim();
       if (!messageFromArea && !imageSrc) {
@@ -342,7 +352,7 @@ const Chat = (): JSX.Element => {
       })
   }
 
-  const onGetEmoji = (emoji: string) => {
+  const onGetEmoji = (emoji: object | null) => {
     setEmoji(emoji);
   }
 
@@ -562,13 +572,13 @@ const Chat = (): JSX.Element => {
               <Textarea
                 ref={textAreaRef}
                 placeholder={'Write something...'}
-                color={useColorModeValue('gray.800', 'gray.200')}
+                color={'gray.800'}
                 bg={'rgb(237,254,253)'}
                 rounded={'xl'}
                 border={0}
                 resize={'none'}
                 _focus={{
-                  bg: useColorModeValue('gray.200', 'gray.800'),
+                  bg: 'gray.200',
                   outline: 'none',
                 }}
                 white-space='nowrap'
