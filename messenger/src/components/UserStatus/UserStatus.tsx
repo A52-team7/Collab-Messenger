@@ -16,7 +16,9 @@ import { getUserStatusLive, updateUserStatus } from '../../services/users.servic
 const UserStatus = () => {
   const { userData } = useContext(AppContext);
 
-  const [status, setStatus] = useState<string>(userData.handle)
+  // if(userData == null) return;
+
+  const [status, setStatus] = useState<string>(userData && userData.handle ? userData.handle : '')
   //const [background, setBackground] = useState<string>('')
 
   // if(status == "Available"){
