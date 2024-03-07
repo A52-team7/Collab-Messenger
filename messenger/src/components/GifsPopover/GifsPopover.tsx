@@ -45,7 +45,8 @@ const GifsPopover = ({ onGetGif }: GifsPopoverProps) => {
     onGetGif(gif);
     onClose();
     setAreFound(false);
-    searchInputRef.current.value = ''
+    if (!searchInputRef.current) return;
+    searchInputRef.current.value = '';
   }
 
   const onSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {

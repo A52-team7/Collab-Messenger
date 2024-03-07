@@ -81,7 +81,7 @@ const Chat = (): JSX.Element => {
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [image, setImage] = useState<string | ArrayBuffer>('');
+  const [image, setImage] = useState<string>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const navigate = useNavigate();
 
@@ -280,7 +280,7 @@ const Chat = (): JSX.Element => {
     }
   };
 
-  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement>) => {
+  const onSendMessage = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (event.key === 'Enter' || event.type === 'click') {
       if (!textAreaRef.current) return;
       const messageFromArea = textAreaRef.current.value.trim();
@@ -306,7 +306,10 @@ const Chat = (): JSX.Element => {
                 }
               }
             })
-            .then(() => textAreaRef.current.value = '')
+            .then(() => {
+              if (!textAreaRef.current) return;
+              textAreaRef.current.value = '';
+            })
             .catch(e => console.error(e));
         }
       }

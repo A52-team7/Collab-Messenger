@@ -1,4 +1,4 @@
-import { ref, push, get, query, equalTo, orderByChild, DataSnapshot, update, onValue, remove } from 'firebase/database';
+import { ref, push, get, DataSnapshot, update, onValue, remove } from 'firebase/database';
 import { db } from '../config/firebaseConfig.ts';
 import { Message } from '../components/MessagesList/MessagesList.tsx';
 import { removeUserReactionFromMessage } from './users.service.ts';
@@ -83,39 +83,6 @@ export const getMessageById = (id: string) => {
       return message;
     })
     .catch(e => console.error(e));
-};
-
-
-export const getMessagesByAuthor = (handle: string): Promise<Message[]> => {
-
-  return get(query(ref(db, 'messages'), orderByChild('author'), equalTo(handle)))
-    .then(snapshot => {
-      if (!snapshot.exists()) return [];
-
-      return fromMessagesDocument(snapshot);
-    });
-};
-
-export const getMessagesByChannel = (channelId: string): Promise<Message[]> => {
-
-  return get(query(ref(db, 'messages'), orderByChild('author'), equalTo(channelId)))
-    .then(snapshot => {
-      if (!snapshot.exists()) return [];
-
-      return fromMessagesDocument(snapshot);
-    });
-};
-
-export const getAllMessages = (): Promise<Message[]> => {
-
-  return get(ref(db, 'messages'))
-    .then(snapshot => {
-      if (!snapshot.exists()) {
-        return [];
-      }
-
-      return fromMessagesDocument(snapshot);
-    });
 };
 
 export const addReactionToMessage = (messageId: string, reaction: string, handle: string) => {

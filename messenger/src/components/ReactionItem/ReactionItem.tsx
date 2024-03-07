@@ -27,7 +27,8 @@ const ReactionItem = ({reaction, onAddReaction, onRemoveReaction, isOnUserMessag
                 .catch(e => console.error(e));
             })
           ).then(users => {
-              setReactedUsers([...users]);
+            const filteredUsers = users.filter(user => user) as string[];
+            setReactedUsers(filteredUsers);
           })
           .catch(e => console.error(e));
     }, [reaction]);    
