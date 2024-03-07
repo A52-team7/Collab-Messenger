@@ -151,7 +151,15 @@ const NewEvent = () => {
       
   }
 
-  console.error(newEvent)
+  const updateStartDate = (newDate: Date | null) => {
+    onChangeStart(newDate as Date);
+  };
+
+  
+  const updateEndDate = (newDate: Date | null) => {
+    onChangeEnd(newDate as Date);
+  };
+  
   return (
     <Flex
       maxH={'fit-content'}
@@ -193,7 +201,7 @@ const NewEvent = () => {
             maxDetail="second"
             nativeInputAriaLabel="Date and time"
             value={valueStart}
-            onChange={onChangeStart}
+            onChange={updateStartDate}
             dayPlaceholder="dd"
             monthPlaceholder="mm"
             yearPlaceholder="yy"
@@ -218,7 +226,7 @@ const NewEvent = () => {
             hourPlaceholder="hh"
             minutePlaceholder="mm"
             format="dd/MM/yy HH:mm"
-            onChange={onChangeEnd}
+            onChange={updateEndDate}
           />
         </HStack>
         </FormControl>
