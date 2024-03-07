@@ -16,7 +16,15 @@ import {
 
 const SearchOneMessage = ({message}: SearchOneMessage) => {
 
-    const [authorOfMessage, setAuthorOfMessage] = useState<Author>({});
+    const [authorOfMessage, setAuthorOfMessage] = useState<Author>({
+      handle: '',
+      uid: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      profilePhoto: ''
+    });
 
     useEffect(() => {
         getUserByHandle(message.author)
