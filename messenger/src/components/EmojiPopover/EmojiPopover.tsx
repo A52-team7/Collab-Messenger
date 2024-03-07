@@ -7,7 +7,7 @@ import { BsEmojiLaughingFill } from "react-icons/bs";
 import { useState } from 'react';
 
 export interface EmojiPopoverProps {
-  onGetEmoji: (emoji: string) => void;
+  onGetEmoji: (emoji: object | null) => void;
 }
 
 const EmojiPopover = ({ onGetEmoji }: EmojiPopoverProps) => {
@@ -21,7 +21,6 @@ const EmojiPopover = ({ onGetEmoji }: EmojiPopoverProps) => {
   const onHideColor = () => {
     setVisibleColor(false);
   }
-
 
   return (
     <Popover>

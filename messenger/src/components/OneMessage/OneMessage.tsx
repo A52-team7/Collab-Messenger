@@ -42,7 +42,16 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
 
   const [authorOfMessage, setAuthorOfMessage] = useState<Author>();
   const [isReply, setIsReply] = useState(false);
-  const [toMessage, setToMessage] = useState<Message>({});
+  const [toMessage, setToMessage] = useState<Message>({
+    id: '',
+    content: '',
+    author: '',
+    createdOn: '',
+    techMessage: false,
+    typeOfMessage: '',
+    toMessage: '',
+    toChannel: '',
+    reactions: []});
   const [authorOfToMessage, setAuthorOfToMessage] = useState('');
   // const [visibleOptions, setVisibleOptions] = useState(false);
 
@@ -53,11 +62,11 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
 
   const [imageSrc, setImageSrc] = useState('');
 
-  const [emoji, setEmoji] = useState<string>('');
+  const [emoji, setEmoji] = useState<object | null>(null);
 
 
   useEffect(() => {
-    if (emoji) {
+    if (emoji && 'native' in emoji) {
       setContentOfMessage(message => message + emoji.native);
     }
   }, [emoji]);
@@ -158,7 +167,7 @@ const OneMessage = ({ message, setReplyIsVisible, setMessageToReply }: OneMessag
     }
   }
 
-  const onGetEmoji = (emoji: string) => {
+  const onGetEmoji = (emoji: object | null) => {
     setEmoji(emoji);
   }
 

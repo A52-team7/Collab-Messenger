@@ -29,7 +29,7 @@ const Reply = ({channelId, messageToReply, team, members, setReplyIsVisible} : R
 
   const [emoji, setEmoji] = useState<string>('');
 
-  const [image, setImage] = useState<string | ArrayBuffer>('');
+  const [image, setImage] = useState<string | undefined>('');
   const [imageSrc, setImageSrc] = useState<File | null>(null);
 
   useEffect(() => {

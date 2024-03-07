@@ -6,7 +6,7 @@ import { useState, useRef } from 'react';
 import { Box, Center, Input } from "@chakra-ui/react";
 
 export interface SendImagePopoverProps {
-  setImage: (image: string | ArrayBuffer) => void;
+  setImage: (image: string | undefined) => void;
   setImageSrc: (imageSrc: File | null) => void;
 }
 
@@ -41,7 +41,7 @@ const SendImagePopover = ({ setImage, setImageSrc }: SendImagePopoverProps) => {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        if (reader.result) {
+        if (reader.result && typeof reader.result === 'string') {
           setImage(reader.result);
         }
       };
