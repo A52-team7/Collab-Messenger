@@ -29,7 +29,14 @@ const TeamInfo = (team: Team) => {
   const { userData } = useContext<UserState>(AppContext);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [members, setMembers] = useState<User[]>([])
-  const [owner, setOwner] = useState<User>({})
+  const [owner, setOwner] = useState<User>({
+  handle: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  myChannels: [],
+  profilePhoto: '',
+})
   const [allChannels, setAllChannels] = useState<Channel[]>([])
   const [title,setTitle] = useState<string>(team.name)
 
