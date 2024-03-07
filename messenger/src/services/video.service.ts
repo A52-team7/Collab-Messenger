@@ -18,6 +18,15 @@ export const addChannelVideoSession = (channelId: string, sessionUrl: string) =>
   return update(ref(db), addChannelSession);
 }
 
+export const removeChannelVideoSession = (channelId: string) => {
+  console.log('channelID', channelId);
+  
+  const removeVideoSession: { [key: string]: string } = {};
+  removeVideoSession[`channels/${channelId}/videoSession`] = '';
+
+  return update(ref(db), removeVideoSession);
+}
+
 export const addEventMeetingLink = (eventId: string, sessionUrl: string) => {
   const addEventMeetingLink: { [key: string]: string } = {};
   addEventMeetingLink[`events/${eventId}/meetingLink`] = sessionUrl;
